@@ -3,19 +3,10 @@ package com.sadatmalik.fusionweb.services;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 @Service
@@ -36,7 +27,7 @@ public class HsbcService {
     // &client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
     // &client_assertion=eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkZThjYTc3LWQ2ODEtNDc4Mi04MTIyLWUwMzkyNTg5MDIxYiJ9.eyJpc3MiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJhdWQiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwic3ViIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwiaWF0IjoxNDk5MTgzNjAxLCJleHAiOjE3NzkzNDg1MjF9.uu282OmEHUa0t6z6T68MfXzEGGgq8PiWuyJxuNQ1be6iWdD5sVbw3W--_O6TFAH-ae7BYXsE0kncYgA6gF9AmkXuA77w_Wbn2YyjPCB9gDCkrlJUS6rvb3UJYcIBZ7W-WZlRAsRE0l6EV74c5xnyL9c7cpGMfQ-HfPsYOG4JCsrvtpAHdo7jHWTVgKoe67jWGQkNOYt1Ba7rCf4y-fqQ3d6hZoptAAcJd26yigvV4768GHQGrBvgAc7OzutOGzYARAgStpjQMp0kMiOGIzq-TUsDlvtMrx2fH8gfy2uG2HvzsROkbNedL-iO5PmswNrDvCYEWZmVjMcaVg--ZF0sjg'
     // "https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2"
-    public void getAccessToken() {
+    public HsbcAccessToken getAccessToken() {
 
         String access_token_url = "https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2";
 
@@ -62,6 +53,65 @@ public class HsbcService {
                 restTemplate.exchange(access_token_url, HttpMethod.POST, request, HsbcAccessToken.class);
 
         logger.debug("Access Token Response ---------" + response.getBody());
+
+        return response.getBody();
     }
+
+    // curl -v -X POST --cert qwac.der --cert-type DER --key server.key
+    // -H "Content-Type: application/json"
+    // -H "Accept: application/json"
+    // -H "Authorization: Bearer ea053fa4-28ad-49b4-928c-589ad73d4a03"  [consent access token]
+    // -H "x-fapi-financial-id: test"
+    // -H "Cache-Control: no-cache"
+    // -d '{"Data":
+    //       {"Permissions":
+    //         ["ReadAccountsDetail",
+    //           "ReadBalances",
+    //           "ReadBeneficiariesDetail",
+    //           "ReadDirectDebits",
+    //           "ReadProducts",
+    //           "ReadStandingOrdersDetail",
+    //           "ReadTransactionsCredits",
+    //           "ReadTransactionsDebits",
+    //           "ReadTransactionsDetail",
+    //           "ReadScheduledPaymentsBasic",
+    //           "ReadScheduledPaymentsDetail",
+    //           "ReadParty",
+    //           "ReadStatementsDetail",
+    //           "ReadStatementsBasic"],
+    //         "ExpirationDateTime":"2025-06-11T00:00:00+00:00",
+    //         "TransactionFromDateTime":"1995-07-15T00:00:00+00:00",
+    //         "TransactionToDateTime":"2037-12-31T23:59:59+00:00"},
+    //       "Risk":{} }'
+    // "https://sandbox.hsbc.com/psd2/obie/v3.1/account-access-consents"
+    public HsbcConsent getConsentID(HsbcAccessToken token) {
+
+        String account_access_consents_url = "https://sandbox.hsbc.com/psd2/obie/v3.1/account-access-consents";
+        String accessToken = token.getAccessToken();
+
+        // Construct Http request headers and body per HSBC OAuth API documentation
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setBearerAuth(accessToken);
+        headers.add("x-fapi-financial-id", "test");
+        headers.setCacheControl(CacheControl.noCache());
+
+        // todo - create objects with json mappings for body text
+        String body = "{\"Data\":{\"Permissions\":[\"ReadAccountsDetail\",\"ReadBalances\",\"ReadBeneficiariesDetail\",\"ReadDirectDebits\",\"ReadProducts\",\"ReadStandingOrdersDetail\",\"ReadTransactionsCredits\",\"ReadTransactionsDebits\",\"ReadTransactionsDetail\",\"ReadScheduledPaymentsBasic\",\"ReadScheduledPaymentsDetail\",\"ReadParty\",\"ReadStatementsDetail\",\"ReadStatementsBasic\"],\"ExpirationDateTime\":\"2025-06-11T00:00:00+00:00\",\"TransactionFromDateTime\":\"1995-07-15T00:00:00+00:00\",\"TransactionToDateTime\":\"2037-12-31T23:59:59+00:00\"},\"Risk\":{} }";
+
+        HttpEntity<String> request = new HttpEntity<>(body, headers);
+        ResponseEntity<HsbcConsent> response =
+                restTemplate.exchange(account_access_consents_url, HttpMethod.POST, request, HsbcConsent.class);
+
+        logger.debug("Consent ID response ---------" + response.getBody());
+
+        return response.getBody();
+    }
+
+    public HsbcAuthorizationCode getAuthorizationCode() {
+        return null;
+    }
+
 
 }
