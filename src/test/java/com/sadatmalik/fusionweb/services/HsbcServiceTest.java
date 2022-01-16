@@ -18,7 +18,7 @@ class HsbcServiceTest {
     private HsbcAccessToken accessToken;
     private HsbcConsent consentID;
     //private HsbcAuthorizationCode authorizationCode;
-    private String authorizationCode;
+    private String authorizationURL;
 
     @Autowired
     private HsbcService service;
@@ -38,24 +38,25 @@ class HsbcServiceTest {
     void testCreateJwt() {
         HsbcConsent consent = new HsbcConsent();
         consent.data = new HsbcConsentData();
-        consent.data.consentId = "360a1be2-8773-45a7-a9b1-f7c0e9991fe0";
+        consent.data.consentId = "9794df16-5fb8-43e9-b8f7-579ce706b3dd";
 
         String jwt = service.createJwt(consent);
         System.out.println(jwt);
 
         // test against value generated at jwt.io
-        assertThat(jwt).isEqualTo("eyJhbGciOiJQUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjdmYWI4MDdkLTQ5ODgtNDAxMi04ZjEwLWE3NzY1NTc4NzQ1MCJ9.eyJpc3MiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwiYXVkIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwicmVzcG9uc2VfdHlwZSI6ImNvZGUgaWRfdG9rZW4iLCJjbGllbnRfaWQiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJyZWRpcmVjdF91cmkiOiJodHRwOi8vZ29vZ2xlLmNvbSIsInNjb3BlIjoib3BlbmlkIGFjY291bnRzIiwiY2xhaW1zIjp7InVzZXJpbmZvIjp7Im9wZW5iYW5raW5nX2ludGVudF9pZCI6eyJ2YWx1ZSI6IjM2MGExYmUyLTg3NzMtNDVhNy1hOWIxLWY3YzBlOTk5MWZlMCIsImVzc2VudGlhbCI6dHJ1ZX19fX0.eRldYeaEy7McZnsc1OqHwxKJW2olKftLt2f71WrO3hzoiV0OsAjfJZ0V9EEH7uguY5FpeOx6OknumJAk31k87aOY-BRfU-sulF4ZVYm7GNi1yReexPDLXWnIiiAziH1L_X8aQF-dQBDfZw_Mm9JB6K1caDHhG1gyVR2S_QHcsdcOQ56YWlZndBSM9xk8_ETK7MFbf5HJnRPKxnIlQxvst1LEAM9OQr4UdN-4GjtwIc7CJl1qaj_cfAvhk5M5L9Ei40QS2_I5QU5r1CScp3xL_mHyqrf4Y9jxofyeIJvx3SppNwxhyzGELylvBJCJt0wq4_Ui0ZC19-qbcNIpcNPMcw");
+        assertThat(jwt).isEqualTo("eyJhbGciOiJQUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjdmYWI4MDdkLTQ5ODgtNDAxMi04ZjEwLWE3NzY1NTc4NzQ1MCJ9.eyJpc3MiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwiYXVkIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwicmVzcG9uc2VfdHlwZSI6ImNvZGUgaWRfdG9rZW4iLCJjbGllbnRfaWQiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJyZWRpcmVjdF91cmkiOiJodHRwOi8vZ29vZ2xlLmNvbSIsInNjb3BlIjoib3BlbmlkIGFjY291bnRzIiwiY2xhaW1zIjp7InVzZXJpbmZvIjp7Im9wZW5iYW5raW5nX2ludGVudF9pZCI6eyJ2YWx1ZSI6Ijk3OTRkZjE2LTVmYjgtNDNlOS1iOGY3LTU3OWNlNzA2YjNkZCIsImVzc2VudGlhbCI6dHJ1ZX19fX0.NAAnwIKok9wt5jYMjK8BgJ7GBGbWqfWAhzxEaH8O4tvJJvr_8Ip5p4-AnhbF-mzF4RRM8Py-DHwqBZROBsW913X8huRbTujVhOUEDflZ6JvRfDLngzDvw9OniZq7v7Gw2CsCZjGnNMPxHyS76arFwin1-YYN7h_FCe7Y4iobtVh7Cxwo4Lr_QnT-2mBXPrdrtAqs_hpaHht5CSSUDTl9moHels8W4QS6y1-CwNFLdbnqv32jHo9IwJszdL2UcEyHy9MscuX5D-Ga60zvWwzvafiF-9mIa5xRHeyWJ-9JurrDFnyRzlcdnNEFA5bLgqIwNZQVyIMvNu6xypDAC2pyXw");
     }
 
     @Test
-    void testGetAuthCode() {
+    void testGetAuthorizationURL() {
         //accessToken = service.getAccessToken();
         //consentID = service.getConsentID(accessToken);
         HsbcConsent consent = new HsbcConsent();
         consent.data = new HsbcConsentData();
         consent.data.consentId = "360a1be2-8773-45a7-a9b1-f7c0e9991fe0";
 
-        authorizationCode = service.getAuthorizationCode(consent);
+        authorizationURL = service.getAuthorizationURL(consent);
+        System.out.println(authorizationURL);
     }
 
     @Test

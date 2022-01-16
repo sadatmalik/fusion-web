@@ -2,12 +2,10 @@ package com.sadatmalik.fusionweb.services;
 
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.util.Arrays;
 import java.util.Base64;
 
 @Component
