@@ -1,4 +1,4 @@
-package com.sadatmalik.fusionweb.services;
+package com.sadatmalik.fusionweb.oauth;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSASSASigner;

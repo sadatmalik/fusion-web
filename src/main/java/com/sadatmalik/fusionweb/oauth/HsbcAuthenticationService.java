@@ -1,4 +1,4 @@
-package com.sadatmalik.fusionweb.services;
+package com.sadatmalik.fusionweb.oauth;
 
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -181,8 +181,6 @@ public class HsbcAuthenticationService {
 
         logger.debug("User Access Token Response ---------" + response.getBody());
 
-        response.getBody();
-
-        return null;
+        return response.getBody();
     }
 }

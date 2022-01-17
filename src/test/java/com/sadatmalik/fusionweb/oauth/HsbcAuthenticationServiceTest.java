@@ -1,4 +1,4 @@
-package com.sadatmalik.fusionweb.services;
+package com.sadatmalik.fusionweb.oauth;
 
 import com.nimbusds.jose.JWSObject;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ class HsbcAuthenticationServiceTest {
     private HsbcAuthenticationService service;
 
     @Autowired
-    private  JwtHelper jwtHelper;
+    private JwtHelper jwtHelper;
 
     @Test
     void testGetAccessToken() {
