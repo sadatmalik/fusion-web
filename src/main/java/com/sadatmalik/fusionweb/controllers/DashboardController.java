@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -20,8 +21,11 @@ public class DashboardController {
     HsbcService hsbc;
 
     @GetMapping({"", "/"})
-    public String home() {
+    public String home(@RequestParam(name = "code") String authCode) {
         logger.info("Returning index page");
+        if (authCode != null) {
+            System.out.println("Received authCode: " + authCode);
+        }
         return "index";
     }
 
@@ -33,7 +37,6 @@ public class DashboardController {
         String authorizationURL = hsbc.getAuthorizationURL(consent);
         System.out.println(authorizationURL);
 
-        //return "redirect:" + authorizationURL;
-        return "dashboard";
+        return "redirect:" + authorizationURL;
     }
 }

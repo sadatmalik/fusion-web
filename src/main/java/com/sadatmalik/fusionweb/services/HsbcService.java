@@ -15,7 +15,7 @@ import java.util.Arrays;
 public class HsbcService {
 
     private static final Logger logger = LoggerFactory.getLogger(HsbcService.class);
-    static final String APP_REDIRECT_URL = "http://google.com";
+    static final String APP_REDIRECT_URL = "http://localhost:8080";
 
     @Autowired
     RestTemplate restTemplate;
