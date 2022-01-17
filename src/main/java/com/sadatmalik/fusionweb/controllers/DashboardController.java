@@ -31,7 +31,9 @@ public class DashboardController {
         HsbcConsent consent = hsbc.getConsentID(accessToken);
 
         String authorizationURL = hsbc.getAuthorizationURL(consent);
+        System.out.println(authorizationURL);
 
-        return "redirect:" + authorizationURL;
+        //return "redirect:" + authorizationURL;
+        return "dashboard";
     }
 }
