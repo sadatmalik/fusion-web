@@ -23,7 +23,7 @@ public class DashboardController {
 
     private static final Logger logger = LoggerFactory.getLogger(DashboardController.class);
 
-    // @todo keep this with user details
+    // todo keep this with user details
     private HsbcUserAccessToken userAccessToken;
 
     @Autowired

@@ -16,7 +16,6 @@ public class HsbcAuthenticationService {
 
     private static final Logger logger = LoggerFactory.getLogger(HsbcAuthenticationService.class);
     static final String APP_REDIRECT_URL = "http://localhost:8080";
-    static final String USER_REDIRECT_URL = "http://localhost:8080/dashboard";
 
     @Autowired
     RestTemplate restTemplate;
