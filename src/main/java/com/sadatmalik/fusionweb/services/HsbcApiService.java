@@ -42,6 +42,6 @@ public class HsbcApiService {
 
         logger.debug("User Accounts ---------" + response.getBody());
 
-        return null;
+        return response.getBody().getData().getAccounts();
     }
 }
