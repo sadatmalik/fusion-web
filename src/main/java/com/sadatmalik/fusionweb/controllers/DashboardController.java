@@ -1,8 +1,8 @@
 package com.sadatmalik.fusionweb.controllers;
 
-import com.sadatmalik.fusionweb.services.HsbcAccessToken;
+import com.sadatmalik.fusionweb.services.HsbcClientAccessToken;
 import com.sadatmalik.fusionweb.services.HsbcConsent;
-import com.sadatmalik.fusionweb.services.HsbcService;
+import com.sadatmalik.fusionweb.services.HsbcAuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,20 +18,21 @@ public class DashboardController {
     private static final Logger logger = LoggerFactory.getLogger(DashboardController.class);
 
     @Autowired
-    HsbcService hsbc;
+    HsbcAuthenticationService hsbc;
 
     @GetMapping({"", "/"})
-    public String home(@RequestParam(name = "code") String authCode) {
+    public String home(@RequestParam(name = "code", required = false) String authCode) {
         logger.info("Returning index page");
         if (authCode != null) {
             System.out.println("Received authCode: " + authCode);
+            hsbc.getAccessToken(authCode);
         }
         return "index";
     }
 
     @GetMapping("/dashboard")
     public String error() {
-        HsbcAccessToken accessToken = hsbc.getAccessToken();
+        HsbcClientAccessToken accessToken = hsbc.getAccessToken();
         HsbcConsent consent = hsbc.getConsentID(accessToken);
 
         String authorizationURL = hsbc.getAuthorizationURL(consent);

@@ -59,7 +59,7 @@ public class JwtHelper {
         payload += "\"aud\":\"211e36de-64b2-479e-ae28-8a5b41a1a940\",";
         payload += "\"response_type\":\"code id_token\",";
         payload += "\"client_id\":\"211e36de-64b2-479e-ae28-8a5b41a1a940\",";
-        payload += "\"redirect_uri\":\"" + HsbcService.APP_REDIRECT_URL + "\",";
+        payload += "\"redirect_uri\":\"" + HsbcAuthenticationService.APP_REDIRECT_URL + "\",";
         payload += "\"scope\":\"openid accounts\",";
         payload += "\"claims\":";
         payload += "{\"userinfo\":";

@@ -10,8 +10,8 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public class HsbcAccessToken {
-    // {"access_token":"68678f2d-e0f0-460e-8bee-c810d1a267dd",
+public class HsbcUserAccessToken {
+    // {"access_token":"d13a4f6c-ce35-4b3b-aadd-0ee14563a04e",
     @JsonProperty("access_token")
     String accessToken;
 
@@ -23,7 +23,7 @@ public class HsbcAccessToken {
     @JsonProperty("token_type")
     String tokenType;
 
-    // "scope":"accounts"}
-    String scope;
-
+    // "refresh_token":"701861fa-3182-440c-9af0-d9ff285b51f6"}
+    @JsonProperty("refresh_token")
+    String refreshToken;
 }

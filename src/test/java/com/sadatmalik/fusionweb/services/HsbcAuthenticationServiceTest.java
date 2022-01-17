@@ -1,35 +1,20 @@
 package com.sadatmalik.fusionweb.services;
 
 import com.nimbusds.jose.JWSObject;
-import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.crypto.RSASSAVerifier;
-import com.nimbusds.jose.crypto.bc.BouncyCastleFIPSProviderSingleton;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.security.interfaces.RSAPublicKey;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-class HsbcServiceTest {
+class HsbcAuthenticationServiceTest {
 
-    private HsbcAccessToken accessToken;
+    private HsbcClientAccessToken accessToken;
     private HsbcConsent consent;
     private String authorizationURL;
 
     @Autowired
-    private HsbcService service;
+    private HsbcAuthenticationService service;
 
     @Autowired
     private  JwtHelper jwtHelper;

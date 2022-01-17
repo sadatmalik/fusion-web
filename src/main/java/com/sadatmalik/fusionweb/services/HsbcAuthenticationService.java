@@ -12,10 +12,11 @@ import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
-public class HsbcService {
+public class HsbcAuthenticationService {
 
-    private static final Logger logger = LoggerFactory.getLogger(HsbcService.class);
+    private static final Logger logger = LoggerFactory.getLogger(HsbcAuthenticationService.class);
     static final String APP_REDIRECT_URL = "http://localhost:8080";
+    static final String USER_REDIRECT_URL = "http://localhost:8080/dashboard";
 
     @Autowired
     RestTemplate restTemplate;
@@ -33,7 +34,7 @@ public class HsbcService {
     // &client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
     // &client_assertion=eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkZThjYTc3LWQ2ODEtNDc4Mi04MTIyLWUwMzkyNTg5MDIxYiJ9.eyJpc3MiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJhdWQiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwic3ViIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwiaWF0IjoxNDk5MTgzNjAxLCJleHAiOjE3NzkzNDg1MjF9.uu282OmEHUa0t6z6T68MfXzEGGgq8PiWuyJxuNQ1be6iWdD5sVbw3W--_O6TFAH-ae7BYXsE0kncYgA6gF9AmkXuA77w_Wbn2YyjPCB9gDCkrlJUS6rvb3UJYcIBZ7W-WZlRAsRE0l6EV74c5xnyL9c7cpGMfQ-HfPsYOG4JCsrvtpAHdo7jHWTVgKoe67jWGQkNOYt1Ba7rCf4y-fqQ3d6hZoptAAcJd26yigvV4768GHQGrBvgAc7OzutOGzYARAgStpjQMp0kMiOGIzq-TUsDlvtMrx2fH8gfy2uG2HvzsROkbNedL-iO5PmswNrDvCYEWZmVjMcaVg--ZF0sjg'
     // "https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2"
-    public HsbcAccessToken getAccessToken() {
+    public HsbcClientAccessToken getAccessToken() {
 
         String access_token_url = "https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2";
 
@@ -43,11 +44,8 @@ public class HsbcService {
         String client_assertion = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkZThjYTc3LWQ2ODEtNDc4Mi04MTIyLWUwMzkyNTg5MDIxYiJ9.eyJpc3MiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJhdWQiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwic3ViIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwiaWF0IjoxNDk5MTgzNjAxLCJleHAiOjE3NzkzNDg1MjF9.uu282OmEHUa0t6z6T68MfXzEGGgq8PiWuyJxuNQ1be6iWdD5sVbw3W--_O6TFAH-ae7BYXsE0kncYgA6gF9AmkXuA77w_Wbn2YyjPCB9gDCkrlJUS6rvb3UJYcIBZ7W-WZlRAsRE0l6EV74c5xnyL9c7cpGMfQ-HfPsYOG4JCsrvtpAHdo7jHWTVgKoe67jWGQkNOYt1Ba7rCf4y-fqQ3d6hZoptAAcJd26yigvV4768GHQGrBvgAc7OzutOGzYARAgStpjQMp0kMiOGIzq-TUsDlvtMrx2fH8gfy2uG2HvzsROkbNedL-iO5PmswNrDvCYEWZmVjMcaVg--ZF0sjg";
 
         // Construct Http request headers and body per HSBC OAuth API documentation
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpHeaders headers = getStandardPostHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.add("x-fapi-financial-id", "test");
-        headers.setCacheControl(CacheControl.noCache());
 
         String body = "grant_type=" + grant_type +
                 "&scope=" + scope +
@@ -55,8 +53,8 @@ public class HsbcService {
                 "&client_assertion=" + client_assertion;
 
         HttpEntity<String> request = new HttpEntity<>(body, headers);
-        ResponseEntity<HsbcAccessToken> response =
-                restTemplate.exchange(access_token_url, HttpMethod.POST, request, HsbcAccessToken.class);
+        ResponseEntity<HsbcClientAccessToken> response =
+                restTemplate.exchange(access_token_url, HttpMethod.POST, request, HsbcClientAccessToken.class);
 
         logger.debug("Access Token Response ---------" + response.getBody());
 
@@ -90,7 +88,7 @@ public class HsbcService {
     //         "TransactionToDateTime":"2037-12-31T23:59:59+00:00"},
     //       "Risk":{} }'
     // "https://sandbox.hsbc.com/psd2/obie/v3.1/account-access-consents"
-    public HsbcConsent getConsentID(HsbcAccessToken token) {
+    public HsbcConsent getConsentID(HsbcClientAccessToken token) {
 
         String account_access_consents_url = "https://sandbox.hsbc.com/psd2/obie/v3.1/account-access-consents";
         String accessToken = token.getAccessToken();
@@ -140,4 +138,51 @@ public class HsbcService {
         return authorize_url;
     }
 
+    // -H "Content-Type: application/x-www-form-urlencoded"
+    // -H "x-fapi-financial-id: test"
+    // -H "Cache-Control: no-cache"
+    private HttpHeaders getStandardPostHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.add("x-fapi-financial-id", "test");
+        headers.setCacheControl(CacheControl.noCache());
+
+        return headers;
+    }
+
+    //curl -v -X POST --cert qwac.der --cert-type DER --key server.key
+    // -H "Content-Type: application/x-www-form-urlencoded"
+    // -H "x-fapi-financial-id: test"
+    // -H "Cache-Control: no-cache"
+    // -d 'grant_type=authorization_code
+    //     &code=93349a61-5e4b-4af0-bc09-867b3e73d21a
+    //     &redirect_uri=http://google.com
+    //     &client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
+    //     &client_assertion=eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkZThjYTc3LWQ2ODEtNDc4Mi04MTIyLWUwMzkyNTg5MDIxYiJ9.eyJpc3MiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJhdWQiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwic3ViIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwiaWF0IjoxNDk5MTgzNjAxLCJleHAiOjE3NzkzNDg1MjF9.uu282OmEHUa0t6z6T68MfXzEGGgq8PiWuyJxuNQ1be6iWdD5sVbw3W--_O6TFAH-ae7BYXsE0kncYgA6gF9AmkXuA77w_Wbn2YyjPCB9gDCkrlJUS6rvb3UJYcIBZ7W-WZlRAsRE0l6EV74c5xnyL9c7cpGMfQ-HfPsYOG4JCsrvtpAHdo7jHWTVgKoe67jWGQkNOYt1Ba7rCf4y-fqQ3d6hZoptAAcJd26yigvV4768GHQGrBvgAc7OzutOGzYARAgStpjQMp0kMiOGIzq-TUsDlvtMrx2fH8gfy2uG2HvzsROkbNedL-iO5PmswNrDvCYEWZmVjMcaVg--ZF0sjg'
+    //     "https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2"
+    public HsbcUserAccessToken getAccessToken(String authCode) {
+        HttpHeaders headers = getStandardPostHeaders();
+
+        String grant_type = "authorization_code";
+        String client_assertion_type = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
+        String client_assertion = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkZThjYTc3LWQ2ODEtNDc4Mi04MTIyLWUwMzkyNTg5MDIxYiJ9.eyJpc3MiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJhdWQiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwic3ViIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwiaWF0IjoxNDk5MTgzNjAxLCJleHAiOjE3NzkzNDg1MjF9.uu282OmEHUa0t6z6T68MfXzEGGgq8PiWuyJxuNQ1be6iWdD5sVbw3W--_O6TFAH-ae7BYXsE0kncYgA6gF9AmkXuA77w_Wbn2YyjPCB9gDCkrlJUS6rvb3UJYcIBZ7W-WZlRAsRE0l6EV74c5xnyL9c7cpGMfQ-HfPsYOG4JCsrvtpAHdo7jHWTVgKoe67jWGQkNOYt1Ba7rCf4y-fqQ3d6hZoptAAcJd26yigvV4768GHQGrBvgAc7OzutOGzYARAgStpjQMp0kMiOGIzq-TUsDlvtMrx2fH8gfy2uG2HvzsROkbNedL-iO5PmswNrDvCYEWZmVjMcaVg--ZF0sjg";
+
+        String access_token_url = "https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2";
+
+        String body = "grant_type=" + grant_type +
+                "&code=" + authCode +
+                "&redirect_uri=" + APP_REDIRECT_URL +
+                "&client_assertion_type=" + client_assertion_type +
+                "&client_assertion=" + client_assertion;
+
+        HttpEntity<String> request = new HttpEntity<>(body, headers);
+        ResponseEntity<HsbcUserAccessToken> response =
+                restTemplate.exchange(access_token_url, HttpMethod.POST, request, HsbcUserAccessToken.class);
+
+        logger.debug("User Access Token Response ---------" + response.getBody());
+
+        response.getBody();
+
+        return null;
+    }
 }
