@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -61,7 +62,29 @@ public class DashboardController {
         }
 
         List<Account> accounts = hsbc.getUserAccounts(userAccessToken);
+        String totalBalance = getTotalDisplayBalance(accounts);
         model.addAttribute("accountList", accounts);
+        model.addAttribute("totalBalance", totalBalance);
+
+        return "dashboard";
+    }
+
+    private String getTotalDisplayBalance(List<Account> accounts) {
+        double total = 0;
+        for (Account account : accounts) {
+            total += account.getBalance().getAmount();
+        }
+        return String.format("£%.2f", total);
+    }
+
+    @GetMapping("/transactions/{accountId}")
+    public String viewTransactions(Model model, @PathVariable String accountId) {
+        // @todo encapsulate this elsewhere - with user details?
+        if (userAccessToken.isExpiring()) {
+            userAccessToken = hsbcAuth.refreshAccessToken(userAccessToken);
+        }
+
+        hsbc.getTransactions(accountId, userAccessToken);
 
         return "dashboard";
     }

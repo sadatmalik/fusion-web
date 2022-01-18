@@ -53,7 +53,7 @@ public class HsbcApiService {
         return headers;
     }
 
-    // "/accounts/{AccountId}"
+    // "GET /accounts/{AccountId}"
     public void getAccountDetails(Account account, HsbcUserAccessToken accessToken) {
         HttpHeaders headers = getGetHeaders(accessToken);
         HttpEntity<String> request = new HttpEntity<>(headers);
@@ -64,7 +64,7 @@ public class HsbcApiService {
         logger.debug("User Accounts for AccountID ---------" + response.getBody());
     }
 
-    // "/accounts/{AccountId}/balances"
+    // "GET /accounts/{AccountId}/balances"
     public Balance getAccountBalance(Account account, HsbcUserAccessToken accessToken) {
         HttpHeaders headers = getGetHeaders(accessToken);
         HttpEntity<String> request = new HttpEntity<>(headers);
@@ -82,4 +82,14 @@ public class HsbcApiService {
         return balance;
     }
 
+    // "GET /accounts/{AccountId}/transactions"
+    public void getTransactions(String accountId, HsbcUserAccessToken accessToken) {
+        HttpHeaders headers = getGetHeaders(accessToken);
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response =
+                restTemplate.exchange(ACCOUNT_INFO_URL + "/" + accountId + "/transactions",
+                        HttpMethod.GET, request, String.class);
+
+        logger.debug("Transactions for AccountID ---------" + response.getBody());
+    }
 }

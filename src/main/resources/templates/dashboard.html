@@ -16,7 +16,7 @@
     <div class="col-9">
       <div th:replace="fragments::nav"/>
       <br/>
-      <h3>Total Balance</h3>
+      <h3 th:text="${totalBalance}">Total Balance</h3>
       <table border="1" cellpadding="10" class="table bg-white">
         <thead>
         <tr class="bg-light">
@@ -28,6 +28,7 @@
           <th>Type</th>
           <th>SubType</th>
           <th>Description</th>
+          <th>Action</th>
         </tr>
         </thead>
         <tbody>
@@ -40,6 +41,10 @@
           <td th:text="${account.getType()}">Type</td>
           <td th:text="${account.getSubType()}">SubType</td>
           <td th:text="${account.getDescription()}">Description</td>
+          <td>
+            <!-- actions -->
+            <a th:href="@{'/transactions/' + ${account.getAccountId()}}">Transactions</a>
+          </td>
         </tr>
         </tbody>
       </table>
