@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 // @todo make this a JPA entity
 @Getter
 @Setter
@@ -27,4 +29,7 @@ public class Account {
 
     @JsonProperty("Description")
     private String description;
+
+    @JsonProperty("Account")
+    private List<AccountInfo> accountInfo;
 }

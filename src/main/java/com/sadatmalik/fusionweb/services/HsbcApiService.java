@@ -37,6 +37,12 @@ public class HsbcApiService {
         headers.setCacheControl(CacheControl.noCache());
 
         HttpEntity<String> request = new HttpEntity<>(headers);
+
+        ResponseEntity<String> responseString =
+                restTemplate.exchange(ACCOUNT_INFO_URL, HttpMethod.GET, request, String.class);
+
+        logger.debug("User Accounts complete JSON string ---------" + responseString.getBody());
+
         ResponseEntity<AccountList> response =
                 restTemplate.exchange(ACCOUNT_INFO_URL, HttpMethod.GET, request, AccountList.class);
 
