@@ -45,7 +45,7 @@ public class DashboardController {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        // @todo only request an access token if need to -- i.e. if don't have one or it's expired
+        // @todo integrate this into UserDetails
         if (userAccessToken == null) {
             HsbcClientAccessToken accessToken = hsbcAuth.getAccessToken();
             HsbcConsent consent = hsbcAuth.getConsentID(accessToken);
@@ -54,6 +54,10 @@ public class DashboardController {
             System.out.println(authorizationURL);
 
             return "redirect:" + authorizationURL;
+        }
+        // @todo handle the refresh in UserDetails on a timer?
+        else if (userAccessToken.isExpiring()) {
+            userAccessToken = hsbcAuth.refreshAccessToken(userAccessToken);
         }
 
         List<Account> accounts = hsbc.getUserAccounts(userAccessToken);

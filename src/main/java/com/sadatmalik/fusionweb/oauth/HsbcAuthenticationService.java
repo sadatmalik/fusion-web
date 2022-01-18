@@ -182,4 +182,38 @@ public class HsbcAuthenticationService {
 
         return response.getBody();
     }
+
+    //curl -v -X POST --cert qwac.der --cert-type DER --key server.key
+    // -H "Content-Type: application/x-www-form-urlencoded"
+    // -H "x-fapi-financial-id: test"
+    // -H "Cache-Control: no-cache"
+    // -d 'grant_type=refresh_token
+    //     &refresh_token=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    //     &redirect_uri=http://google.com
+    //     &client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
+    //     &client_assertion=eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkZThjYTc3LWQ2ODEtNDc4Mi04MTIyLWUwMzkyNTg5MDIxYiJ9.eyJpc3MiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJhdWQiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwic3ViIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwiaWF0IjoxNDk5MTgzNjAxLCJleHAiOjE3NzkzNDg1MjF9.uu282OmEHUa0t6z6T68MfXzEGGgq8PiWuyJxuNQ1be6iWdD5sVbw3W--_O6TFAH-ae7BYXsE0kncYgA6gF9AmkXuA77w_Wbn2YyjPCB9gDCkrlJUS6rvb3UJYcIBZ7W-WZlRAsRE0l6EV74c5xnyL9c7cpGMfQ-HfPsYOG4JCsrvtpAHdo7jHWTVgKoe67jWGQkNOYt1Ba7rCf4y-fqQ3d6hZoptAAcJd26yigvV4768GHQGrBvgAc7OzutOGzYARAgStpjQMp0kMiOGIzq-TUsDlvtMrx2fH8gfy2uG2HvzsROkbNedL-iO5PmswNrDvCYEWZmVjMcaVg--ZF0sjg'
+    //     "https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2"
+    public HsbcUserAccessToken refreshAccessToken(HsbcUserAccessToken refreshToken) {
+        HttpHeaders headers = getStandardPostHeaders();
+
+        String grant_type = "refresh_token";
+        String client_assertion_type = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
+        String client_assertion = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkZThjYTc3LWQ2ODEtNDc4Mi04MTIyLWUwMzkyNTg5MDIxYiJ9.eyJpc3MiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJhdWQiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwic3ViIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwiaWF0IjoxNDk5MTgzNjAxLCJleHAiOjE3NzkzNDg1MjF9.uu282OmEHUa0t6z6T68MfXzEGGgq8PiWuyJxuNQ1be6iWdD5sVbw3W--_O6TFAH-ae7BYXsE0kncYgA6gF9AmkXuA77w_Wbn2YyjPCB9gDCkrlJUS6rvb3UJYcIBZ7W-WZlRAsRE0l6EV74c5xnyL9c7cpGMfQ-HfPsYOG4JCsrvtpAHdo7jHWTVgKoe67jWGQkNOYt1Ba7rCf4y-fqQ3d6hZoptAAcJd26yigvV4768GHQGrBvgAc7OzutOGzYARAgStpjQMp0kMiOGIzq-TUsDlvtMrx2fH8gfy2uG2HvzsROkbNedL-iO5PmswNrDvCYEWZmVjMcaVg--ZF0sjg";
+
+        String access_token_url = "https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2";
+
+        String body = "grant_type=" + grant_type +
+                "&refresh_token=" + refreshToken.getRefreshToken() +
+                "&redirect_uri=" + APP_REDIRECT_URL +
+                "&client_assertion_type=" + client_assertion_type +
+                "&client_assertion=" + client_assertion;
+
+        HttpEntity<String> request = new HttpEntity<>(body, headers);
+        ResponseEntity<HsbcUserAccessToken> response =
+                restTemplate.exchange(access_token_url, HttpMethod.POST, request, HsbcUserAccessToken.class);
+
+        logger.debug("Refresh User Access Token Response ---------" + response.getBody());
+
+        return response.getBody();
+    }
 }
