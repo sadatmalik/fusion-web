@@ -31,18 +31,8 @@ public class HsbcApiService {
     // -H "Cache-Control: no-cache"
     // "https://sandbox.hsbc.com/psd2/obie/v3.1/accounts"
     public List<Account> getUserAccounts(HsbcUserAccessToken accessToken) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("x-fapi-financial-id", "test");
-        headers.setBearerAuth(accessToken.getAccessToken());
-        headers.setCacheControl(CacheControl.noCache());
-
+        HttpHeaders headers = getGetHeaders(accessToken);
         HttpEntity<String> request = new HttpEntity<>(headers);
-
-        ResponseEntity<String> responseString =
-                restTemplate.exchange(ACCOUNT_INFO_URL, HttpMethod.GET, request, String.class);
-
-        logger.debug("User Accounts complete JSON string ---------" + responseString.getBody());
-
         ResponseEntity<AccountList> response =
                 restTemplate.exchange(ACCOUNT_INFO_URL, HttpMethod.GET, request, AccountList.class);
 
@@ -50,4 +40,36 @@ public class HsbcApiService {
 
         return response.getBody().getData().getAccounts();
     }
+
+    private HttpHeaders getGetHeaders(HsbcUserAccessToken accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("x-fapi-financial-id", "test");
+        headers.setBearerAuth(accessToken.getAccessToken());
+        headers.setCacheControl(CacheControl.noCache());
+
+        return headers;
+    }
+
+    // "/accounts/{AccountId}"
+    public void getAccountDetails(Account account, HsbcUserAccessToken accessToken) {
+        HttpHeaders headers = getGetHeaders(accessToken);
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response =
+                restTemplate.exchange(ACCOUNT_INFO_URL + "/" + account.getAccountId(),
+                        HttpMethod.GET, request, String.class);
+
+        logger.debug("User Accounts for AccountID ---------" + response.getBody());
+    }
+
+    // "/accounts/{AccountId}/balances"
+    public void getAccountBalance(Account account, HsbcUserAccessToken accessToken) {
+        HttpHeaders headers = getGetHeaders(accessToken);
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response =
+                restTemplate.exchange(ACCOUNT_INFO_URL + "/" + account.getAccountId() + "/balances",
+                        HttpMethod.GET, request, String.class);
+
+        logger.debug("Balance for AccountID ---------" + response.getBody());
+    }
+
 }

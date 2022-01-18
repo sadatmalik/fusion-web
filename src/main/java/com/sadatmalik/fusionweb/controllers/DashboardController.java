@@ -61,6 +61,7 @@ public class DashboardController {
         }
 
         List<Account> accounts = hsbc.getUserAccounts(userAccessToken);
+        hsbc.getAccountBalance(accounts.get(0), userAccessToken);
         model.addAttribute("accountList", accounts);
 
         return "dashboard";
