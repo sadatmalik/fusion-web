@@ -1,5 +1,6 @@
 package com.sadatmalik.fusionweb.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,4 +33,7 @@ public class Account {
 
     @JsonProperty("Account")
     private List<AccountInfo> accountInfo;
+
+    @JsonIgnore
+    private Balance balance;
 }

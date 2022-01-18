@@ -23,6 +23,7 @@
           <th>Bank</th>
           <th>Account</th>
           <th>Name</th>
+          <th>Balance</th>
           <th>Currency</th>
           <th>Type</th>
           <th>SubType</th>
@@ -34,6 +35,7 @@
           <td th:text="${account.getBank()}">Bank</td>
           <td th:text="${account.getAccountId()}">Account ID</td>
           <td th:text="${account.getAccountInfo().get(0).getName()}">Account ID</td>
+          <td th:text="${account.getBalance().getDisplayAmount()}">Balance</td>
           <td th:text="${account.getCurrency()}">Currency</td>
           <td th:text="${account.getType()}">Type</td>
           <td th:text="${account.getSubType()}">SubType</td>

@@ -1,8 +1,6 @@
 package com.sadatmalik.fusionweb.services;
 
-import com.sadatmalik.fusionweb.model.Account;
-import com.sadatmalik.fusionweb.model.AccountData;
-import com.sadatmalik.fusionweb.model.AccountList;
+import com.sadatmalik.fusionweb.model.*;
 import com.sadatmalik.fusionweb.oauth.HsbcUserAccessToken;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -36,6 +34,11 @@ public class HsbcApiService {
         ResponseEntity<AccountList> response =
                 restTemplate.exchange(ACCOUNT_INFO_URL, HttpMethod.GET, request, AccountList.class);
 
+        // sets account balances with a rest call per account
+        for (Account account : response.getBody().getData().getAccounts()) {
+            account.setBalance(getAccountBalance(account, accessToken));
+        }
+
         logger.debug("User Accounts ---------" + response.getBody());
 
         return response.getBody().getData().getAccounts();
@@ -62,14 +65,21 @@ public class HsbcApiService {
     }
 
     // "/accounts/{AccountId}/balances"
-    public void getAccountBalance(Account account, HsbcUserAccessToken accessToken) {
+    public Balance getAccountBalance(Account account, HsbcUserAccessToken accessToken) {
         HttpHeaders headers = getGetHeaders(accessToken);
         HttpEntity<String> request = new HttpEntity<>(headers);
-        ResponseEntity<String> response =
+        ResponseEntity<HsbcBalanceObject> response =
                 restTemplate.exchange(ACCOUNT_INFO_URL + "/" + account.getAccountId() + "/balances",
-                        HttpMethod.GET, request, String.class);
+                        HttpMethod.GET, request, HsbcBalanceObject.class);
 
         logger.debug("Balance for AccountID ---------" + response.getBody());
+
+        Balance balance = new Balance(
+                response.getBody().getData().getBalanceList().get(0).getAmount().getAmount(),
+                response.getBody().getData().getBalanceList().get(0).getCreditDebit().equals("Credit"),
+                response.getBody().getData().getBalanceList().get(0).getAmount().getCurrency());
+
+        return balance;
     }
 
 }
