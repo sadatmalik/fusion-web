@@ -212,6 +212,9 @@ public class HsbcAuthenticationService {
         ResponseEntity<HsbcUserAccessToken> response =
                 restTemplate.exchange(access_token_url, HttpMethod.POST, request, HsbcUserAccessToken.class);
 
+        // @todo add response validations
+        // @todo consider global exception handler down the road
+
         logger.debug("Refresh User Access Token Response ---------" + response.getBody());
 
         return response.getBody();
