@@ -19,9 +19,11 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String bank;
     private String accountId;
-    private String currency;
-    private String type;
-    private String description;
+    private String name; // e.g. HSBC
+
+    @Enumerated(value = EnumType.STRING)
+    private AccountType type; // e.g current, savings, cash
+
+    private double balance;
 }
