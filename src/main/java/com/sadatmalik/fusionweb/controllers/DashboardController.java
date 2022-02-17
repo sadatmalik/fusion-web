@@ -1,11 +1,11 @@
 package com.sadatmalik.fusionweb.controllers;
 
-import com.sadatmalik.fusionweb.model.Account;
-import com.sadatmalik.fusionweb.oauth.HsbcAuthenticationService;
-import com.sadatmalik.fusionweb.oauth.HsbcClientAccessToken;
-import com.sadatmalik.fusionweb.oauth.HsbcConsent;
-import com.sadatmalik.fusionweb.oauth.HsbcUserAccessToken;
-import com.sadatmalik.fusionweb.services.*;
+import com.sadatmalik.fusionweb.services.hsbc.HsbcApiService;
+import com.sadatmalik.fusionweb.services.hsbc.model.accounts.Account;
+import com.sadatmalik.fusionweb.oauth.hsbc.HsbcAuthenticationService;
+import com.sadatmalik.fusionweb.oauth.hsbc.HsbcClientAccessToken;
+import com.sadatmalik.fusionweb.oauth.hsbc.HsbcConsent;
+import com.sadatmalik.fusionweb.oauth.hsbc.HsbcUserAccessToken;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

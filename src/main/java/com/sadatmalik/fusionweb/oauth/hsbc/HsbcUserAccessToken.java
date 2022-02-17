@@ -1,4 +1,4 @@
-package com.sadatmalik.fusionweb.oauth;
+package com.sadatmalik.fusionweb.oauth.hsbc;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Getter
 @Setter

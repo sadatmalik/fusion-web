@@ -1,7 +1,10 @@
-package com.sadatmalik.fusionweb.services;
+package com.sadatmalik.fusionweb.services.hsbc;
 
-import com.sadatmalik.fusionweb.model.*;
-import com.sadatmalik.fusionweb.oauth.HsbcUserAccessToken;
+import com.sadatmalik.fusionweb.oauth.hsbc.HsbcUserAccessToken;
+import com.sadatmalik.fusionweb.services.hsbc.model.accounts.Account;
+import com.sadatmalik.fusionweb.services.hsbc.model.accounts.AccountList;
+import com.sadatmalik.fusionweb.services.hsbc.model.balances.Balance;
+import com.sadatmalik.fusionweb.services.hsbc.model.balances.HsbcBalanceObject;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

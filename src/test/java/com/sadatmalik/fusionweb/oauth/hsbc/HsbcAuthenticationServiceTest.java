@@ -1,6 +1,7 @@
-package com.sadatmalik.fusionweb.oauth;
+package com.sadatmalik.fusionweb.oauth.hsbc;
 
 import com.nimbusds.jose.JWSObject;
+import com.sadatmalik.fusionweb.oauth.hsbc.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

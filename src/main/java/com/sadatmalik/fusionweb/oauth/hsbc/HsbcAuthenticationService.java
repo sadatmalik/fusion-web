@@ -1,4 +1,4 @@
-package com.sadatmalik.fusionweb.oauth;
+package com.sadatmalik.fusionweb.oauth.hsbc;
 
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

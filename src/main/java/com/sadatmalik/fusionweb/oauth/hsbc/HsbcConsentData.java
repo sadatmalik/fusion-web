@@ -1,4 +1,4 @@
-package com.sadatmalik.fusionweb.oauth;
+package com.sadatmalik.fusionweb.oauth.hsbc;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -10,8 +10,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public class HsbcConsent {
-    // {"Data":
+public class HsbcConsentData {
     //   {"Permissions":["ReadScheduledPaymentsDetail","ReadAccountsDetail","ReadStandingOrdersDetail","ReadStatementsBasic","ReadTransactionsCredits","ReadTransactionsDetail","ReadBalances","ReadParty","ReadScheduledPaymentsBasic","ReadStatementsDetail","ReadBeneficiariesDetail","ReadDirectDebits","ReadProducts","ReadTransactionsDebits"],
     //    "ExpirationDateTime":"2025-06-11T00:00:00Z",
     //    "TransactionFromDateTime":"1995-07-15T00:00:00Z",
@@ -23,11 +22,10 @@ public class HsbcConsent {
     //  "Risk":{},
     //  "Links":
     //    {"Self":"https://sandbox.hsbc.com/psd2/obie/v3.1/account-access-consents/de6786de-9a17-4a79-815b-fab890beee93"},
-    //    "Meta":{}}
-    @JsonProperty("Data")
-    HsbcConsentData data;
+    //    "Meta":{}
+    @JsonProperty("Permissions")
+    String[] permissions;
 
-    public String getConsentID() {
-        return data.consentId;
-    }
+    @JsonProperty("ConsentId")
+    String consentId;
 }

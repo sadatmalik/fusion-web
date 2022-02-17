@@ -1,19 +1,19 @@
-package com.sadatmalik.fusionweb.model;
+package com.sadatmalik.fusionweb.services.hsbc.model.accounts;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import com.sadatmalik.fusionweb.services.hsbc.model.balances.Balance;
+import lombok.*;
 
 import java.util.List;
 
-// @todo make this a JPA entity
-@Getter
-@Setter
-@ToString
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Account {
 
+    // @todo hardcoded - use an enum? tie it to constructor?
     private String bank = "HSBC";
 
     @JsonProperty("AccountId")

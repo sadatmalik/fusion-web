@@ -1,4 +1,4 @@
-package com.sadatmalik.fusionweb.oauth;
+package com.sadatmalik.fusionweb.oauth.hsbc;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
