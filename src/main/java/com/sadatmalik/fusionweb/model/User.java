@@ -24,4 +24,8 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Account> accounts;
+
+    @OneToMany(mappedBy = "user")
+    private List<Income> incomeList;
+
 }

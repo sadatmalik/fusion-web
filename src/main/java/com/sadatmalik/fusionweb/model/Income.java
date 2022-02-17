@@ -29,4 +29,9 @@ public class Income {
     @ManyToOne
     @JoinColumn(name = "accountId", referencedColumnName = "id")
     private Account account;
+
+    @ManyToOne
+    @JoinColumn(name = "userId", referencedColumnName = "id")
+    private User user;
+
 }

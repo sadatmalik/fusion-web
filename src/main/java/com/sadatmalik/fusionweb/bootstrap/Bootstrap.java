@@ -68,11 +68,14 @@ public class Bootstrap implements CommandLineRunner {
 
         Income income = Income.builder()
                 .account(account)
+                .user(user)
                 .amount(new BigDecimal(35))
                 .source("Job")
                 .weeklyInterval(0)
                 .build();
 
+        account.setIncomeList(List.of(income));
+        user.setIncomeList(List.of(income));
         incomeRepository.save(income);
     }
 }

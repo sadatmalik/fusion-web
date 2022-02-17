@@ -31,6 +31,6 @@ public class Account {
     private User user;
 
     @OneToMany(mappedBy = "account")
-    private List<Income> income;
+    private List<Income> incomeList;
 
 }
