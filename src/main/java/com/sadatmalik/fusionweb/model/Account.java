@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "accounts")
-@ToString(exclude = "income")
+@ToString(exclude = "incomeList")
 public class Account {
 
     @Id
