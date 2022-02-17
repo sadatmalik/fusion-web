@@ -26,4 +26,8 @@ public class Account {
     private AccountType type; // e.g current, savings, cash
 
     private double balance;
+
+    @ManyToOne
+    @JoinColumn(name = "userId", referencedColumnName = "id")
+    private User user;
 }
