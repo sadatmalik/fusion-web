@@ -2,14 +2,19 @@ package com.sadatmalik.fusionweb.bootstrap;
 
 import com.sadatmalik.fusionweb.model.Account;
 import com.sadatmalik.fusionweb.model.AccountType;
+import com.sadatmalik.fusionweb.model.Income;
 import com.sadatmalik.fusionweb.model.User;
 import com.sadatmalik.fusionweb.repositories.AccountRepository;
+import com.sadatmalik.fusionweb.repositories.IncomeRepository;
 import com.sadatmalik.fusionweb.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 @Slf4j
 @Profile("dev")
@@ -19,6 +24,7 @@ public class Bootstrap implements CommandLineRunner {
 
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
+    private final IncomeRepository incomeRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -52,8 +58,21 @@ public class Bootstrap implements CommandLineRunner {
                 .user(user)
                 .build();
 
+        user.setAccounts(List.of(account, account2));
+
         accountRepository.save(account);
         accountRepository.save(account2);
 
+        // set up some income data
+        log.debug("Setting up Bootstrap income");
+
+        Income income = Income.builder()
+                .account(account)
+                .amount(new BigDecimal(35))
+                .source("Job")
+                .weeklyInterval(0)
+                .build();
+
+        incomeRepository.save(income);
     }
 }
