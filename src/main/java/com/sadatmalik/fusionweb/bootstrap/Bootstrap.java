@@ -1,10 +1,7 @@
 package com.sadatmalik.fusionweb.bootstrap;
 
 import com.sadatmalik.fusionweb.model.*;
-import com.sadatmalik.fusionweb.repositories.AccountRepository;
-import com.sadatmalik.fusionweb.repositories.IncomeRepository;
-import com.sadatmalik.fusionweb.repositories.MonthlyIncomeRepository;
-import com.sadatmalik.fusionweb.repositories.UserRepository;
+import com.sadatmalik.fusionweb.repositories.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -12,6 +9,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.List;
 
 @Slf4j
@@ -24,6 +22,7 @@ public class Bootstrap implements CommandLineRunner {
     private final UserRepository userRepository;
     private final IncomeRepository incomeRepository;
     private final MonthlyIncomeRepository monthlyIncomeRepository;
+    private final DebtRepository debtRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -78,7 +77,7 @@ public class Bootstrap implements CommandLineRunner {
         incomeRepository.save(income);
 
         // set up some income data
-        log.debug("Setting up Bootstrap income");
+        log.debug("Setting up Bootstrap monthly income");
 
         MonthlyIncome monthly = MonthlyIncome.builder()
                 .account(account)
@@ -91,6 +90,25 @@ public class Bootstrap implements CommandLineRunner {
         account.setMonthlyIncomeList(List.of(monthly));
         user.setMonthlyIncomeList(List.of(monthly));
         monthlyIncomeRepository.save(monthly);
+
+        // set up some debt data
+        log.debug("Setting up Bootstrap debt");
+
+        Debt debt = Debt.builder()
+                .account(account)
+                .user(user)
+                .lender("Santander")
+                .totalBorrowed(new BigDecimal(350000))
+                .totalOwed(new BigDecimal(350000))
+                .dayOfMonthPaid(5)
+                .interestRate(new BigDecimal(1.74))
+                .dateBorrowed(new Date(119,1,1)) //2019-Feb-1st
+                .initialTermMonths(12*25)
+                .build();
+
+        account.setDebts(List.of(debt));
+        user.setDebts(List.of(debt));
+        debtRepository.save(debt);
 
     }
 }

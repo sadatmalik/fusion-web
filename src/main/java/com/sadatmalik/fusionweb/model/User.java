@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@ToString(exclude = {"accounts","incomeList","monthlyIncomeList"})
+@ToString(exclude = {"accounts","incomeList","monthlyIncomeList","debts"})
 @Table(name = "users")
 public class User {
 
@@ -30,4 +30,8 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<MonthlyIncome> monthlyIncomeList;
+
+    @OneToMany(mappedBy = "user")
+    private List<Debt> debts;
+
 }
