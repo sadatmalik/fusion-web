@@ -40,4 +40,6 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<MonthlyExpense> monthlyExpenses;
 
+    @OneToMany(mappedBy = "user")
+    private List<Goal> goals;
 }

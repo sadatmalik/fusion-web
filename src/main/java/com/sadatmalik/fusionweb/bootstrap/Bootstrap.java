@@ -25,6 +25,7 @@ public class Bootstrap implements CommandLineRunner {
     private final DebtRepository debtRepository;
     private final WeeklyExpenseRepository weeklyExpenseRepository;
     private final MonthlyExpenseRepository monthlyExpenseRepository;
+    private final GoalRepository goalRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -141,5 +142,23 @@ public class Bootstrap implements CommandLineRunner {
         account.setMonthlyExpenses(List.of(monthlyExpense));
         user.setMonthlyExpenses(List.of(monthlyExpense));
         monthlyExpenseRepository.save(monthlyExpense);
+
+        // set up some goal data
+        log.debug("Setting up Bootstrap expenses");
+
+        Goal goal = Goal.builder()
+                .account(account)
+                .user(user)
+                .name("New Laptop")
+                .target(new BigDecimal(1500))
+                .achieved(new BigDecimal(0))
+                .currentContribution(new BigDecimal(200))
+                .contribWeekly(false) // monthly contribtuion to goal
+                .build();
+
+        account.setGoals(List.of(goal));
+        user.setGoals(List.of(goal));
+        goalRepository.save(goal);
+
     }
 }
