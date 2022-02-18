@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <div th:replace="fragments::header"/>
+  <div th:replace="fragments::googlecharts"/>
+</head>
+<body>
+<div class="container">
+  <div class="row">
+
+    <div th:replace="fragments::sidebar"/>
+
+    <div class="col-10">
+      <div th:replace="fragments::nav"/>
+      <br/>
+
+      <h1 th:text="${totalBalance}">Total Balance</h1>
+
+      <div class="row">
+        <div class="col-10"> <!-- spending graph -->
+          <h6>Spending Graph</h6>
+          <div id="chart_div" style="width:100%"></div>
+        </div>
+
+        <div class="col-2"> <!-- remaining month days summary -->
+          <h6>Next 18 days</h6>
+          <!-- todo make this a table -->
+          <p>Balance: <strong>£2,247.20</strong></p>
+          <p>Payments <strong>£1,256.34</strong></p>
+          <p>Receipts: <strong>£103.12</strong></p>
+          <p>Leftover: <strong>£1,093.98</strong></p>
+        </div>
+
+      </div>
+
+      <br/>
+
+      <div class="row">
+
+        <div class="col-6"> <!-- scheduled payments -->
+          <h6>Scheduled payments</h6>
+        </div>
+
+        <div class="col-6"> <!-- scheduled receipts -->
+          <h6>Scheduled receipts</h6>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div> <!-- end container-fluid-->
+</body>
+</html>
