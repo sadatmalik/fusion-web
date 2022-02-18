@@ -23,6 +23,8 @@ public class Bootstrap implements CommandLineRunner {
     private final IncomeRepository incomeRepository;
     private final MonthlyIncomeRepository monthlyIncomeRepository;
     private final DebtRepository debtRepository;
+    private final WeeklyExpenseRepository weeklyExpenseRepository;
+    private final MonthlyExpenseRepository monthlyExpenseRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -110,5 +112,34 @@ public class Bootstrap implements CommandLineRunner {
         user.setDebts(List.of(debt));
         debtRepository.save(debt);
 
+        // set up some expense data
+        log.debug("Setting up Bootstrap expenses");
+
+        WeeklyExpense weeklyExpense = WeeklyExpense.builder()
+                .account(account)
+                .user(user)
+                .name("Sainsburys")
+                .amount(new BigDecimal(80))
+                .timesPerWeek(1)
+                .weeklyInterval(1)
+                .type(ExpenseType.GROCERIES)
+                .build();
+
+        account.setWeeklyExpenses(List.of(weeklyExpense));
+        user.setWeeklyExpenses(List.of(weeklyExpense));
+        weeklyExpenseRepository.save(weeklyExpense);
+
+        MonthlyExpense monthlyExpense = MonthlyExpense.builder()
+                .account(account)
+                .user(user)
+                .name("Scottish Power")
+                .amount(new BigDecimal(140))
+                .dayOfMonthPaid(18)
+                .type(ExpenseType.BILL)
+                .build();
+
+        account.setMonthlyExpenses(List.of(monthlyExpense));
+        user.setMonthlyExpenses(List.of(monthlyExpense));
+        monthlyExpenseRepository.save(monthlyExpense);
     }
 }

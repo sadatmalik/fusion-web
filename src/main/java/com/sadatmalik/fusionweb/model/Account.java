@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "accounts")
-@ToString(exclude = {"incomeList","monthlyIncomeList","debts"})
+@ToString(exclude = {"incomeList","monthlyIncomeList","debts","weeklyExpenses"})
 public class Account {
 
     @Id
@@ -38,5 +38,11 @@ public class Account {
 
     @OneToMany(mappedBy = "account")
     private List<Debt> debts;
+
+    @OneToMany(mappedBy = "account")
+    private List<WeeklyExpense> weeklyExpenses;
+
+    @OneToMany(mappedBy = "user")
+    private List<MonthlyExpense> monthlyExpenses;
 
 }
