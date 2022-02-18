@@ -28,4 +28,6 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Income> incomeList;
 
+    @OneToMany(mappedBy = "user")
+    private List<MonthlyIncome> monthlyIncomeList;
 }
