@@ -1,11 +1,9 @@
 package com.sadatmalik.fusionweb.bootstrap;
 
-import com.sadatmalik.fusionweb.model.Account;
-import com.sadatmalik.fusionweb.model.AccountType;
-import com.sadatmalik.fusionweb.model.Income;
-import com.sadatmalik.fusionweb.model.User;
+import com.sadatmalik.fusionweb.model.*;
 import com.sadatmalik.fusionweb.repositories.AccountRepository;
 import com.sadatmalik.fusionweb.repositories.IncomeRepository;
+import com.sadatmalik.fusionweb.repositories.MonthlyIncomeRepository;
 import com.sadatmalik.fusionweb.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +23,7 @@ public class Bootstrap implements CommandLineRunner {
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
     private final IncomeRepository incomeRepository;
+    private final MonthlyIncomeRepository monthlyIncomeRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -77,5 +76,21 @@ public class Bootstrap implements CommandLineRunner {
         account.setIncomeList(List.of(income));
         user.setIncomeList(List.of(income));
         incomeRepository.save(income);
+
+        // set up some income data
+        log.debug("Setting up Bootstrap income");
+
+        MonthlyIncome monthly = MonthlyIncome.builder()
+                .account(account)
+                .user(user)
+                .amount(new BigDecimal(1850))
+                .source("Rent")
+                .dayOfMonthReceived(7)
+                .build();
+
+        account.setMonthlyIncomeList(List.of(monthly));
+        user.setMonthlyIncomeList(List.of(monthly));
+        monthlyIncomeRepository.save(monthly);
+
     }
 }
