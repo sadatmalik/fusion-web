@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@ToString(exclude = {"accounts","incomeList","monthlyIncomeList","debts","weeklyExpenses","monthlyExpenses"})
+@ToString(exclude = {"accounts","incomeList","monthlyIncomeList","debts","weeklyExpenses","monthlyExpenses","goals"})
 @Table(name = "users")
 public class User {
 
