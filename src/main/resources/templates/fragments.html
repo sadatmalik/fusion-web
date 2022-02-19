@@ -59,10 +59,19 @@
                 // Set chart options
                 var options = {
                     // title: 'Spending Graph',
-                    hAxis: {title: 'Date',  titleTextStyle: {color: '#333'}},
-                    vAxis: {minValue: 0},
+                    hAxis: {title: 'Date',
+                        titleTextStyle: {color: '#FDFDFD'},
+                        textStyle: { color: '#FDFDFD' }
+                    },
+                    vAxis: {minValue: 0,
+                        textStyle: { color: '#FDFDFD' },
+                        gridlines: { color: '#6c757d'},
+                        minorGridlines: { color: '#6c757d'}
+                    },
                     pointSize: 5,
-                    backgroundColor: '#EEEEEE'
+                    backgroundColor: 'transparent',
+                    fontName: 'Nunito Sans Regular',
+                    colors:['#216E93']
                 };
 
                 // Instantiate and draw our chart, passing in some options
