@@ -5,16 +5,23 @@
   <div th:replace="fragments::header"/>
 </head>
 <body>
-<div class="container">
-  <div class="row">
+<div class="container-fluid">
+  <div class="row flex-xl-nowrap">
 
     <div th:replace="fragments::sidebar"/>
 
-    <div class="col-xl-10">
-      <div th:replace="fragments::nav"/>
-      <br/>
-      <h3 th:text="${totalBalance}">Total Balance</h3>
-      <table border="1" cellpadding="10" class="table bg-white">
+    <div id="content-body" class="col-12 col-md-9 col-xl-10 pl-4 pr-4 bd-content">
+
+      <div class="row">
+        <div class="col-md-12 pt-4 mt-3">
+          <h1 th:text="${totalBalance}">Total Balance</h1>
+        </div>
+      </div>
+
+      <div th:replace="fragments::summary"/>
+
+      <div class="col-xl-12">
+      <table border="1" cellpadding="10" class="table table-dark">
         <thead>
         <tr class="bg-light">
           <th>Bank</th>
@@ -46,6 +53,8 @@
         </tbody>
       </table>
     </div>
+    </div>
+
   </div>
 </div> <!-- end container-fluid-->
 </body>

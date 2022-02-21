@@ -1,11 +1,11 @@
 package com.sadatmalik.fusionweb.controllers;
 
-import com.sadatmalik.fusionweb.services.hsbc.HsbcApiService;
-import com.sadatmalik.fusionweb.services.hsbc.model.accounts.Account;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcAuthenticationService;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcClientAccessToken;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcConsent;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcUserAccessToken;
+import com.sadatmalik.fusionweb.services.hsbc.HsbcApiService;
+import com.sadatmalik.fusionweb.services.hsbc.model.accounts.Account;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
@@ -65,6 +67,9 @@ public class DashboardController {
         String totalBalance = getTotalDisplayBalance(accounts);
         model.addAttribute("accountList", accounts);
         model.addAttribute("totalBalance", totalBalance);
+
+        model.addAttribute("date",
+                LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM, dd yyyy")));
 
         return "dashboard";
     }
