@@ -21,15 +21,15 @@
             <div th:replace="fragments::add-account-summary"/>
 
             <div class="col-xl-6">
-                <table border="1" cellpadding="10" class="table table-dark">
+                <table border="1" cellpadding="10" class="table table-hover table-dark">
                     <thead>
                         <tr class="bg-light">
                             <th>Bank</th>
                         </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td><a th:href="@{'/add-account/hsbc'}">HSBC</a></td>
+                    <tr th:onclick="|window.location='@{/add-account/hsbc}'|" class="clickable">
+                        <td>HSBC</td>
                     </tr>
                     </tbody>
                 </table>
