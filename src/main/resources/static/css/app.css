@@ -57,7 +57,7 @@ body {
     padding: 15px;
 }
 
-/* table */
+/* overrides */
 .table-dark {
     --bs-table-bg: #20375d;
     --bs-table-striped-bg: #2c3034;
@@ -69,6 +69,14 @@ body {
     color: #fff;
     border-color: #20375d;
 }
+
+.btn-primary {
+    color: #fff;
+    background-color: #20375d;
+    border-color: #20375d;
+}
+
+
 
 .btn-link {
     color: #FDFDFD;
@@ -169,6 +177,10 @@ body {
     margin-left: 35px;
     height: 35px;
     width: 160px;
+}
+
+.account-summary .buttonwrapper li {
+    width: 240px;
 }
 
 .buttonwrapper li:first-child {

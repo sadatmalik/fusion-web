@@ -10,36 +10,6 @@
               integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
         <link rel="stylesheet" th:href="@{/css/app.css}"/>
     </div>
-    <div th:fragment="highcharts">
-        <script src="https://code.highcharts.com/highcharts.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const chart = Highcharts.chart('container', {
-                    chart: {
-                        type: 'bar'
-                    },
-                    title: {
-                        text: 'Fruit Consumption'
-                    },
-                    xAxis: {
-                        categories: ['Apples', 'Bananas', 'Oranges']
-                    },
-                    yAxis: {
-                        title: {
-                            text: 'Fruit eaten'
-                        }
-                    },
-                    series: [{
-                        name: 'Jane',
-                        data: [1, 0, 4]
-                    }, {
-                        name: 'John',
-                        data: [5, 7, 3]
-                    }]
-                });
-            });
-        </script>
-    </div>
     <div th:fragment="googlecharts">
         <!--Load the AJAX API-->
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -210,6 +180,39 @@
     </div>
     <div class="col-md-4 text-right date-indicator" id="date" th:text="${date}">February, 21st 2022</div>
 </div>
+
+<div th:fragment="account-summary" class="row mt-3">
+    <div class="col-md-8 account-summary">
+        <ul class="buttonwrapper">
+            <a th:href="@{'/add-account/'}">
+                <li id="add" class="active"><label id="l1">ADD NEW ACCOUNT</label></li>
+            </a>
+            <li id="balance1" class=""><label id="l2">HSBC BALANCE:  £2,247.20</label></li>
+        </ul>
+    </div>
+    <div class="col-md-4 text-right date-indicator" id="date" th:text="${date}">February, 21st 2022</div>
+</div>
+
+<div th:fragment="add-account-summary" class="row mt-3">
+    <div class="col-md-8 add-account-summary">
+        <ul class="buttonwrapper">
+            <li id="choose" class="active"><label id="l1">CHOOSE PROVIDER</label></li>
+            <li id="permission" class=""><label id="l2">PERMISSIONS</label></li>
+            <li id="connect" class=""><label id="l3">CONNECT</label></li>
+        </ul>
+    </div>
+</div>
+
+<div th:fragment="add-account-permissions-summary" class="row mt-3">
+    <div class="col-md-8 add-account-summary">
+        <ul class="buttonwrapper">
+            <li id="choose"><label id="l1">CHOOSE PROVIDER</label></li>
+            <li id="permission" class="active"><label id="l2">PERMISSIONS</label></li>
+            <li id="connect" class=""><label id="l3">CONNECT</label></li>
+        </ul>
+    </div>
+</div>
+
 
 </body>
 </html>

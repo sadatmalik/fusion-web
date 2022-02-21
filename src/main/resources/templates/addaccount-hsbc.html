@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments::header"/>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row flex-xl-nowrap">
+
+        <div th:replace="fragments::sidebar"/>
+
+        <div id="content-body" class="col-12 col-md-9 col-xl-10 pl-4 pr-4 bd-content">
+
+            <div class="row align-items-center">
+                <div class="col-md-12 pt-4 mt-3">
+                    <h1>Connect Your Accounts</h1>
+                </div>
+            </div>
+
+            <div th:replace="fragments::add-account-permissions-summary"/>
+
+            <div class="col-xl-8">
+                <p>You will be transferred to HSBC where FUSiON may request the following information:</p>
+
+                <p>Your account details</p>
+                <ul>
+                    <li>Your account name, number and sort-code</li>
+                    <li>Your account balance</li>
+                </ul>
+
+                <p>Your regular payments</p>
+                <ul>
+                    <li>Details of your standing orders</li>
+                    <li>Your Direct Debits</li>
+                    <li>Recurring and future dated payments</li>
+                    <li>Details of recurring and future dated payments</li>
+                </ul>
+
+                <p>Your account transactions</p>
+                <ul>
+                    <li>Your incoming transactions</li>
+                    <li>Your outgoing transactions</li>
+                </ul>
+
+                </br>
+
+                <a th:href="@{'/dashboard'}" class="btn btn-primary" role="button">Log in via HSBC</a>
+
+            </div>
+        </div>
+
+    </div>
+</div> <!-- end container-fluid-->
+
+</body>
+</html>
