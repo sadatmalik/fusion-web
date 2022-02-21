@@ -38,6 +38,9 @@
 .pr-4, .px-4 {
     padding-right: 1.5rem!important;
 }
+.text-right {
+    text-align: right!important;
+}
 
 /* tags */
 
@@ -155,7 +158,7 @@ body {
     float: left;
     margin-left: 35px;
     height: 35px;
-    width: 80px;
+    width: 160px;
 }
 
 .buttonwrapper li:first-child {

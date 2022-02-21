@@ -125,5 +125,17 @@
     </div>
 </div>
 
+<div th:fragment="summary" class="row mt-3">
+    <div class="col-md-8">
+        <ul class="buttonwrapper">
+            <li id="title" class="active"><label id="l1">NEXT 18 DAYS</label></li>
+            <li id="payments" class=""><label id="l2">PAYMENTS:  £1,256.34</label></li>
+            <li id="receipts" class=""><label id="l3">RECEIPTS:  £103.12</label></li>
+            <li id="leftover" class=""><label id="l4">LEFTOVER:  £1,093.98</label></li>
+        </ul>
+    </div>
+    <div class="col-md-4 text-right date-indicator" id="date" th:text="${date}">February, 21st 2022</div>
+</div>
+
 </body>
 </html>

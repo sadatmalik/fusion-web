@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
@@ -15,6 +17,10 @@ public class QuickStatsController {
     public String quickStats(Model model) {
         // @todo hardcoded balance
         model.addAttribute("totalBalance", String.format("£%.2f", 2247.20));
+
+        model.addAttribute("date",
+                LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM, dd yyyy")));
+
         // @todo hardcoded chart data
         model.addAttribute("chartData", getChartData());
         return "quickstats";

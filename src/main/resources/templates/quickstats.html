@@ -20,52 +20,39 @@
         </div>
       </div>
 
+      <div th:replace="fragments::summary"/>
+
       <div class="row mt-3 db-chart">
 
-        <div id="parent1" class="col-lg-6 col-xl-12"> <!-- spending graph -->
+        <!-- spending graph -->
+        <div id="parent1" class="col-lg-6 col-xl-12" style="display: inline; height: auto;">
           <div class="chart-card mb-4">
-            <div class="chart-title" id="text1">SPENDING GRAPH</div>
+            <div class="chart-title" id="text1">9 Feb - 8 Mar 2022</div>
             <div id="chart_div" class="chart"></div>
           </div>
         </div>
+      </div>
 
-        <div id="parent2" class="col-lg-6 col-xl-4" style="display: block; height: auto;"> <!-- remaining month days summary -->
+      <div class="row">
+
+        <!-- scheduled payments -->
+        <div id="parent2" class="col-lg-6 col-xl-6" style="display: block; height: auto;">
           <div class="chart-card mb-4">
-            <div class="chart-title" id="text2">NEXT 18 DAYS</div>
+            <div class="chart-title" id="text2">Scheduled payments</div>
             <div id="chart2" class="chart">
-              <!-- todo make this a table -->
-              <p>Balance: <strong>£2,247.20</strong></p>
-              <p>Payments <strong>£1,256.34</strong></p>
-              <p>Receipts: <strong>£103.12</strong></p>
-              <p>Leftover: <strong>£1,093.98</strong></p>
+
             </div>
           </div>
         </div>
 
+        <!-- scheduled receipts -->
+        <div id="parent4" class="col-lg-6 col-xl-6" style="display: block; height: auto;">
+          <div class="chart-card mb-4">
+            <div class="chart-title" id="text4">Scheduled receipts</div>
+            <div id="chart4" class="chart">
 
-
-<!--        <div class="col-10"> &lt;!&ndash; spending graph &ndash;&gt;-->
-<!--          <h6>Spending Graph</h6>-->
-<!--          <div id="chart_div" style="width:100%"></div>-->
-<!--        </div>-->
-
-<!--        <div class="col-2"> &lt;!&ndash; remaining month days summary &ndash;&gt;-->
-<!--          <h6>Next 18 days</h6>-->
-
-<!--        </div>-->
-
-      </div>
-
-      <br/>
-
-      <div class="row">
-
-        <div class="col-6"> <!-- scheduled payments -->
-          <h6>Scheduled payments</h6>
-        </div>
-
-        <div class="col-6"> <!-- scheduled receipts -->
-          <h6>Scheduled receipts</h6>
+            </div>
+          </div>
         </div>
 
       </div>
