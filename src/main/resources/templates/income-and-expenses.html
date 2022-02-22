@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments::header"/>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row flex-xl-nowrap">
+
+        <div th:replace="fragments::sidebar"/>
+
+        <div id="content-body" class="col-12 col-md-9 col-xl-10 pl-4 pr-4 bd-content">
+
+<!--            <div class="row align-items-center">-->
+<!--                <div class="col-md-12 pt-4 mt-3">-->
+<!--                    <h1>INCOME & EXPENSES</h1>-->
+<!--                </div>-->
+<!--            </div>-->
+
+            <div class="row">
+
+                <div id="expenses" class="col-xl-6">
+                    <div th:replace="fragments::expense-summary"/>
+                    <h4>MONTHLY EXPENSES</h4>
+                    <table border="1" cellpadding="10" class="table table-striped table-dark">
+                        <thead>
+                        <tr class="bg-light">
+                            <th>Day Of Month Paid</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>7</td>
+                            <td>Mortgage 1</td>
+                            <td>£480</td>
+                        </tr>
+                        <tr>
+                            <td>15</td>
+                            <td>Thames Water</td>
+                            <td>£40</td>
+                        </tr>
+                        <tr>
+                            <td>21</td>
+                            <td>Netflix</td>
+                            <td>£8.99</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <a th:href="@{'/dashboard'}" class="btn btn-primary mb-5" role="button">ADD MONTHLY EXPENSE</a>
+
+                    <h4>WEEKLY EXPENSES</h4>
+                </div>
+
+                <div id="income" class="col-xl-6">
+                    <div th:replace="fragments::income-summary"/>
+                    <h4>MONTHLY INCOME</h4>
+                    <h4>WEEKLY INCOME</h4>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div> <!-- end container-fluid-->
+
+</body>
+</html>

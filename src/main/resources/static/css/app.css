@@ -141,7 +141,25 @@ body {
 .left-options li#Accounts:before {
     /*background-image: url('../images/Accounts.svg');*/
     /*Change to Accounts.svg - however web server is sending as application/json not image/svg+xml*/
-    background-image: url('../images/Quickstats.svg');
+    background-image: url('../images/Accounts.svg');
+    background-repeat:no-repeat;
+    background-size: 24px 24px;
+}
+
+.left-options li#Transactions:before {
+    background-image: url('../images/Transactions.svg');
+    background-repeat:no-repeat;
+    background-size: 24px 24px;
+}
+
+.left-options li#IncomeExpenses:before {
+    background-image: url('../images/IncomeAndExpenses.svg');
+    background-repeat:no-repeat;
+    background-size: 24px 24px;
+}
+
+.left-options li#Goals:before {
+    background-image: url('../images/Goals.svg');
     background-repeat:no-repeat;
     background-size: 24px 24px;
 }
@@ -185,6 +203,14 @@ body {
 
 .account-summary .buttonwrapper li {
     width: 240px;
+}
+
+.income-summary .buttonwrapper li {
+    width: 200px;
+}
+
+.expense-summary .buttonwrapper li {
+    width: 160px;
 }
 
 .buttonwrapper li:first-child {

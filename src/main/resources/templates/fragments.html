@@ -152,10 +152,19 @@
     <nav class="bd-links collapse" id="bd-docs-nav">
         <ul class="left-options">
             <li class="left-option active" id="Quickstats">
-                <a th:href="@{'/quickstats'}">Quickstats</a>
+                <a th:href="@{'/quickstats'}">QUICKSTATS</a>
             </li>
             <li class="left-option" id="Accounts">
-                <a th:href="@{'/dashboard'}">Accounts</a>
+                <a th:href="@{'/dashboard'}">ACCOUNTS</a>
+            </li>
+            <li class="left-option" id="Transactions">
+                <a th:href="@{'#'}">TRANSACTIONS</a>
+            </li>
+            <li class="left-option" id="IncomeExpenses">
+                <a th:href="@{'/income-and-expenses'}">INCOME & EXPENSES</a>
+            </li>
+            <li class="left-option" id="Goals">
+                <a th:href="@{'#'}">GOALS</a>
             </li>
         </ul>
     </nav>
@@ -233,6 +242,24 @@
     </div>
 </div>
 
+<div th:fragment="expense-summary" class="row mt-3">
+    <div class="col-md-8 expense-summary">
+        <ul class="buttonwrapper">
+            <li id="expense" class="active"><label id="l1">EXPENSES: £1,762.34</label></li>
+            <li id="paid" class=""><label id="l1">PAID: £340</label></li>
+            <li id="pending" class=""><label id="l1">PENDING: £340</label></li>
+        </ul>
+    </div>
+</div>
+
+<div th:fragment="income-summary" class="row mt-3">
+    <div class="col-md-8 income-summary">
+        <ul class="buttonwrapper">
+            <li id="income" class="active"><label id="l1">INCOME: £4,283.19</label></li>
+            <li id="received" class=""><label id="l1">RECVD: £1,865</label></li>
+        </ul>
+    </div>
+</div>
 
 </body>
 </html>
