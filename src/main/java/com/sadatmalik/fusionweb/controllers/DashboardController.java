@@ -91,6 +91,12 @@ public class DashboardController {
 
         hsbc.getTransactions(accountId, userAccessToken);
 
-        return "dashboard";
+        // @todo refactor - duplicated code in dashboard method
+        List<Account> accounts = hsbc.getUserAccounts(userAccessToken);
+        String totalBalance = getTotalDisplayBalance(accounts);
+        model.addAttribute("accountList", accounts);
+        model.addAttribute("totalBalance", totalBalance);
+
+        return "account-transactions";
     }
 }

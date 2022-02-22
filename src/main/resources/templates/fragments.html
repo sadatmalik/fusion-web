@@ -203,6 +203,17 @@
     </div>
 </div>
 
+<div th:fragment="account-txn-summary" class="row mt-3">
+    <div class="col-md-8 account-summary">
+        <ul class="buttonwrapper">
+            <a th:href="@{'/dashboard/'}">
+                <li id="back" class="active"><label id="l1">BACK TO ACCOUNTS</label></li>
+            </a>
+            <li id="refesh" class=""><label id="l2">REFRESH</label></li>
+        </ul>
+    </div>
+</div>
+
 <div th:fragment="add-account-permissions-summary" class="row mt-3">
     <div class="col-md-8 add-account-summary">
         <ul class="buttonwrapper">

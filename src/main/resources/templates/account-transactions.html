@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <div th:replace="fragments::header"/>
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row flex-xl-nowrap">
+
+    <div th:replace="fragments::sidebar"/>
+
+    <div id="content-body" class="col-12 col-md-9 col-xl-10 pl-4 pr-4 bd-content">
+
+      <div th:replace="fragments::account-txn-summary"/>
+
+      <div class="row">
+        <div class="col-xl-9">
+          <div class="row">
+            <div class="col-md-12 pt-4 mt-3">
+              <h1 th:text="${totalBalance}">Total Balance</h1>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-12">
+              <table border="1" cellpadding="10" class="table table-dark">
+              <thead>
+              <tr class="bg-light">
+                <th>Bank</th>
+                <th>Account</th>
+                <th>Name</th>
+                <th>Balance</th>
+                <th>Currency</th>
+                <th>Type</th>
+                <th>SubType</th>
+                <th>Description</th>
+                <th>Action</th>
+              </tr>
+              </thead>
+              <tbody>
+      <!--        <tr th:each="account : ${accountList}">-->
+      <!--          <td th:text="${account.getBank()}">Bank</td>-->
+      <!--          <td th:text="${account.getAccountId()}">Account ID</td>-->
+      <!--          <td th:text="${account.getAccountInfo().get(0).getName()}">Account ID</td>-->
+      <!--          <td th:text="${account.getBalance().getDisplayAmount()}">Balance</td>-->
+      <!--          <td th:text="${account.getCurrency()}">Currency</td>-->
+      <!--          <td th:text="${account.getType()}">Type</td>-->
+      <!--          <td th:text="${account.getSubType()}">SubType</td>-->
+      <!--          <td th:text="${account.getDescription()}">Description</td>-->
+      <!--          <td>-->
+      <!--            &lt;!&ndash; actions &ndash;&gt;-->
+      <!--            <a th:href="@{'/transactions/' + ${account.getAccountId()}}">Transactions</a>-->
+      <!--          </td>-->
+      <!--        </tr>-->
+              </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3">
+
+          <div th:each="account : ${accountList}">
+            <div class="media">
+              <img th:src = "@{/images/hsbc.png}" class="img-fluid mb-4">
+            </div>
+            <h5 th:text="${account.getAccountInfo().get(0).getName()}">Account Name</h5>
+<!--              <p th:text="${account.getBank()}">Bank</p>-->
+            <h6 th:text="${account.getDescription()}">Description</h6>
+<!--              <p th:text="${account.getType() + ' - ' + account.getSubType()}">Type</p>-->
+            <h6 th:text="${account.getAccountId()}">Account ID</h6>
+            <h6 th:text="${account.getCurrency()}">Currency</h6>
+          <div>
+
+        </div>
+
+      </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div> <!-- end container-fluid-->
+
+</body>
+</html>
