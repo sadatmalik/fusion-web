@@ -4,9 +4,11 @@ import com.sadatmalik.fusionweb.oauth.hsbc.HsbcAuthenticationService;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcClientAccessToken;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcConsent;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcUserAccessToken;
+import com.sadatmalik.fusionweb.services.TransactionService;
 import com.sadatmalik.fusionweb.services.hsbc.HsbcApiService;
 import com.sadatmalik.fusionweb.services.hsbc.model.accounts.Account;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class DashboardController {
@@ -34,6 +38,9 @@ public class DashboardController {
 
     @Autowired
     HsbcApiService hsbc;
+
+    @Autowired
+    TransactionService transactionService;
 
     @GetMapping({"", "/"})
     public String home(@RequestParam(name = "code", required = false) String authCode) {
@@ -93,9 +100,16 @@ public class DashboardController {
 
         // @todo refactor - duplicated code in dashboard method
         List<Account> accounts = hsbc.getUserAccounts(userAccessToken);
-        String totalBalance = getTotalDisplayBalance(accounts);
-        model.addAttribute("accountList", accounts);
+        Optional<Account> account = accounts.stream()
+                .filter(a -> a.getAccountId().equals(accountId))
+                .findFirst();
+
+        log.debug("Found - " + account.get());
+
+        String totalBalance = getTotalDisplayBalance(List.of(account.get()));
+        model.addAttribute("account", account.get());
         model.addAttribute("totalBalance", totalBalance);
+        model.addAttribute("transactions", transactionService.getTransactions());
 
         return "account-transactions";
     }

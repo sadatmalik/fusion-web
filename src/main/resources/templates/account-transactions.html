@@ -22,35 +22,24 @@
           </div>
           <div class="row">
             <div class="col-xl-12">
-              <table border="1" cellpadding="10" class="table table-dark">
+              <table border="1" cellpadding="10" class="table table-striped table-dark">
               <thead>
               <tr class="bg-light">
-                <th>Bank</th>
-                <th>Account</th>
-                <th>Name</th>
-                <th>Balance</th>
-                <th>Currency</th>
+                <th>Date</th>
                 <th>Type</th>
-                <th>SubType</th>
                 <th>Description</th>
-                <th>Action</th>
+                <th>Category</th>
+                <th>Amount</th>
               </tr>
               </thead>
               <tbody>
-      <!--        <tr th:each="account : ${accountList}">-->
-      <!--          <td th:text="${account.getBank()}">Bank</td>-->
-      <!--          <td th:text="${account.getAccountId()}">Account ID</td>-->
-      <!--          <td th:text="${account.getAccountInfo().get(0).getName()}">Account ID</td>-->
-      <!--          <td th:text="${account.getBalance().getDisplayAmount()}">Balance</td>-->
-      <!--          <td th:text="${account.getCurrency()}">Currency</td>-->
-      <!--          <td th:text="${account.getType()}">Type</td>-->
-      <!--          <td th:text="${account.getSubType()}">SubType</td>-->
-      <!--          <td th:text="${account.getDescription()}">Description</td>-->
-      <!--          <td>-->
-      <!--            &lt;!&ndash; actions &ndash;&gt;-->
-      <!--            <a th:href="@{'/transactions/' + ${account.getAccountId()}}">Transactions</a>-->
-      <!--          </td>-->
-      <!--        </tr>-->
+              <tr th:each="txn : ${transactions}">
+                <td th:text="${txn.getDate()}">Date</td>
+                <td th:text="${txn.getType()}">Type</td>
+                <td th:text="${txn.getDescription()}">Description</td>
+                <td th:text="${txn.getCategory()}">Category</td>
+                <td th:text="${txn.printAmount()}">Amount</td>
+              </tr>
               </tbody>
               </table>
             </div>
@@ -58,15 +47,12 @@
         </div>
 
         <div class="col-xl-3">
-
-          <div th:each="account : ${accountList}">
+          <div id="transactions-sidebar">
             <div class="media">
               <img th:src = "@{/images/hsbc.png}" class="img-fluid mb-4">
             </div>
             <h5 th:text="${account.getAccountInfo().get(0).getName()}">Account Name</h5>
-<!--              <p th:text="${account.getBank()}">Bank</p>-->
             <h6 th:text="${account.getDescription()}">Description</h6>
-<!--              <p th:text="${account.getType() + ' - ' + account.getSubType()}">Type</p>-->
             <h6 th:text="${account.getAccountId()}">Account ID</h6>
             <h6 th:text="${account.getCurrency()}">Currency</h6>
           <div>
@@ -74,7 +60,6 @@
         </div>
 
       </div>
-
         </div>
       </div>
     </div>
