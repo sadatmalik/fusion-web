@@ -1,15 +1,22 @@
 package com.sadatmalik.fusionweb.bootstrap;
 
 import com.sadatmalik.fusionweb.model.*;
+import com.sadatmalik.fusionweb.model.websecurity.Authority;
+import com.sadatmalik.fusionweb.model.websecurity.RoleEnum;
+import com.sadatmalik.fusionweb.model.websecurity.UserPrincipal;
 import com.sadatmalik.fusionweb.repositories.*;
+import com.sadatmalik.fusionweb.repositories.websecurity.AuthorityRepo;
+import com.sadatmalik.fusionweb.repositories.websecurity.UserPrincipalRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -18,6 +25,7 @@ import java.util.List;
 @Component
 public class Bootstrap implements CommandLineRunner {
 
+    // application model
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
     private final IncomeRepository incomeRepository;
@@ -27,8 +35,17 @@ public class Bootstrap implements CommandLineRunner {
     private final MonthlyExpenseRepository monthlyExpenseRepository;
     private final GoalRepository goalRepository;
 
+    // web security
+    private final AuthorityRepo authorityRepo;
+    private final UserPrincipalRepo userPrincipalRepo;
+    private final PasswordEncoder passwordEncoder;
+
     @Override
     public void run(String... args) throws Exception {
+
+        // bootstrap web security
+        createDummyUserAndAuthority();
+
         // set up a test user
         log.debug("Setting up Bootstrap user");
 
@@ -160,5 +177,20 @@ public class Bootstrap implements CommandLineRunner {
         user.setGoals(List.of(goal));
         goalRepository.save(goal);
 
+    }
+
+
+    private void createDummyUserAndAuthority() {
+        Authority userAuth = Authority.builder().authority(RoleEnum.ROLE_USER).build();
+        if (authorityRepo.findAll().isEmpty()) {
+            authorityRepo.save(userAuth);
+        }
+
+        if (userPrincipalRepo.findAll().isEmpty()) {
+            userPrincipalRepo.save(
+                    new UserPrincipal("USER", passwordEncoder.encode("user"),
+                            Collections.singletonList(userAuth))
+            );
+        }
     }
 }
