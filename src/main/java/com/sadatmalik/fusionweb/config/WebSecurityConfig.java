@@ -25,18 +25,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeRequests()
-                //CSS, javascript, etc. should always be accessible for all clients
-                .antMatchers("/resources/**").permitAll()
-                //h2 available to all
-                .antMatchers("/h2-console/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin();
+        httpSecurity
+                .authorizeRequests()
+                    //CSS, javascript, etc. should always be accessible for all clients
+                    .antMatchers("/css/**", "/images/**").permitAll()
+                    .antMatchers("/webjars/**").permitAll()
+                    //h2 available to all
+                    .antMatchers("/h2-console/**").permitAll()
+                    .anyRequest().authenticated()
+                    .and()
+                .formLogin()
+                    .loginPage("/login").permitAll();
 
-//        // need these to enable h2-console
-//        httpSecurity.csrf().disable();
-//        httpSecurity.headers().frameOptions().disable();
+        // need these to enable h2-console
+        httpSecurity.csrf().disable();
+        httpSecurity.headers().frameOptions().disable();
     }
 
     @Bean
@@ -58,4 +61,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(customUserDetailsService)
                 .passwordEncoder(passwordEncoder());
     }
+
+//    @Override
+//    public void configure(WebSecurity web) throws Exception {
+//        web.ignoring().antMatchers("/webjars/**");
+//    }
 }

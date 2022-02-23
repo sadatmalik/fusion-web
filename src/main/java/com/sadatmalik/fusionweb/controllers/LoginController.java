@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-public class IncomeExpenseController {
+public class LoginController {
 
-    @GetMapping({"/income-and-expenses"})
+    @GetMapping({"/login"})
     public String home() {
-        log.info("Returning income and expenses page");
-        return "income-and-expenses";
+        log.info("Returning login page");
+        return "login";
     }
 
 }

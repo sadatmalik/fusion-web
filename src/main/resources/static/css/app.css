@@ -80,6 +80,12 @@ body {
     cursor: pointer;
 }
 
+.full-width-div {
+    position: absolute;
+    width: 100%;
+    left: 0;
+}
+
 /* end overrides*/
 
 .btn-link {
@@ -264,6 +270,9 @@ body {
         position: sticky;
         top: 0rem;
         z-index: 1000;
+        height: 100vh;
+    }
+    #login {
         height: 100vh;
     }
     .logo {
