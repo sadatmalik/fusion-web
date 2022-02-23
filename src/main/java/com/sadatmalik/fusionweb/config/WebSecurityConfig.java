@@ -3,6 +3,8 @@ package com.sadatmalik.fusionweb.config;
 import com.sadatmalik.fusionweb.model.websecurity.Authority;
 import com.sadatmalik.fusionweb.model.websecurity.RoleEnum;
 import com.sadatmalik.fusionweb.model.websecurity.UserPrincipal;
+import com.sadatmalik.fusionweb.services.websecurity.CustomUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -18,6 +20,9 @@ import java.util.Collections;
 @EnableWebSecurity(debug = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    CustomUserDetailsService customUserDetailsService;
+
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
@@ -29,9 +34,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin();
 
-        // need these to enable h2-console
-        httpSecurity.csrf().disable();
-        httpSecurity.headers().frameOptions().disable();
+//        // need these to enable h2-console
+//        httpSecurity.csrf().disable();
+//        httpSecurity.headers().frameOptions().disable();
     }
 
     @Bean
@@ -45,9 +50,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         auth.inMemoryAuthentication()
                 //add a user to the cache with username "admin" password "hi" and ROLE_USER
-                .withUser(new UserPrincipal("USER1", passwordEncoder().encode("hi"),
+                .withUser(new UserPrincipal("USER1", passwordEncoder().encode("password"),
                         Collections.singletonList(userAuth)))
-                .withUser(new UserPrincipal("USER2", passwordEncoder().encode("hello"),
+                .withUser(new UserPrincipal("USER2", passwordEncoder().encode("password"),
                         Collections.singletonList(userAuth)));
+
+        auth.userDetailsService(customUserDetailsService)
+                .passwordEncoder(passwordEncoder());
     }
 }
