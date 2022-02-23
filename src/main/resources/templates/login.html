@@ -14,31 +14,53 @@
 <body>
 <div class="container-fluid">
     <div class="row flex-xl-nowrap">
-        <div id="content-body" class="full-width-div col-12 col-md-9 col-xl-10 pl-4 pr-4 bd-content">
-            <div id="login" class="col-md-12 pt-4 mt-3">
 
-                <form th:action="@{/login}" class="form-signin" method="post">
-                    <h2 class="form-signin-heading">Please sign in</h2>
-                    <div th:if="${param.error}" class="alert alert-error">
-                        Invalid username and password.
-                    </div>
-                    <div th:if="${param.logout}" class="alert alert-success">
-                        You have been logged out.
-                    </div>
+        <div th:fragment="sidebar" id="nav" class="col-xl-4">
+            <div class="col-md-12 col-8">
+                <div class="text-sm-left text-md-center logo">
+                    <!-- react-text: 8 -->
+                    FUSiON ECONO
+                    <!-- /react-text -->
+                    <span id="beta"> BETA</span>
+                </div>
+            </div>
+        </div>
 
-                    <p>
-                        <label for="username" class="sr-only">Username</label>
-                        <input type="text" id="username" name="username" class="form-control" placeholder="Username" required autofocus>
-                    </p>
+        <div id="content-body" class="col-12 col-md-9 col-xl-8 pl-4 pr-4 bd-content">
+            <div class="row">
+                <div class="col-md-3 pt-4 mt-3"> </div>
 
-                    <p>
-                        <label for="password" class="sr-only">Password</label>
-                        <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
-                    </p>
-                    <input name="_csrf" type="hidden" value="00b612fc-ffb3-4935-adca-4f65795f7770" />
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-                </form>
+                <div id="login" class="col-md-6 pt-4 mt-5">
+                    <form th:action="@{/login}" class="form-signin mt-5" method="post">
+                        <h2 class="form-signin-heading mb-5">Welcome back to Fusion</h2>
+                        <div th:if="${param.error == null}">
+                            <h4>Please sign in</h4>
+                        </div>
+                        <div th:if="${param.error}" class="alert alert-error">
+                            Invalid username and password.
+                        </div>
+                        <div th:if="${param.logout}" class="alert alert-success">
+                            You have been logged out.
+                        </div>
+                         <div class="row">
+                            <p>
+                                <label for="username" class="sr-only">Username</label>
+                                <input type="text" id="username" name="username" class="form-control" placeholder="Username" required autofocus>
+                            </p>
+                            <p>
+                                <label for="password" class="sr-only">Password</label>
+                                <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+                            </p>
+                            <p>Your password must have at least 1 capital letter, 1 number and 8 characters</p>
+                            <input name="_csrf" type="hidden" value="00b612fc-ffb3-4935-adca-4f65795f7770" />
+                        </div>
+                        <div class="row px-2 py-5">
+                            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                        </div>
+                    </form>
+                </div>
 
+                <div class="col-md-3 pt-4 mt-3"> </div>
             </div>
         </div>
     </div>
