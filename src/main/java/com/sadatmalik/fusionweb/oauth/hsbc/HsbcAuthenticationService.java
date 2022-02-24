@@ -219,4 +219,12 @@ public class HsbcAuthenticationService {
 
         return response.getBody();
     }
+
+    public void validateTokenExpiry(HsbcUserAccessToken token) {
+        // @todo handle the refresh in UserDetails on a timer?
+        if (token.isExpiring()) {
+            HsbcUserAccessToken.setCurrentToken(refreshAccessToken(token));
+        }
+    }
+
 }

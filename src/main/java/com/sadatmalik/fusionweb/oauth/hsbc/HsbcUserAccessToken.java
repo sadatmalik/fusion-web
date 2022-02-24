@@ -17,6 +17,8 @@ public class HsbcUserAccessToken {
     private static final Logger logger = LoggerFactory.getLogger(HsbcUserAccessToken.class);
     private long createdAt = System.currentTimeMillis(); // @todo have a look at Instant class
 
+    private static HsbcUserAccessToken currentToken;
+
     // {"access_token":"d13a4f6c-ce35-4b3b-aadd-0ee14563a04e",
     @JsonProperty("access_token")
     private String accessToken;
@@ -50,5 +52,13 @@ public class HsbcUserAccessToken {
             return true;
         }
         return false;
+    }
+
+    public static void setCurrentToken(HsbcUserAccessToken token) {
+        currentToken = token;
+    }
+
+    public static HsbcUserAccessToken current() {
+        return currentToken;
     }
 }

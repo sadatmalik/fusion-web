@@ -1,25 +1,20 @@
 package com.sadatmalik.fusionweb.controllers;
 
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcAuthenticationService;
-import com.sadatmalik.fusionweb.oauth.hsbc.HsbcClientAccessToken;
-import com.sadatmalik.fusionweb.oauth.hsbc.HsbcConsent;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcUserAccessToken;
 import com.sadatmalik.fusionweb.services.TransactionService;
 import com.sadatmalik.fusionweb.services.hsbc.HsbcApiService;
 import com.sadatmalik.fusionweb.services.hsbc.model.accounts.Account;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,49 +23,20 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DashboardController {
 
-    private static final Logger logger = LoggerFactory.getLogger(DashboardController.class);
-
-    // todo keep this with user details
-    private HsbcUserAccessToken userAccessToken;
-
-    @Autowired
-    HsbcAuthenticationService hsbcAuth;
-
-    @Autowired
-    HsbcApiService hsbc;
-
-    @Autowired
-    TransactionService transactionService;
-
-    @GetMapping({"", "/"})
-    public String home(@RequestParam(name = "code", required = false) String authCode) {
-        logger.info("Returning index page");
-        if (authCode != null) {
-            System.out.println("Received authCode: " + authCode);
-            userAccessToken = hsbcAuth.getAccessToken(authCode);
-            return "redirect:/dashboard";
-        }
-        return "index";
-    }
+    private final HsbcAuthenticationService hsbcAuth;
+    private final HsbcApiService hsbc;
+    private final TransactionService transactionService;
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        // @todo integrate this into UserDetails
-        if (userAccessToken == null) {
-            HsbcClientAccessToken accessToken = hsbcAuth.getAccessToken();
-            HsbcConsent consent = hsbcAuth.getConsentID(accessToken);
+        List<Account> accounts = new ArrayList<>();
 
-            String authorizationURL = hsbcAuth.getAuthorizationURL(consent);
-            System.out.println(authorizationURL);
-
-            return "redirect:" + authorizationURL;
-        }
-        // @todo handle the refresh in UserDetails on a timer?
-        else if (userAccessToken.isExpiring()) {
-            userAccessToken = hsbcAuth.refreshAccessToken(userAccessToken);
+        // get HSBC account info
+        if (HsbcUserAccessToken.current() != null) {
+            hsbcAuth.validateTokenExpiry(HsbcUserAccessToken.current());
+            accounts = hsbc.getUserAccounts(HsbcUserAccessToken.current());
         }
 
-        List<Account> accounts = hsbc.getUserAccounts(userAccessToken);
         String totalBalance = getTotalDisplayBalance(accounts);
         model.addAttribute("accountList", accounts);
         model.addAttribute("totalBalance", totalBalance);
@@ -91,15 +57,11 @@ public class DashboardController {
 
     @GetMapping("/transactions/{accountId}")
     public String viewTransactions(Model model, @PathVariable String accountId) {
-        // @todo encapsulate this elsewhere - with user details?
-        if (userAccessToken.isExpiring()) {
-            userAccessToken = hsbcAuth.refreshAccessToken(userAccessToken);
-        }
-
-        hsbc.getTransactions(accountId, userAccessToken);
+        hsbcAuth.validateTokenExpiry(HsbcUserAccessToken.current());
+        hsbc.getTransactions(accountId, HsbcUserAccessToken.current());
 
         // @todo refactor - duplicated code in dashboard method
-        List<Account> accounts = hsbc.getUserAccounts(userAccessToken);
+        List<Account> accounts = hsbc.getUserAccounts(HsbcUserAccessToken.current());
         Optional<Account> account = accounts.stream()
                 .filter(a -> a.getAccountId().equals(accountId))
                 .findFirst();
