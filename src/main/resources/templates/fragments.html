@@ -35,7 +35,9 @@
                     // title: 'Spending Graph',
                     hAxis: {title: 'Date',
                         titleTextStyle: {color: '#FDFDFD'},
-                        textStyle: { color: '#FDFDFD' }
+                        textStyle: { color: '#FDFDFD' },
+                        maxAlternation: 1,
+                        showTextEvery: 7
                     },
                     vAxis: {minValue: 0,
                         textStyle: { color: '#FDFDFD' },
@@ -43,10 +45,10 @@
                         minorGridlines: { color: 'darkslategray'}
                     },
                     height: 350,
-                    pointSize: 5,
+                    pointSize: 3,
                     backgroundColor: 'transparent',
                     fontName: 'Nunito Sans Regular',
-                    colors:['58e2c1'],
+                    colors:['#58e2c1'],
                     legend: {position: 'none'},
                     tooltip: {
                         textStyle: {color: 'darkslategray', fontName: 'Nunito Sans Regular'}
