@@ -1,7 +1,5 @@
 package com.sadatmalik.fusionweb.controllers;
 
-import com.sadatmalik.fusionweb.oauth.hsbc.HsbcAuthenticationService;
-import com.sadatmalik.fusionweb.oauth.hsbc.HsbcUserAccessToken;
 import com.sadatmalik.fusionweb.services.TransactionService;
 import com.sadatmalik.fusionweb.services.hsbc.HsbcApiService;
 import com.sadatmalik.fusionweb.services.hsbc.model.accounts.Account;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,19 +20,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DashboardController {
 
-    private final HsbcAuthenticationService hsbcAuth;
     private final HsbcApiService hsbc;
     private final TransactionService transactionService;
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        List<Account> accounts = new ArrayList<>();
-
         // get HSBC account info
-        if (HsbcUserAccessToken.current() != null) {
-            hsbcAuth.validateTokenExpiry(HsbcUserAccessToken.current());
-            accounts = hsbc.getUserAccounts(HsbcUserAccessToken.current());
-        }
+        List<Account> accounts = hsbc.getUserAccounts();
 
         String totalBalance = getTotalDisplayBalance(accounts);
         model.addAttribute("accountList", accounts);
@@ -57,15 +48,16 @@ public class DashboardController {
 
     @GetMapping("/transactions/{accountId}")
     public String viewTransactions(Model model, @PathVariable String accountId) {
-        hsbcAuth.validateTokenExpiry(HsbcUserAccessToken.current());
-        hsbc.getTransactions(accountId, HsbcUserAccessToken.current());
+        hsbc.getTransactions(accountId);
 
-        // @todo refactor - duplicated code in dashboard method
-        List<Account> accounts = hsbc.getUserAccounts(HsbcUserAccessToken.current());
+        // @todo refactor - is this call to Hsbc Apis necessary - at this
+        // stage accounts are available from currently logged in user?
+        List<Account> accounts = hsbc.getUserAccounts();
         Optional<Account> account = accounts.stream()
                 .filter(a -> a.getAccountId().equals(accountId))
                 .findFirst();
 
+        // @todo exception case - account not exists
         log.debug("Found - " + account.get());
 
         String totalBalance = getTotalDisplayBalance(List.of(account.get()));
