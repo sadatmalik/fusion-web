@@ -30,6 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     //CSS, javascript, etc. should always be accessible for all clients
                     .antMatchers("/css/**", "/images/**").permitAll()
                     .antMatchers("/webjars/**").permitAll()
+                    .antMatchers("/favicon.ico").permitAll()
                     //h2 available to all
                     .antMatchers("/h2-console/**").permitAll()
                     .anyRequest().authenticated()
