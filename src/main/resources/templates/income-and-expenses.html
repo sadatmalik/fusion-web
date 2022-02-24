@@ -20,15 +20,15 @@
 
             <div class="row">
 
-                <div id="expenses" class="col-xl-6">
-<!--                    <div th:replace="fragments::expense-summary"/>-->
+                <div id="expenses" class="col-xl-6"> <!-- expenses -->
                     <h3 class="mt-5">MONTHLY EXPENSES</h3>
                     <table border="1" cellpadding="10" class="table table-striped table-dark">
                         <thead>
                         <tr class="bg-light">
-                            <th>Day Of Month Paid</th>
+                            <th>Day Of Month</th>
                             <th>Description</th>
                             <th>Amount</th>
+                            <th>Paid From</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -36,28 +36,158 @@
                             <td>7</td>
                             <td>Mortgage 1</td>
                             <td>£480</td>
+                            <td>BARCLAYS</td>
                         </tr>
                         <tr>
                             <td>15</td>
                             <td>Thames Water</td>
                             <td>£40</td>
+                            <td>BARCLAYS</td>
                         </tr>
                         <tr>
                             <td>21</td>
                             <td>Netflix</td>
                             <td>£8.99</td>
+                            <td>CREDIT CARD</td>
                         </tr>
                         </tbody>
                     </table>
-                    <a th:href="@{'/dashboard'}" class="btn btn-primary mb-5" role="button">ADD MONTHLY EXPENSE</a>
+                    <a th:href="@{'#'}" class="btn btn-primary mb-5" role="button">NEW MONTHLY EXPENSE</a>
 
-                    <h4>WEEKLY EXPENSES</h4>
+                    <h3 class="mt-5">WEEKLY EXPENSES</h3>
+                    <table border="1" cellpadding="10" class="table table-striped table-dark">
+                        <thead>
+                        <tr class="bg-light">
+                            <th>Times Per Week</th>
+                            <th>Weekly Interval</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Paid From</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>Groceries</td>
+                            <td>£80</td>
+                            <td>HSBC</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>Eating Out</td>
+                            <td>£50</td>
+                            <td>CASH</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>Petrol</td>
+                            <td>£80</td>
+                            <td>CREDIT CARD</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <a th:href="@{'#'}" class="btn btn-primary mb-5" role="button">NEW WEEKLY EXPENSE</a>
                 </div>
 
-                <div id="income" class="col-xl-6">
-                    <div th:replace="fragments::income-summary"/>
-                    <h4>MONTHLY INCOME</h4>
-                    <h4>WEEKLY INCOME</h4>
+                <div id="income" class="col-xl-6"> <!-- income -->
+                    <h3 class="mt-5">MONTHLY INCOME</h3>
+                    <table border="1" cellpadding="10" class="table table-striped table-dark">
+                        <thead>
+                        <tr class="bg-light">
+                            <th>Day Of Month</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Paid To</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>5</td>
+                            <td>Rent 1</td>
+                            <td>£1,850</td>
+                            <td>BARCLAYS</td>
+                        </tr>
+                        <tr>
+                            <td>25</td>
+                            <td>Salary</td>
+                            <td>£4,800</td>
+                            <td>HSBC</td>
+                        </tr>
+                        <tr>
+                            <td>21</td>
+                            <td>Art Sales</td>
+                            <td>465</td>
+                            <td>CASH</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <a th:href="@{'#'}" class="btn btn-primary mb-5" role="button">NEW MONTHLY INCOME</a>
+
+                    <h3 class="mt-5">WEEKLY INCOME</h3>
+                    <table border="1" cellpadding="10" class="table table-striped table-dark">
+                        <thead>
+                        <tr class="bg-light">
+                            <th>Weekly Interval</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Paid To</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>LH</td>
+                            <td>£60</td>
+                            <td>HSBC</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>TA</td>
+                            <td>£70</td>
+                            <td>HSBC</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>HB</td>
+                            <td>£60</td>
+                            <td>HSBC</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>DS</td>
+                            <td>£70</td>
+                            <td>HSBC</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>JJ</td>
+                            <td>£60</td>
+                            <td>HSBC</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>MC</td>
+                            <td>£60</td>
+                            <td>HSBC</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>ALP</td>
+                            <td>£50</td>
+                            <td>HSBC</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>KK</td>
+                            <td>£70</td>
+                            <td>PAYPAL</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <a th:href="@{'#'}" class="btn btn-primary mb-5" role="button">NEW WEEKLY INCOME</a>
                 </div>
 
             </div>
