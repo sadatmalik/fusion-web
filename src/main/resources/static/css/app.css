@@ -145,8 +145,6 @@ body {
 }
 
 .left-options li#Accounts:before {
-    /*background-image: url('../images/Accounts.svg');*/
-    /*Change to Accounts.svg - however web server is sending as application/json not image/svg+xml*/
     background-image: url('../images/Accounts.svg');
     background-repeat:no-repeat;
     background-size: 24px 24px;
@@ -168,6 +166,16 @@ body {
     background-image: url('../images/Goals.svg');
     background-repeat:no-repeat;
     background-size: 24px 24px;
+}
+
+.left-options li#Signout:before {
+    background-image: url('../images/Signout.svg');
+    background-repeat:no-repeat;
+    background-size: 24px 24px;
+}
+
+.left-options li .copyright {
+    color: #8C8BA6;
 }
 
 .left-options li:hover>a {
