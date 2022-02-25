@@ -1,6 +1,7 @@
 package com.sadatmalik.fusionweb.model.websecurity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sadatmalik.fusionweb.model.User;
 import lombok.*;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -37,6 +38,10 @@ public class UserPrincipal implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "authority_id")
     )
     private List<Authority> authorities;
+
+    @OneToOne
+    @JoinColumn(name = "userId", referencedColumnName = "id")
+    private User user;
 
     private boolean accountNonExpired;
     private boolean accountNonLocked;

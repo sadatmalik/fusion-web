@@ -30,20 +30,20 @@
           <th>Balance</th>
           <th>Currency</th>
           <th>Type</th>
-          <th>SubType</th>
+<!--          <th>SubType</th>-->
           <th>Description</th>
 <!--          <th>Action</th>-->
         </tr>
         </thead>
         <tbody>
         <tr th:each="account : ${accountList}" th:onclick="|window.location='@{'/transactions/' + ${account.getAccountId()}}'|" class="clickable">
-          <td th:text="${account.getBank()}">Bank</td>
+          <td th:text="${account.getName()}">Bank</td>
           <td th:text="${account.getAccountId()}">Account ID</td>
-          <td th:text="${account.getAccountInfo().get(0).getName()}">Account ID</td>
-          <td th:text="${account.getBalance().getDisplayAmount()}">Balance</td>
+          <td th:text="${'Mr ' + account.getUser().getFirstName() + ' ' + account.getUser().getLastName()}">Name</td>
+          <td th:text="'£' + ${account.getBalance()}">Balance</td>
           <td th:text="${account.getCurrency()}">Currency</td>
           <td th:text="${account.getType()}">Type</td>
-          <td th:text="${account.getSubType()}">SubType</td>
+<!--          <td th:text="${account.getSubType()}">SubType</td>-->
           <td th:text="${account.getDescription()}">Description</td>
 <!--          <td>-->
 <!--            &lt;!&ndash; actions &ndash;&gt;-->

@@ -43,9 +43,6 @@ public class Bootstrap implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        // bootstrap web security
-        createDummyUserAndAuthority();
-
         // set up a test user
         log.debug("Setting up Bootstrap user");
 
@@ -55,25 +52,32 @@ public class Bootstrap implements CommandLineRunner {
                 .email("sadat.malik@me.com")
                 .build();
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        // bootstrap web security
+        createDummyUserAndAuthority(savedUser);
 
         // set up some test accounts
         log.debug("Setting up Bootstrap accounts");
 
         Account account = Account.builder()
-                .accountId("HS345678")
+                .accountId("HS000345678")
                 .type(AccountType.CURRENT)
                 .name("HSBC")
                 .balance(20000)
+                .currency("GBP")
                 .user(user)
+                .description("HSBC Advance current account")
                 .build();
 
         Account account2 = Account.builder()
-                .accountId("BA123456")
+                .accountId("BARC0003456")
                 .type(AccountType.SAVINGS)
                 .name("BARC")
                 .balance(65000)
+                .currency("GBP")
                 .user(user)
+                .description("Barclays Everyday cash account")
                 .build();
 
         user.setAccounts(List.of(account, account2));
@@ -179,18 +183,20 @@ public class Bootstrap implements CommandLineRunner {
 
     }
 
-
-    private void createDummyUserAndAuthority() {
+   private void createDummyUserAndAuthority(User user) {
         Authority userAuth = Authority.builder().authority(RoleEnum.ROLE_USER).build();
         if (authorityRepo.findAll().isEmpty()) {
             authorityRepo.save(userAuth);
         }
 
         if (userPrincipalRepo.findAll().isEmpty()) {
-            userPrincipalRepo.save(
-                    new UserPrincipal("USER", passwordEncoder.encode("user"),
-                            Collections.singletonList(userAuth))
-            );
+            UserPrincipal principal = new UserPrincipal("USER",
+                    passwordEncoder.encode("user"),
+                    Collections.singletonList(userAuth));
+
+            principal.setUser(user);
+
+            userPrincipalRepo.save(principal);
         }
     }
 }

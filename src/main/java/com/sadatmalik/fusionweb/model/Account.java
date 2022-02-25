@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "accounts")
-@ToString(exclude = {"incomeList","monthlyIncomeList","debts","weeklyExpenses", "goals"})
+@ToString(exclude = {"incomeList","monthlyIncomeList","debts","weeklyExpenses", "monthlyExpenses", "goals"})
 public class Account {
 
     @Id
@@ -24,7 +24,13 @@ public class Account {
     @Enumerated(value = EnumType.STRING)
     private AccountType type; // e.g current, savings, cash
 
+    // @todo use Balance object
     private double balance;
+
+    // @todo hardcoded
+    private String currency;
+
+    private String description;
 
     @ManyToOne
     @JoinColumn(name = "userId", referencedColumnName = "id")

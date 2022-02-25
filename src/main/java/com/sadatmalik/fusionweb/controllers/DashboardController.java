@@ -1,10 +1,14 @@
 package com.sadatmalik.fusionweb.controllers;
 
+import com.sadatmalik.fusionweb.model.Account;
+import com.sadatmalik.fusionweb.model.User;
+import com.sadatmalik.fusionweb.model.websecurity.UserPrincipal;
+import com.sadatmalik.fusionweb.services.AccountService;
 import com.sadatmalik.fusionweb.services.TransactionService;
 import com.sadatmalik.fusionweb.services.hsbc.HsbcApiService;
-import com.sadatmalik.fusionweb.services.hsbc.model.accounts.Account;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -22,11 +25,17 @@ public class DashboardController {
 
     private final HsbcApiService hsbc;
     private final TransactionService transactionService;
+    private final AccountService accountService;
+
 
     @GetMapping("/dashboard")
-    public String dashboard(Model model) {
-        // get HSBC account info
-        List<Account> accounts = hsbc.getUserAccounts();
+    public String dashboard(Authentication authentication, Model model) {
+
+        // get logged in users accounts
+        log.debug("Authentication: " + authentication);
+
+        User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
+        List<Account> accounts = accountService.getAccountsFor(user);
 
         String totalBalance = getTotalDisplayBalance(accounts);
         model.addAttribute("accountList", accounts);
@@ -41,27 +50,23 @@ public class DashboardController {
     private String getTotalDisplayBalance(List<Account> accounts) {
         double total = 0;
         for (Account account : accounts) {
-            total += account.getBalance().getAmount();
+            total += account.getBalance();
         }
         return String.format("£%.2f", total);
     }
 
     @GetMapping("/transactions/{accountId}")
     public String viewTransactions(Model model, @PathVariable String accountId) {
-        hsbc.getTransactions(accountId);
+        // @todo this will fail as passing accountId for DB accounts at moment
+        // hsbc.getTransactions(accountId);
 
-        // @todo refactor - is this call to Hsbc Apis necessary - at this
-        // stage accounts are available from currently logged in user?
-        List<Account> accounts = hsbc.getUserAccounts();
-        Optional<Account> account = accounts.stream()
-                .filter(a -> a.getAccountId().equals(accountId))
-                .findFirst();
+        Account account = accountService.getAccountById(accountId);
 
         // @todo exception case - account not exists
-        log.debug("Found - " + account.get());
+        log.debug("Found - " + account);
 
-        String totalBalance = getTotalDisplayBalance(List.of(account.get()));
-        model.addAttribute("account", account.get());
+        String totalBalance = String.format("£%.2f", account.getBalance());
+        model.addAttribute("account", account);
         model.addAttribute("totalBalance", totalBalance);
         model.addAttribute("transactions", transactionService.getTransactions());
 
