@@ -1,13 +1,19 @@
 package com.sadatmalik.fusionweb.controllers;
 
+import com.sadatmalik.fusionweb.model.Debt;
+import com.sadatmalik.fusionweb.model.User;
+import com.sadatmalik.fusionweb.model.websecurity.UserPrincipal;
+import com.sadatmalik.fusionweb.services.DebtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -15,8 +21,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class QuickStatsController {
 
+    private final DebtService debtService;
+
     @GetMapping("/quickstats")
-    public String quickStats(Model model) {
+    public String quickStats(Authentication authentication, Model model) {
         log.info("Returning Quickstats page");
         // @todo hardcoded balance
         model.addAttribute("totalBalance", String.format("£%.2f", 2247.20));
@@ -26,7 +34,23 @@ public class QuickStatsController {
         // @todo hardcoded chart data
         model.addAttribute("chartData", getChartData());
 
+        User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
+        List<Debt> debtList = debtService.getDebtFor(user);
+
+        List<List<Object>> debtChartData = getDebtChartData(debtList);
+
+        model.addAttribute("debtChartData", debtChartData);
+
         return "quickstats";
+    }
+
+    private List<List<Object>> getDebtChartData(List<Debt> debtList) {
+        List<List<Object>> debtChartData = new ArrayList<>(List.of(List.of("Lender", "Borrowing")));
+        debtList.stream()
+                .forEach(debt ->
+                    debtChartData.add(List.of(debt.getLender(), debt.getTotalBorrowed()))
+                );
+        return debtChartData;
     }
 
     private List<List<Object>> getChartData() {

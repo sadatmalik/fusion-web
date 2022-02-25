@@ -23,6 +23,7 @@
             google.charts.setOnLoadCallback(drawChart);
             google.charts.setOnLoadCallback(drawPayments);
             google.charts.setOnLoadCallback(drawReceipts);
+            google.charts.setOnLoadCallback(drawDebts);
 
             // Callback that creates and populates a data table,
             // instantiates the chart, passes in the data and
@@ -66,13 +67,11 @@
                     ['BROADBAND', 31.95],
                     ['GAS/ELECTRIC', 178],
                     ['WATER', 83],
-                    ['MORTGAGE 1', 700],
                     ['NETFLIX', 8.99],
                     ['CAR TAX 1', 17.93],
                     ['CAR TAX 2', 13.56],
                     ['HOME INSURANCE', 53.19],
-                    ['PTA', 10],
-                    ['MORTGAGE 2', 480.19]
+                    ['PTA', 10]
                 ]);
 
                 var options = {
@@ -134,6 +133,37 @@
                 };
 
                 var chart = new google.visualization.BarChart(document.getElementById("receipts_div"));
+                chart.draw(data, options);
+            }
+            function drawDebts() {
+                var data = google.visualization.arrayToDataTable([[${debtChartData}]]);
+
+                var options = {
+                    width: 600,
+                    height: 350,
+                    hAxis: {
+                        titleTextStyle: {color: '#FDFDFD'},
+                        textStyle: { color: '#FDFDFD' },
+                        gridlines: { color: 'darkslategray', minSpacing: 50},
+                        minorGridlines: { color: 'darkslategray'},
+                        maxAlternation: 1
+                    },
+                    vAxis: {minValue: 0,
+                        textStyle: { color: '#FDFDFD' }
+                    },
+                    legend: { position: 'none', maxLines: 3 },
+                    bar: { groupWidth: '75%' },
+                    backgroundColor: 'transparent',
+                    fontName: 'Nunito Sans Regular',
+                    // colors:['#aa25c2', '#9226bf', '#7625b9', '#5e24b6', '#4424b1', '#3123ae'],
+                    colors:['#9226bf'],
+                    tooltip: {
+                        textStyle: {color: 'darkslategray', fontName: 'Nunito Sans Regular'}
+                    },
+                    isStacked: true
+                };
+
+                var chart = new google.visualization.BarChart(document.getElementById("debts_div"));
                 chart.draw(data, options);
             }
         </script>
