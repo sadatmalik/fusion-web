@@ -122,17 +122,31 @@ public class Bootstrap implements CommandLineRunner {
                 .account(account)
                 .user(user)
                 .lender("Santander")
-                .totalBorrowed(new BigDecimal(350000))
-                .totalOwed(new BigDecimal(350000))
+                .totalBorrowed(new BigDecimal(295000))
+                .totalOwed(new BigDecimal(270000))
                 .dayOfMonthPaid(5)
-                .interestRate(new BigDecimal(1.74))
+                .interestRate(new BigDecimal(1.95))
                 .dateBorrowed(new Date(119,1,1)) //2019-Feb-1st
                 .initialTermMonths(12*25)
                 .build();
 
-        account.setDebts(List.of(debt));
-        user.setDebts(List.of(debt));
+        Debt debt2 = Debt.builder()
+                .account(account)
+                .user(user)
+                .lender("Nationwide")
+                .totalBorrowed(new BigDecimal(400000))
+                .totalOwed(new BigDecimal(400000))
+                .dayOfMonthPaid(5)
+                .interestRate(new BigDecimal(2.34))
+                .dateBorrowed(new Date(119,1,1)) //2019-Feb-1st
+                .initialTermMonths(12*25)
+                .build();
+
+        account.setDebts(List.of(debt, debt2));
+        user.setDebts(List.of(debt, debt2));
+
         debtRepository.save(debt);
+        debtRepository.save(debt2);
 
         // set up some expense data
         log.debug("Setting up Bootstrap expenses");
