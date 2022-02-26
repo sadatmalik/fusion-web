@@ -21,7 +21,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 @EnableConfigurationProperties(JwtProperties.class)
 @RequiredArgsConstructor
 @Service
-public class JwtHelper {
+public final class JwtHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtHelper.class);
     private final JwtProperties properties;

@@ -10,7 +10,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public class HsbcClientAccessToken {
+public final class HsbcClientAccessToken {
     // {"access_token":"68678f2d-e0f0-460e-8bee-c810d1a267dd",
     @JsonProperty("access_token")
     String accessToken;

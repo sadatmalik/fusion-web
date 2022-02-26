@@ -10,7 +10,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public class HsbcConsent {
+public final class HsbcConsent {
     // {"Data":
     //   {"Permissions":["ReadScheduledPaymentsDetail","ReadAccountsDetail","ReadStandingOrdersDetail","ReadStatementsBasic","ReadTransactionsCredits","ReadTransactionsDetail","ReadBalances","ReadParty","ReadScheduledPaymentsBasic","ReadStatementsDetail","ReadBeneficiariesDetail","ReadDirectDebits","ReadProducts","ReadTransactionsDebits"],
     //    "ExpirationDateTime":"2025-06-11T00:00:00Z",

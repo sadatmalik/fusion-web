@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 @Setter
 @ToString
 @NoArgsConstructor
-public class HsbcUserAccessToken {
+public final class HsbcUserAccessToken {
 
     private static final Logger logger = LoggerFactory.getLogger(HsbcUserAccessToken.class);
     private long createdAt = System.currentTimeMillis(); // @todo have a look at Instant class

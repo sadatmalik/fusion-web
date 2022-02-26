@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
-public class HsbcAuthenticationService {
+public final class HsbcAuthenticationService {
 
     private static final Logger logger = LoggerFactory.getLogger(HsbcAuthenticationService.class);
     static final String APP_REDIRECT_URL = "http://localhost:8080";
