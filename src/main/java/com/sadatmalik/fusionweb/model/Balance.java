@@ -1,4 +1,4 @@
-package com.sadatmalik.fusionweb.services.hsbc.model.balances;
+package com.sadatmalik.fusionweb.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

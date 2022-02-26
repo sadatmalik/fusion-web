@@ -1,10 +1,12 @@
 package com.sadatmalik.fusionweb.services.hsbc;
 
+import com.sadatmalik.fusionweb.model.Account;
+import com.sadatmalik.fusionweb.model.AccountType;
+import com.sadatmalik.fusionweb.model.Balance;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcAuthenticationService;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcUserAccessToken;
-import com.sadatmalik.fusionweb.services.hsbc.model.accounts.Account;
-import com.sadatmalik.fusionweb.services.hsbc.model.accounts.AccountList;
-import com.sadatmalik.fusionweb.services.hsbc.model.balances.Balance;
+import com.sadatmalik.fusionweb.services.hsbc.model.accounts.HsbcAccount;
+import com.sadatmalik.fusionweb.services.hsbc.model.accounts.HsbcAccountList;
 import com.sadatmalik.fusionweb.services.hsbc.model.balances.HsbcBalanceObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +29,24 @@ public class HsbcApiService {
 
     // Public methods
     public List<Account> getUserAccounts() {
-        List<Account> accounts = new ArrayList<>();
+        final List<Account> accounts = new ArrayList<>();
+
         if (HsbcUserAccessToken.current() != null) {
             hsbcAuth.validateTokenExpiry(HsbcUserAccessToken.current());
-            accounts = getUserAccounts(HsbcUserAccessToken.current());
+            final List<HsbcAccount> hsbcAccounts = getUserAccounts(HsbcUserAccessToken.current());
+
+            // @todo use mapStruct mapper
+            for (HsbcAccount hsbcAccount : hsbcAccounts) {
+                Account account = Account.builder()
+                        .accountId(hsbcAccount.getAccountId())
+                        .name("HSBC")
+                        .type(AccountType.CURRENT) // @todo take this from hsbcAccount mapping String to Enum
+                        .balance(hsbcAccount.getBalance().getAmount())
+                        .currency(hsbcAccount.getCurrency())
+                        .description(hsbcAccount.getDescription())
+                        .build();
+                accounts.add(account);
+            }
         }
         return accounts;
     }
@@ -49,14 +65,14 @@ public class HsbcApiService {
     // -H "Authorization: Bearer 4501825f-096a-4959-bde7-dff93a5fe6ba"
     // -H "Cache-Control: no-cache"
     // "https://sandbox.hsbc.com/psd2/obie/v3.1/accounts"
-    private List<Account> getUserAccounts(HsbcUserAccessToken accessToken) {
+    private List<HsbcAccount> getUserAccounts(HsbcUserAccessToken accessToken) {
         HttpHeaders headers = getGetHeaders(accessToken);
         HttpEntity<String> request = new HttpEntity<>(headers);
-        ResponseEntity<AccountList> response =
-                restTemplate.exchange(ACCOUNT_INFO_URL, HttpMethod.GET, request, AccountList.class);
+        ResponseEntity<HsbcAccountList> response =
+                restTemplate.exchange(ACCOUNT_INFO_URL, HttpMethod.GET, request, HsbcAccountList.class);
 
         // sets account balances with a rest call per account
-        for (Account account : response.getBody().getData().getAccounts()) {
+        for (HsbcAccount account : response.getBody().getData().getAccounts()) {
             account.setBalance(getAccountBalance(account, accessToken));
         }
 
@@ -75,7 +91,7 @@ public class HsbcApiService {
     }
 
     // "GET /accounts/{AccountId}"
-    private void getAccountDetails(Account account, HsbcUserAccessToken accessToken) {
+    private void getAccountDetails(HsbcAccount account, HsbcUserAccessToken accessToken) {
         HttpHeaders headers = getGetHeaders(accessToken);
         HttpEntity<String> request = new HttpEntity<>(headers);
         ResponseEntity<String> response =
@@ -86,7 +102,7 @@ public class HsbcApiService {
     }
 
     // "GET /accounts/{AccountId}/balances"
-    private Balance getAccountBalance(Account account, HsbcUserAccessToken accessToken) {
+    private Balance getAccountBalance(HsbcAccount account, HsbcUserAccessToken accessToken) {
         HttpHeaders headers = getGetHeaders(accessToken);
         HttpEntity<String> request = new HttpEntity<>(headers);
         ResponseEntity<HsbcBalanceObject> response =

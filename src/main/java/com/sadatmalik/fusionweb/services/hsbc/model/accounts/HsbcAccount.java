@@ -2,8 +2,11 @@ package com.sadatmalik.fusionweb.services.hsbc.model.accounts;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sadatmalik.fusionweb.services.hsbc.model.balances.Balance;
-import lombok.*;
+import com.sadatmalik.fusionweb.model.Balance;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -11,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Account {
+public class HsbcAccount {
 
     // @todo hardcoded - use an enum? tie it to constructor?
     private String bank = "HSBC";
@@ -32,7 +35,7 @@ public class Account {
     private String description;
 
     @JsonProperty("Account")
-    private List<AccountInfo> accountInfo;
+    private List<HsbcAccountInfo> accountInfo;
 
     @JsonIgnore
     private Balance balance;

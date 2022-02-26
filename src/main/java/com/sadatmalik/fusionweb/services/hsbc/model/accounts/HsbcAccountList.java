@@ -8,8 +8,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class AccountList {
+public class HsbcAccountList {
     @JsonProperty("Data")
-    private AccountData data;
+    private HsbcAccountData data;
 
 }

@@ -8,7 +8,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class AccountInfo {
+public class HsbcAccountInfo {
     @JsonProperty("SchemeName")
     private String scheme; // @todo make this an enum
 

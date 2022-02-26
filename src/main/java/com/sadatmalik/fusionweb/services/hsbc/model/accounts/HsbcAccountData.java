@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class AccountData {
+public class HsbcAccountData {
     @JsonProperty("Account")
-    private List<Account> accounts;
+    private List<HsbcAccount> accounts;
 }
