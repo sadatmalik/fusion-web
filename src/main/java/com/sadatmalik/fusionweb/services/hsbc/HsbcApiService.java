@@ -9,6 +9,7 @@ import com.sadatmalik.fusionweb.oauth.hsbc.HsbcUserAccessToken;
 import com.sadatmalik.fusionweb.services.hsbc.model.accounts.HsbcAccount;
 import com.sadatmalik.fusionweb.services.hsbc.model.accounts.HsbcAccountList;
 import com.sadatmalik.fusionweb.services.hsbc.model.balances.HsbcBalanceObject;
+import com.sadatmalik.fusionweb.services.hsbc.model.transacations.HsbcTransaction;
 import com.sadatmalik.fusionweb.services.hsbc.model.transacations.HsbcTransactionObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -58,10 +61,22 @@ public class HsbcApiService {
 
         if (HsbcUserAccessToken.current() != null) {
             hsbcAuth.validateTokenExpiry(HsbcUserAccessToken.current());
-            final HsbcTransactionObject hsbcAccounts = getTransactions(accountId, HsbcUserAccessToken.current());
-        }
+            final HsbcTransactionObject hsbcTransactionObject =
+                    getTransactions(accountId, HsbcUserAccessToken.current());
 
-        return null;
+            // @todo use mapStruct mapper
+            for (HsbcTransaction hsbcTransaction : hsbcTransactionObject.getData().getTransactionList()) {
+                Transaction transaction = Transaction.builder()
+                        .date(new Date()) // @todo map dates from hsbc txn
+                        .description(hsbcTransaction.getTransactionId())
+                        .type("-")
+                        .category("-")
+                        .amount(new BigDecimal(hsbcTransaction.getHsbcAmount().getAmount()))
+                        .build();
+                transactions.add(transaction);
+            }
+        }
+        return transactions;
     }
 
     // Private methods - handling of the OAuth flows is not exposed

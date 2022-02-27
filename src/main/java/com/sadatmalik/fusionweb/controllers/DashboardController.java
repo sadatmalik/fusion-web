@@ -57,18 +57,19 @@ public class DashboardController {
 
     @GetMapping("/transactions/{accountId}")
     public String viewTransactions(Model model, @PathVariable String accountId) {
-        // @todo this will fail as passing accountId for DB accounts at moment
-        // hsbc.getTransactions(accountId);
 
         Account account = accountService.getAccountById(accountId);
 
         // @todo exception case - account not exists
         log.debug("Found - " + account);
 
-        String totalBalance = String.format("£%.2f", account.getBalance());
+        String totalBalance = String.format("£%.2f", account.getBalance()); // @todo refactor to display method
         model.addAttribute("account", account);
         model.addAttribute("totalBalance", totalBalance);
-        model.addAttribute("transactions", transactionService.getTransactions());
+
+        // @todo this will fail as passing accountId for DB accounts at moment
+        model.addAttribute("transactions", hsbc.getTransactions(accountId));
+        //model.addAttribute("transactions", transactionService.getTransactions());
 
         return "account-transactions";
     }
