@@ -7,6 +7,8 @@ import com.sadatmalik.fusionweb.model.websecurity.UserPrincipal;
 import com.sadatmalik.fusionweb.repositories.*;
 import com.sadatmalik.fusionweb.repositories.websecurity.AuthorityRepo;
 import com.sadatmalik.fusionweb.repositories.websecurity.UserPrincipalRepo;
+import com.sadatmalik.fusionweb.services.AccountServicesRegistry;
+import com.sadatmalik.fusionweb.services.DummyTransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -62,12 +64,12 @@ public class Bootstrap implements CommandLineRunner {
 
         Account account = Account.builder()
                 .accountId("HS000345678")
-                .type(AccountType.CURRENT)
+                .type(AccountType.SAVINGS)
                 .name("HSBC")
                 .balance(20000)
                 .currency("GBP")
                 .user(user)
-                .description("HSBC Advance current account")
+                .description("HSBC Savings account")
                 .build();
 
         Account account2 = Account.builder()
@@ -77,13 +79,17 @@ public class Bootstrap implements CommandLineRunner {
                 .balance(65000)
                 .currency("GBP")
                 .user(user)
-                .description("Barclays Everyday cash account")
+                .description("Barclays Super Saver account")
                 .build();
 
         user.setAccounts(List.of(account, account2));
 
         accountRepository.save(account);
         accountRepository.save(account2);
+
+        // Set Transaction Service for dummy accounts
+        AccountServicesRegistry.getInstance().registerTransactionService(account, new DummyTransactionService());
+        AccountServicesRegistry.getInstance().registerTransactionService(account2, new DummyTransactionService());
 
         // set up some income data
         log.debug("Setting up Bootstrap income");

@@ -6,6 +6,8 @@ import com.sadatmalik.fusionweb.model.Balance;
 import com.sadatmalik.fusionweb.model.Transaction;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcAuthenticationService;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcUserAccessToken;
+import com.sadatmalik.fusionweb.services.AccountServicesRegistry;
+import com.sadatmalik.fusionweb.services.TransactionService;
 import com.sadatmalik.fusionweb.services.hsbc.model.accounts.HsbcAccount;
 import com.sadatmalik.fusionweb.services.hsbc.model.accounts.HsbcAccountList;
 import com.sadatmalik.fusionweb.services.hsbc.model.balances.HsbcBalanceObject;
@@ -25,7 +27,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class HsbcApiService {
+public class HsbcApiService implements TransactionService {
 
     private static final String ACCOUNT_INFO_URL = "https://sandbox.hsbc.com/psd2/obie/v3.1/accounts";
 
@@ -51,18 +53,20 @@ public class HsbcApiService {
                         .description(hsbcAccount.getDescription())
                         .build();
                 accounts.add(account);
+
+                AccountServicesRegistry.getInstance().registerTransactionService(account, this);
             }
         }
         return accounts;
     }
 
-    public List<Transaction> getTransactions(String accountId) {
+    public List<Transaction> getTransactions(Account account) {
         final List<Transaction> transactions = new ArrayList<>();
 
         if (HsbcUserAccessToken.current() != null) {
             hsbcAuth.validateTokenExpiry(HsbcUserAccessToken.current());
             final HsbcTransactionObject hsbcTransactionObject =
-                    getTransactions(accountId, HsbcUserAccessToken.current());
+                    getTransactions(account.getAccountId(), HsbcUserAccessToken.current());
 
             // @todo use mapStruct mapper
             for (HsbcTransaction hsbcTransaction : hsbcTransactionObject.getData().getTransactionList()) {

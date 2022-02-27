@@ -4,7 +4,8 @@ import com.sadatmalik.fusionweb.model.Account;
 import com.sadatmalik.fusionweb.model.User;
 import com.sadatmalik.fusionweb.model.websecurity.UserPrincipal;
 import com.sadatmalik.fusionweb.services.AccountService;
-import com.sadatmalik.fusionweb.services.TransactionService;
+import com.sadatmalik.fusionweb.services.AccountServicesRegistry;
+import com.sadatmalik.fusionweb.services.DummyTransactionService;
 import com.sadatmalik.fusionweb.services.hsbc.HsbcApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +25,8 @@ import java.util.List;
 public class DashboardController {
 
     private final HsbcApiService hsbc;
-    private final TransactionService transactionService;
+    private final DummyTransactionService transactionService;
     private final AccountService accountService;
-
 
     @GetMapping("/dashboard")
     public String dashboard(Authentication authentication, Model model) {
@@ -67,9 +67,8 @@ public class DashboardController {
         model.addAttribute("account", account);
         model.addAttribute("totalBalance", totalBalance);
 
-        // @todo this will fail as passing accountId for DB accounts at moment
-        model.addAttribute("transactions", hsbc.getTransactions(accountId));
-        //model.addAttribute("transactions", transactionService.getTransactions());
+        model.addAttribute("transactions",
+                AccountServicesRegistry.getInstance().getTransactionServiceFor(account).getTransactions(account));
 
         return "account-transactions";
     }
