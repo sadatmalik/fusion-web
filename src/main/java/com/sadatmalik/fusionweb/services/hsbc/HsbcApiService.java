@@ -3,11 +3,13 @@ package com.sadatmalik.fusionweb.services.hsbc;
 import com.sadatmalik.fusionweb.model.Account;
 import com.sadatmalik.fusionweb.model.AccountType;
 import com.sadatmalik.fusionweb.model.Balance;
+import com.sadatmalik.fusionweb.model.Transaction;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcAuthenticationService;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcUserAccessToken;
 import com.sadatmalik.fusionweb.services.hsbc.model.accounts.HsbcAccount;
 import com.sadatmalik.fusionweb.services.hsbc.model.accounts.HsbcAccountList;
 import com.sadatmalik.fusionweb.services.hsbc.model.balances.HsbcBalanceObject;
+import com.sadatmalik.fusionweb.services.hsbc.model.transacations.HsbcTransactionObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -51,11 +53,15 @@ public class HsbcApiService {
         return accounts;
     }
 
-    public void getTransactions(String accountId) {
+    public List<Transaction> getTransactions(String accountId) {
+        final List<Transaction> transactions = new ArrayList<>();
+
         if (HsbcUserAccessToken.current() != null) {
             hsbcAuth.validateTokenExpiry(HsbcUserAccessToken.current());
-            getTransactions(accountId, HsbcUserAccessToken.current());
+            final HsbcTransactionObject hsbcAccounts = getTransactions(accountId, HsbcUserAccessToken.current());
         }
+
+        return null;
     }
 
     // Private methods - handling of the OAuth flows is not exposed
@@ -120,13 +126,14 @@ public class HsbcApiService {
     }
 
     // "GET /accounts/{AccountId}/transactions"
-    private void getTransactions(String accountId, HsbcUserAccessToken accessToken) {
+    private HsbcTransactionObject getTransactions(String accountId, HsbcUserAccessToken accessToken) {
         HttpHeaders headers = getGetHeaders(accessToken);
         HttpEntity<String> request = new HttpEntity<>(headers);
-        ResponseEntity<String> response =
+        ResponseEntity<HsbcTransactionObject> response =
                 restTemplate.exchange(ACCOUNT_INFO_URL + "/" + accountId + "/transactions",
-                        HttpMethod.GET, request, String.class);
+                        HttpMethod.GET, request, HsbcTransactionObject.class);
 
         log.debug("Transactions for AccountID ---------" + response.getBody());
+        return response.getBody();
     }
 }
