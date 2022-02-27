@@ -34,11 +34,11 @@
               </thead>
               <tbody>
               <tr th:each="txn : ${transactions}">
-                <td th:text="${txn.getDate()}">Date</td>
+                <td th:text="${txn.displayDate()}">Date</td>
                 <td th:text="${txn.getType()}">Type</td>
                 <td th:text="${txn.getDescription()}">Description</td>
                 <td th:text="${txn.getCategory()}">Category</td>
-                <td th:text="${txn.printAmount()}">Amount</td>
+                <td th:text="${txn.displayAmount()}">Amount</td>
               </tr>
               </tbody>
               </table>
