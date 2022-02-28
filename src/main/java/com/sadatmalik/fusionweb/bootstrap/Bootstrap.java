@@ -70,7 +70,7 @@ public class Bootstrap implements CommandLineRunner {
 
         Bank barclays = bankRepository.save(Bank.builder()
                 .name("Barclays")
-                .imageLocation("/images/hsbc.png")
+                .imageLocation("/images/barclays-logo.png")
                 .build()
         );
 
