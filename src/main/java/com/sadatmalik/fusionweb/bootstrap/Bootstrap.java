@@ -8,6 +8,7 @@ import com.sadatmalik.fusionweb.repositories.*;
 import com.sadatmalik.fusionweb.repositories.websecurity.AuthorityRepo;
 import com.sadatmalik.fusionweb.repositories.websecurity.UserPrincipalRepo;
 import com.sadatmalik.fusionweb.services.AccountServicesRegistry;
+import com.sadatmalik.fusionweb.services.DummyBarclaysSavingsTransactionService;
 import com.sadatmalik.fusionweb.services.DummyTransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -94,7 +95,7 @@ public class Bootstrap implements CommandLineRunner {
                 .accountId("BARC0003456")
                 .type(AccountType.SAVINGS)
                 .name("BARC")
-                .balance(65000)
+                .balance(41075.29)
                 .currency("GBP")
                 .user(user)
                 .description("Barclays Super Saver account")
@@ -107,8 +108,10 @@ public class Bootstrap implements CommandLineRunner {
         accountRepository.save(account2);
 
         // Set Transaction Service for dummy accounts
-        AccountServicesRegistry.getInstance().registerTransactionService(account, new DummyTransactionService());
-        AccountServicesRegistry.getInstance().registerTransactionService(account2, new DummyTransactionService());
+        AccountServicesRegistry.getInstance().registerTransactionService(account,
+                new DummyTransactionService());
+        AccountServicesRegistry.getInstance().registerTransactionService(account2,
+                new DummyBarclaysSavingsTransactionService());
 
         // set up some income data
         log.debug("Setting up Bootstrap income");
