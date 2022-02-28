@@ -85,7 +85,7 @@ public class Bootstrap implements CommandLineRunner {
                 .accountId("HS000345678")
                 .type(AccountType.SAVINGS)
                 .name("HSBC")
-                .balance(20000)
+                .balance(14227.39)
                 .currency("GBP")
                 .user(user)
                 .description("HSBC Savings account")
