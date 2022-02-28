@@ -53,4 +53,8 @@ public class Account {
 
     @OneToMany(mappedBy = "account")
     private List<Goal> goals;
+
+    @ManyToOne
+    @JoinColumn(name = "bankId", referencedColumnName = "id")
+    private Bank bank;
 }

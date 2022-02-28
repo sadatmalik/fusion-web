@@ -28,6 +28,7 @@ import java.util.List;
 public class Bootstrap implements CommandLineRunner {
 
     // application model
+    private final BankRepository bankRepository;
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
     private final IncomeRepository incomeRepository;
@@ -36,6 +37,7 @@ public class Bootstrap implements CommandLineRunner {
     private final WeeklyExpenseRepository weeklyExpenseRepository;
     private final MonthlyExpenseRepository monthlyExpenseRepository;
     private final GoalRepository goalRepository;
+
 
     // web security
     private final AuthorityRepo authorityRepo;
@@ -59,6 +61,21 @@ public class Bootstrap implements CommandLineRunner {
         // bootstrap web security
         createDummyUserAndAuthority(savedUser);
 
+        // set up some banks
+        Bank hsbc = bankRepository.save(Bank.builder()
+                .name("HSBC")
+                .imageLocation("/images/hsbc.png")
+                .build()
+        );
+
+        Bank barclays = bankRepository.save(Bank.builder()
+                .name("Barclays")
+                .imageLocation("/images/hsbc.png")
+                .build()
+        );
+
+        bankRepository.save(hsbc);
+
         // set up some test accounts
         log.debug("Setting up Bootstrap accounts");
 
@@ -70,6 +87,7 @@ public class Bootstrap implements CommandLineRunner {
                 .currency("GBP")
                 .user(user)
                 .description("HSBC Savings account")
+                .bank(hsbc)
                 .build();
 
         Account account2 = Account.builder()
@@ -80,6 +98,7 @@ public class Bootstrap implements CommandLineRunner {
                 .currency("GBP")
                 .user(user)
                 .description("Barclays Super Saver account")
+                .bank(barclays)
                 .build();
 
         user.setAccounts(List.of(account, account2));
@@ -203,7 +222,7 @@ public class Bootstrap implements CommandLineRunner {
 
     }
 
-   private void createDummyUserAndAuthority(User user) {
+    private void createDummyUserAndAuthority(User user) {
         Authority userAuth = Authority.builder().authority(RoleEnum.ROLE_USER).build();
         if (authorityRepo.findAll().isEmpty()) {
             authorityRepo.save(userAuth);
@@ -219,4 +238,5 @@ public class Bootstrap implements CommandLineRunner {
             userPrincipalRepo.save(principal);
         }
     }
+
 }

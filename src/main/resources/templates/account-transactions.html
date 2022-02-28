@@ -49,7 +49,7 @@
         <div class="col-xl-3">
           <div id="transactions-sidebar">
             <div class="media">
-              <img th:src = "@{/images/hsbc.png}" class="img-fluid mb-4">
+              <img th:src = "${account.getBank().getImageLocation()}" class="img-fluid mb-4">
             </div>
             <h5 th:text="${'Mr ' + account.getUser().getFirstName() + ' ' + account.getUser().getLastName()}">Account Name</h5>
             <h6 th:text="${account.getDescription()}">Description</h6>
