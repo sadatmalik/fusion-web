@@ -1,9 +1,13 @@
 package com.sadatmalik.fusionweb.controllers;
 
+import com.sadatmalik.fusionweb.model.Account;
 import com.sadatmalik.fusionweb.model.Debt;
+import com.sadatmalik.fusionweb.model.MonthlyExpense;
 import com.sadatmalik.fusionweb.model.User;
 import com.sadatmalik.fusionweb.model.websecurity.UserPrincipal;
+import com.sadatmalik.fusionweb.services.AccountService;
 import com.sadatmalik.fusionweb.services.DebtService;
+import com.sadatmalik.fusionweb.services.ExpenseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -21,27 +25,46 @@ import java.util.List;
 @RequiredArgsConstructor
 public class QuickStatsController {
 
+    private final AccountService accountService;
+    private final ExpenseService expenseService;
     private final DebtService debtService;
 
     @GetMapping("/quickstats")
     public String quickStats(Authentication authentication, Model model) {
         log.info("Returning Quickstats page");
-        // @todo hardcoded balance
-        model.addAttribute("totalBalance", String.format("£%,.2f", 2247.20));
+
+        // get logged-in users accounts
+        User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
+        List<Account> accounts = accountService.getAccountsFor(user);
+
+        // total balance
+        model.addAttribute("totalBalance", Utils.getTotalDisplayBalance(accounts));
+        // @todo hardcoded balance chart data
+        model.addAttribute("chartData", getChartData());
+
+        // payments
+        List<MonthlyExpense> paymentsList = expenseService.getMonthlyExpensesFor(user);
+        List<List<Object>> paymentChartData = getPaymentChartData(paymentsList);
+        model.addAttribute("paymentChartData", paymentChartData);
+
+        // debts
+        List<Debt> debtList = debtService.getDebtFor(user);
+        List<List<Object>> debtChartData = getDebtChartData(debtList);
+        model.addAttribute("debtChartData", debtChartData);
+
         model.addAttribute("date",
                 LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM, dd yyyy")));
 
-        // @todo hardcoded chart data
-        model.addAttribute("chartData", getChartData());
-
-        User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
-        List<Debt> debtList = debtService.getDebtFor(user);
-
-        List<List<Object>> debtChartData = getDebtChartData(debtList);
-
-        model.addAttribute("debtChartData", debtChartData);
-
         return "quickstats";
+    }
+
+    private List<List<Object>> getPaymentChartData(List<MonthlyExpense> paymentsList) {
+        List<List<Object>> paymentChartData = new ArrayList<>(List.of(List.of("TYPE", "To pay:")));
+        paymentsList.stream()
+                .forEach(expense ->
+                        paymentChartData.add(List.of(expense.getName(), expense.getAmount()))
+                );
+        return paymentChartData;
     }
 
     private List<List<Object>> getDebtChartData(List<Debt> debtList) {

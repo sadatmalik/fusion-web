@@ -62,17 +62,7 @@
                 chart.draw(data, options);
             }
             function drawPayments() {
-                var data = google.visualization.arrayToDataTable([
-                    ['TYPE', 'To pay:'],
-                    ['BROADBAND', 31.95],
-                    ['GAS/ELECTRIC', 178],
-                    ['WATER', 83],
-                    ['NETFLIX', 8.99],
-                    ['CAR TAX 1', 17.93],
-                    ['CAR TAX 2', 13.56],
-                    ['HOME INSURANCE', 53.19],
-                    ['PTA', 10]
-                ]);
+                var data = google.visualization.arrayToDataTable([[${paymentChartData}]]);
 
                 var options = {
                     width: 600,

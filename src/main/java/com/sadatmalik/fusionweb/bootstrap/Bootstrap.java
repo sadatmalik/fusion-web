@@ -192,34 +192,7 @@ public class Bootstrap implements CommandLineRunner {
         debtRepository.save(debt2);
 
         // set up some expense data
-        log.debug("Setting up Bootstrap expenses");
-
-        WeeklyExpense weeklyExpense = WeeklyExpense.builder()
-                .account(account)
-                .user(user)
-                .name("Sainsburys")
-                .amount(new BigDecimal(80))
-                .timesPerWeek(1)
-                .weeklyInterval(1)
-                .type(ExpenseType.GROCERIES)
-                .build();
-
-        account.setWeeklyExpenses(List.of(weeklyExpense));
-        user.setWeeklyExpenses(List.of(weeklyExpense));
-        weeklyExpenseRepository.save(weeklyExpense);
-
-        MonthlyExpense monthlyExpense = MonthlyExpense.builder()
-                .account(account)
-                .user(user)
-                .name("Scottish Power")
-                .amount(new BigDecimal(140))
-                .dayOfMonthPaid(18)
-                .type(ExpenseType.BILL)
-                .build();
-
-        account.setMonthlyExpenses(List.of(monthlyExpense));
-        user.setMonthlyExpenses(List.of(monthlyExpense));
-        monthlyExpenseRepository.save(monthlyExpense);
+        createDummyExpenses(user, account);
 
         // set up some goal data
         log.debug("Setting up Bootstrap expenses");
@@ -237,6 +210,129 @@ public class Bootstrap implements CommandLineRunner {
         account.setGoals(List.of(goal));
         user.setGoals(List.of(goal));
         goalRepository.save(goal);
+
+    }
+
+    private void createDummyExpenses(User user, Account account) {
+        log.debug("Setting up Bootstrap expenses");
+
+        WeeklyExpense weeklyExpense = WeeklyExpense.builder()
+                .account(account)
+                .user(user)
+                .name("Sainsburys")
+                .amount(new BigDecimal(80))
+                .timesPerWeek(1)
+                .weeklyInterval(1)
+                .type(ExpenseType.GROCERIES)
+                .build();
+
+        account.setWeeklyExpenses(List.of(weeklyExpense));
+        user.setWeeklyExpenses(List.of(weeklyExpense));
+        weeklyExpenseRepository.save(weeklyExpense);
+
+        MonthlyExpense broadband = monthlyExpenseRepository.save(MonthlyExpense.builder()
+                .account(account)
+                .user(user)
+                .name("BROADBAND")
+                .amount(new BigDecimal(31.95))
+                .dayOfMonthPaid(18)
+                .type(ExpenseType.UTILITIES)
+                .build()
+        );
+
+        account.setMonthlyExpenses(List.of(broadband));
+        user.setMonthlyExpenses(List.of(broadband));
+
+        MonthlyExpense gasElec = monthlyExpenseRepository.save(MonthlyExpense.builder()
+                .account(account)
+                .user(user)
+                .name("GAS/ELECTRIC")
+                .amount(new BigDecimal(178))
+                .dayOfMonthPaid(18)
+                .type(ExpenseType.UTILITIES)
+                .build()
+        );
+
+        account.setMonthlyExpenses(List.of(gasElec));
+        user.setMonthlyExpenses(List.of(gasElec));
+
+        MonthlyExpense water = monthlyExpenseRepository.save(MonthlyExpense.builder()
+                .account(account)
+                .user(user)
+                .name("WATER")
+                .amount(new BigDecimal(83))
+                .dayOfMonthPaid(18)
+                .type(ExpenseType.UTILITIES)
+                .build()
+        );
+
+        account.setMonthlyExpenses(List.of(water));
+        user.setMonthlyExpenses(List.of(water));
+
+        MonthlyExpense netflix = monthlyExpenseRepository.save(MonthlyExpense.builder()
+                .account(account)
+                .user(user)
+                .name("NETFLIX")
+                .amount(new BigDecimal(8.99))
+                .dayOfMonthPaid(18)
+                .type(ExpenseType.BILL)
+                .build()
+        );
+
+        account.setMonthlyExpenses(List.of(netflix));
+        user.setMonthlyExpenses(List.of(netflix));
+
+        MonthlyExpense carTax1 = monthlyExpenseRepository.save(MonthlyExpense.builder()
+                .account(account)
+                .user(user)
+                .name("CAR TAX 1")
+                .amount(new BigDecimal(17.93))
+                .dayOfMonthPaid(18)
+                .type(ExpenseType.CAR)
+                .build()
+        );
+
+        account.setMonthlyExpenses(List.of(carTax1));
+        user.setMonthlyExpenses(List.of(carTax1));
+
+        MonthlyExpense carTax2 = monthlyExpenseRepository.save(MonthlyExpense.builder()
+                .account(account)
+                .user(user)
+                .name("CAR TAX 2")
+                .amount(new BigDecimal(13.56))
+                .dayOfMonthPaid(18)
+                .type(ExpenseType.CAR)
+                .build()
+        );
+
+        account.setMonthlyExpenses(List.of(carTax2));
+        user.setMonthlyExpenses(List.of(carTax2));
+
+        MonthlyExpense homeInsurance = monthlyExpenseRepository.save(MonthlyExpense.builder()
+                .account(account)
+                .user(user)
+                .name("HOME INSURANCE")
+                .amount(new BigDecimal(53.19))
+                .dayOfMonthPaid(18)
+                .type(ExpenseType.CAR)
+                .build()
+        );
+
+        account.setMonthlyExpenses(List.of(homeInsurance));
+        user.setMonthlyExpenses(List.of(homeInsurance));
+
+        MonthlyExpense pta = monthlyExpenseRepository.save(MonthlyExpense.builder()
+                .account(account)
+                .user(user)
+                .name("PTA")
+                .amount(new BigDecimal(10.00))
+                .dayOfMonthPaid(18)
+                .type(ExpenseType.CHARITY)
+                .build()
+        );
+
+        account.setMonthlyExpenses(List.of(pta));
+        user.setMonthlyExpenses(List.of(pta));
 
     }
 
