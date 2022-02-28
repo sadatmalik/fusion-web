@@ -1,11 +1,9 @@
 package com.sadatmalik.fusionweb.services.hsbc;
 
-import com.sadatmalik.fusionweb.model.Account;
-import com.sadatmalik.fusionweb.model.AccountType;
-import com.sadatmalik.fusionweb.model.Balance;
-import com.sadatmalik.fusionweb.model.Transaction;
+import com.sadatmalik.fusionweb.model.*;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcAuthenticationService;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcUserAccessToken;
+import com.sadatmalik.fusionweb.repositories.BankRepository;
 import com.sadatmalik.fusionweb.services.AccountServicesRegistry;
 import com.sadatmalik.fusionweb.services.TransactionService;
 import com.sadatmalik.fusionweb.services.hsbc.model.accounts.HsbcAccount;
@@ -13,8 +11,8 @@ import com.sadatmalik.fusionweb.services.hsbc.model.accounts.HsbcAccountList;
 import com.sadatmalik.fusionweb.services.hsbc.model.balances.HsbcBalanceObject;
 import com.sadatmalik.fusionweb.services.hsbc.model.transacations.HsbcTransaction;
 import com.sadatmalik.fusionweb.services.hsbc.model.transacations.HsbcTransactionObject;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -26,13 +24,28 @@ import java.util.List;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class HsbcApiService implements TransactionService {
 
     private static final String ACCOUNT_INFO_URL = "https://sandbox.hsbc.com/psd2/obie/v3.1/accounts";
 
     private final HsbcAuthenticationService hsbcAuth;
     private final RestTemplate restTemplate;
+    private final BankRepository bankRepository;
+
+    private final Bank hsbc;
+
+    @Autowired
+    public HsbcApiService(HsbcAuthenticationService hsbcAuth,
+                          RestTemplate restTemplate, BankRepository bankRepository) {
+        this.hsbcAuth = hsbcAuth;
+        this.restTemplate = restTemplate;
+        this.bankRepository = bankRepository;
+        this.hsbc = bankRepository.save(Bank.builder()
+                .name("HSBC")
+                .imageLocation("/images/hsbc.png")
+                .build()
+        );
+    }
 
     // Public methods
     public List<Account> getUserAccounts() {
@@ -51,6 +64,7 @@ public class HsbcApiService implements TransactionService {
                         .balance(hsbcAccount.getBalance().getAmount())
                         .currency(hsbcAccount.getCurrency())
                         .description(hsbcAccount.getDescription())
+                        .bank(hsbc)
                         .build();
                 accounts.add(account);
 
