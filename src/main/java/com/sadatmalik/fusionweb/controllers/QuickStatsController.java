@@ -27,7 +27,7 @@ public class QuickStatsController {
     public String quickStats(Authentication authentication, Model model) {
         log.info("Returning Quickstats page");
         // @todo hardcoded balance
-        model.addAttribute("totalBalance", String.format("£%.2f", 2247.20));
+        model.addAttribute("totalBalance", String.format("£%,.2f", 2247.20));
         model.addAttribute("date",
                 LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM, dd yyyy")));
 

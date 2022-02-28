@@ -52,7 +52,7 @@ public class DashboardController {
         for (Account account : accounts) {
             total += account.getBalance();
         }
-        return String.format("£%.2f", total);
+        return String.format("£%,.2f", total);
     }
 
     @GetMapping("/transactions/{accountId}")
@@ -63,7 +63,7 @@ public class DashboardController {
         // @todo exception case - account not exists
         log.debug("Found - " + account);
 
-        String totalBalance = String.format("£%.2f", account.getBalance()); // @todo refactor to display method
+        String totalBalance = String.format("£%,.2f", account.getBalance()); // @todo refactor to display method
         model.addAttribute("account", account);
         model.addAttribute("totalBalance", totalBalance);
 
