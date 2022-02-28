@@ -183,7 +183,7 @@
 
     <nav class="bd-links collapse" id="bd-docs-nav">
         <ul class="left-options">
-            <li class="left-option active" id="Quickstats">
+            <li class="left-option" id="Quickstats">
                 <a th:href="@{'/quickstats'}">QUICKSTATS</a>
             </li>
             <li class="left-option" id="Accounts">
@@ -196,7 +196,7 @@
                 <a th:href="@{'/income-and-expenses'}">INCOME & EXPENSES</a>
             </li>
             <li class="left-option" id="Goals">
-                <a th:href="@{'#'}">GOALS</a>
+                <a th:href="@{'/#'}">GOALS</a>
             </li>
             <li class="left-option position-absolute bottom-0" id="Signout">
                 <a th:href="@{'/login?logout'}">SIGN OUT</a>
@@ -205,22 +205,24 @@
         </ul>
     </nav>
 
-</div>
+    <script>
+        function navHighlight() {
+            let url = location.href.split('/');
+            if (url.includes('quickstats')) {
+                document.getElementById('Quickstats').className += ' active';
+            } else if (url.includes('dashboard')) {
+                document.getElementById('Accounts').className += ' active';
+            } else if (url.includes('transactions')) {
+                document.getElementById('Transactions').className += ' active';
+            } else if (url.includes('income-and-expenses')) {
+                document.getElementById('IncomeExpenses').className += ' active';
+            } else if (url.includes('goals')) {
+                document.getElementById('Goals').className += ' active';
+            }
+        }
+        navHighlight(); /* active menu link selector */
+    </script>
 
-<div th:fragment="nav">
-    <div class="row">
-        <ul class="nav nav-tabs justify-content-end">
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/}">Home</a>
-            </li>
-<!--            <li sec:authorize="hasAuthority('ADMIN_ROLE')" class="nav-item">-->
-<!--                <a class="nav-link" th:href="@{/batch}">Batch</a>-->
-<!--            </li>-->
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/logout}">Logout</a>
-            </li>
-        </ul>
-    </div>
 </div>
 
 <div th:fragment="summary" class="row mt-3">
@@ -279,7 +281,6 @@
         </ul>
     </div>
 </div>
-
 
 <div th:fragment="add-account-permissions-summary" class="row mt-3">
     <div class="col-md-8 add-account-summary">
