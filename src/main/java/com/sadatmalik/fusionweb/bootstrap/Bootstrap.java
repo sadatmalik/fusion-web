@@ -80,7 +80,7 @@ public class Bootstrap implements CommandLineRunner {
         // set up some test accounts
         log.debug("Setting up Bootstrap accounts");
 
-        Account account = Account.builder()
+        Account account = accountRepository.save(Account.builder()
                 .accountId("HS000345678")
                 .type(AccountType.SAVINGS)
                 .name("HSBC")
@@ -89,29 +89,43 @@ public class Bootstrap implements CommandLineRunner {
                 .user(user)
                 .description("HSBC Savings account")
                 .bank(hsbc)
-                .build();
+                .build()
+        );
 
-        Account account2 = Account.builder()
+        Account account2 = accountRepository.save(Account.builder()
                 .accountId("BARC0003456")
                 .type(AccountType.SAVINGS)
                 .name("BARC")
                 .balance(41075.29)
                 .currency("GBP")
                 .user(user)
-                .description("Barclays Super Saver account")
+                .description("Barclays Everyday Saver account")
                 .bank(barclays)
-                .build();
+                .build()
+        );
 
-        user.setAccounts(List.of(account, account2));
 
-        accountRepository.save(account);
-        accountRepository.save(account2);
+        Account account3 = accountRepository.save(Account.builder()
+                .accountId("BARC0007891")
+                .type(AccountType.CURRENT)
+                .name("BARC")
+                .balance(1268.08)
+                .currency("GBP")
+                .user(user)
+                .description("Barclays Cash OD account")
+                .bank(barclays)
+                .build()
+        );
+
+        user.setAccounts(List.of(account, account2, account3));
 
         // Set Transaction Service for dummy accounts
         AccountServicesRegistry.getInstance().registerTransactionService(account,
                 new DummyTransactionService());
         AccountServicesRegistry.getInstance().registerTransactionService(account2,
                 new DummyBarclaysSavingsTransactionService());
+        AccountServicesRegistry.getInstance().registerTransactionService(account3,
+                new DummyTransactionService());
 
         // set up some income data
         log.debug("Setting up Bootstrap income");
