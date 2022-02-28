@@ -9,6 +9,7 @@ import com.sadatmalik.fusionweb.repositories.websecurity.AuthorityRepo;
 import com.sadatmalik.fusionweb.repositories.websecurity.UserPrincipalRepo;
 import com.sadatmalik.fusionweb.services.AccountServicesRegistry;
 import com.sadatmalik.fusionweb.services.DummyBarclaysSavingsTransactionService;
+import com.sadatmalik.fusionweb.services.DummyHsbcSavingsTransactionService;
 import com.sadatmalik.fusionweb.services.DummyTransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -121,7 +122,7 @@ public class Bootstrap implements CommandLineRunner {
 
         // Set Transaction Service for dummy accounts
         AccountServicesRegistry.getInstance().registerTransactionService(account,
-                new DummyTransactionService());
+                new DummyHsbcSavingsTransactionService());
         AccountServicesRegistry.getInstance().registerTransactionService(account2,
                 new DummyBarclaysSavingsTransactionService());
         AccountServicesRegistry.getInstance().registerTransactionService(account3,
