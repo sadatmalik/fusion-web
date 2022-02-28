@@ -190,7 +190,7 @@
                 <a th:href="@{'/dashboard'}">ACCOUNTS</a>
             </li>
             <li class="left-option" id="Transactions">
-                <a th:href="@{'#'}">TRANSACTIONS</a>
+                <a th:href="@{'/transactions'}">TRANSACTIONS</a>
             </li>
             <li class="left-option" id="IncomeExpenses">
                 <a th:href="@{'/income-and-expenses'}">INCOME & EXPENSES</a>
@@ -267,6 +267,19 @@
         </ul>
     </div>
 </div>
+
+<div th:fragment="txn-summary" class="row mt-3">
+    <div class="col-md-8 account-summary">
+        <ul class="buttonwrapper">
+            <a th:href="@{'/dashboard/'}">
+                <li id="back" class="active"><label id="l1">VIEW BY ACCOUNTS</label></li>
+            </a>
+            <li id="refesh" class=""><label id="l2">REFRESH</label></li>
+            <li id="refesh" class=""><label id="l3">EXPORT CSV</label></li>
+        </ul>
+    </div>
+</div>
+
 
 <div th:fragment="add-account-permissions-summary" class="row mt-3">
     <div class="col-md-8 add-account-summary">
