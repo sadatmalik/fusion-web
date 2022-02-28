@@ -40,7 +40,7 @@
           <td th:text="${account.getName()}">Bank</td>
           <td th:text="${account.getAccountId()}">Account ID</td>
           <td th:text="${'Mr ' + account.getUser().getFirstName() + ' ' + account.getUser().getLastName()}">Name</td>
-          <td th:text="'£' + ${account.getBalance()}">Balance</td>
+          <td th:text="${account.displayBalance()}">Balance</td>
           <td th:text="${account.getCurrency()}">Currency</td>
           <td th:text="${account.getType()}">Type</td>
 <!--          <td th:text="${account.getSubType()}">SubType</td>-->

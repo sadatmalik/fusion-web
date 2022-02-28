@@ -57,4 +57,8 @@ public class Account {
     @ManyToOne
     @JoinColumn(name = "bankId", referencedColumnName = "id")
     private Bank bank;
+
+    public String displayBalance() {
+        return String.format("£%,.2f", balance);
+    }
 }
