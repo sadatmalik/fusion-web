@@ -5,7 +5,7 @@
 /src/test/javascript/coverage/
 /src/test/javascript/PhantomJS*/
 
-/scripts/mysql-init-prd.sql
+/src/main/scripts/mysql-init-prd.sql
 
 ######################
 # Node
