@@ -20,4 +20,6 @@ public class ExpenseService {
         return monthlyExpenseRepository.findByUser(user);
     }
 
+    public void saveExpense(MonthlyExpense monthlyExpense) {
+    }
 }
