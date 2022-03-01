@@ -8,10 +8,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 
 @Slf4j
@@ -41,8 +43,15 @@ public class IncomeExpenseController {
 //    }
 
     @PostMapping("/income-and-expenses/new-monthly-expense")
-    public String save(@ModelAttribute("monthlyExpense") MonthlyExpenseDto monthlyExpenseDto, Model model) {
+    public String save(@ModelAttribute("monthlyExpense") @Valid MonthlyExpenseDto monthlyExpenseDto,
+                       BindingResult bindingResult,
+                       Model model) {
         // @todo setup field validations for new expense
+        if (bindingResult.hasErrors()) {
+            log.debug("Validation errors on received monthlyExpenseDto");
+            return "income-and-expenses";
+        }
+
         try {
             log.debug("Saving new monthly expense - " + monthlyExpenseDto);
 

@@ -109,6 +109,10 @@ body {
     box-shadow: rgb(0 0 0 / 24%) 0px 1px 10px;
 }
 
+.error {
+    color: #E6526D;
+}
+
 /* end overrides*/
 
 .btn-link {

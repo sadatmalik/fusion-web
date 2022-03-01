@@ -204,7 +204,12 @@
                                            class="form-control" placeholder="Amount" required>
                                 </p>
                                 <p>
-                                    <label for="dayOfMonthPaid" class="sr-only">Day of month paid</label>
+                                    <label for="dayOfMonthPaid" class="sr-only" th:classappend="${#fields.hasErrors('dayOfMonthPaid')} ? error">
+                                        Day of month paid
+                                    </label>
+                                    <span th:if="${#fields.hasErrors('dayOfMonthPaid')}" th:errors="*{dayOfMonthPaid}" class="error">
+                                        Day of month paid error
+                                    </span>
                                     <input type="text" id="dayOfMonthPaid" name="dayOfMonthPaid" th:field="*{dayOfMonthPaid}"
                                            class="form-control" th:placeholder="#{'Day of month paid'}" required>
                                 </p>
