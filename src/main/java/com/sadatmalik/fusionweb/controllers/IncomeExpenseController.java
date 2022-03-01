@@ -1,6 +1,8 @@
 package com.sadatmalik.fusionweb.controllers;
 
+import com.sadatmalik.fusionweb.model.MonthlyExpense;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
+import com.sadatmalik.fusionweb.services.AccountService;
 import com.sadatmalik.fusionweb.services.ExpenseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,11 +12,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.math.BigDecimal;
+
 @Slf4j
 @Controller
 @RequiredArgsConstructor
 public class IncomeExpenseController {
 
+    private final AccountService accountService;
     private final ExpenseService expenseService;
 
     @GetMapping({"/income-and-expenses"})
@@ -36,11 +41,26 @@ public class IncomeExpenseController {
 //    }
 
     @PostMapping("/income-and-expenses/new-monthly-expense")
-    public String save(@ModelAttribute("monthlyExpense") MonthlyExpenseDto monthlyExpense, Model model) {
+    public String save(@ModelAttribute("monthlyExpense") MonthlyExpenseDto monthlyExpenseDto, Model model) {
         // @todo setup field validations for new expense
         try {
-            log.debug("Saving new monthly expense - " + monthlyExpense);
-            //expenseService.saveExpense(monthlyExpense);
+            log.debug("Saving new monthly expense - " + monthlyExpenseDto);
+
+            // @todo use MapStruct
+            MonthlyExpense monthlyExpense = MonthlyExpense.builder()
+                    .name(monthlyExpenseDto.getName())
+                    .amount(new BigDecimal(monthlyExpenseDto.getAmount()))
+                    .dayOfMonthPaid(monthlyExpenseDto.getDayOfMonthPaid())
+                    .type(monthlyExpenseDto.getType())
+                    .account(accountService.getAccountByAccountId(
+                            monthlyExpenseDto.getAccountId())
+                    )
+                    .build();
+
+            MonthlyExpense saved = expenseService.saveExpense(monthlyExpense);
+
+            log.debug("Saved new monthly expense to DB - " + saved);
+
         } catch (IllegalStateException e) {
             model.addAttribute("error", e.getMessage());
             return "error";

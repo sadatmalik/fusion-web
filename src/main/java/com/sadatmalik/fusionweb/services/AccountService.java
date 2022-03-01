@@ -28,4 +28,8 @@ public class AccountService {
         account.setUser(user);
         return accountRepository.save(account);
     }
+
+    public Account getAccountByAccountId(String accountId) {
+        return accountRepository.findByAccountId(accountId);
+    }
 }
