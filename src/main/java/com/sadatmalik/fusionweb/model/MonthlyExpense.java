@@ -35,4 +35,8 @@ public class MonthlyExpense {
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private User user;
 
+    public String displayAmount() {
+        return String.format("£%,.2f", amount);
+    }
+
 }

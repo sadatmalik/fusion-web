@@ -25,23 +25,29 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
+                        <tr th:remove="all">
                             <td>7</td>
                             <td>Mortgage 1</td>
                             <td>£480</td>
                             <td>BARCLAYS</td>
                         </tr>
-                        <tr>
+                        <tr th:remove="all">
                             <td>15</td>
                             <td>Thames Water</td>
                             <td>£40</td>
                             <td>BARCLAYS</td>
                         </tr>
-                        <tr>
+                        <tr th:remove="all">
                             <td>21</td>
                             <td>Netflix</td>
                             <td>£8.99</td>
                             <td>CREDIT CARD</td>
+                        </tr>
+                        <tr th:each="expense : ${monthlyExpenseList}">
+                            <td th:text="${expense.getDayOfMonthPaid()}">Day Of Month</td>
+                            <td th:text="${expense.getName()}">Description</td>
+                            <td th:text="${expense.displayAmount()}">Amount</td>
+                            <td th:text="${expense.getAccount().getDescription()}">Paid From</td>
                         </tr>
                         </tbody>
                     </table>
