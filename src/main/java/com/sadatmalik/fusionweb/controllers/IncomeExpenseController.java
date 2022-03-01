@@ -1,6 +1,6 @@
 package com.sadatmalik.fusionweb.controllers;
 
-import com.sadatmalik.fusionweb.model.MonthlyExpense;
+import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
 import com.sadatmalik.fusionweb.services.ExpenseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,25 +21,26 @@ public class IncomeExpenseController {
     public String incomeAndExpenses(Model model) {
         log.info("Returning income and expenses page");
 
-        MonthlyExpense monthlyExpense = new MonthlyExpense();
+        MonthlyExpenseDto monthlyExpense = new MonthlyExpenseDto();
         model.addAttribute("monthlyExpense", monthlyExpense);
 
         return "income-and-expenses";
     }
 
-    @GetMapping({"/income-and-expenses/new-monthly-expense"})
-    public String newMonthlyExpense(Model model) {
-        log.info("Returning create new monthly expense page");
-        MonthlyExpense monthlyExpense = new MonthlyExpense();
-        model.addAttribute("monthlyExpense", monthlyExpense);
-        return "new-monthly-expense";
-    }
+//    @GetMapping({"/income-and-expenses/new-monthly-expense"})
+//    public String newMonthlyExpense(Model model) {
+//        log.info("Returning create new monthly expense page");
+//        MonthlyExpense monthlyExpense = new MonthlyExpense();
+//        model.addAttribute("monthlyExpense", monthlyExpense);
+//        return "new-monthly-expense";
+//    }
 
     @PostMapping("/income-and-expenses/new-monthly-expense")
-    public String save(@ModelAttribute("monthlyExpense") MonthlyExpense monthlyExpense, Model model) {
+    public String save(@ModelAttribute("monthlyExpense") MonthlyExpenseDto monthlyExpense, Model model) {
         // @todo setup field validations for new expense
         try {
-            expenseService.saveExpense(monthlyExpense);
+            log.debug("Saving new monthly expense - " + monthlyExpense);
+            //expenseService.saveExpense(monthlyExpense);
         } catch (IllegalStateException e) {
             model.addAttribute("error", e.getMessage());
             return "error";

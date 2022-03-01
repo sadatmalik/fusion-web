@@ -189,7 +189,7 @@
                         <div class="row">
                             <h2>New monthly expense</h2>
                         </div>
-                        <form th:action="@{/income-and-expenses/new-monthly}" th:object="${monthlyExpense}"
+                        <form th:action="@{/income-and-expenses/new-monthly-expense}" th:object="${monthlyExpense}"
                               class="form-signin mt-5" method="post">
 
                             <div class="row">
@@ -214,14 +214,10 @@
                                            class="form-control" placeholder="Expense type" required>
                                 </p>
                                 <p>
-                                    <label for="account" class="sr-only">Paid from account</label>
-                                    <input type="text" id="account" name="account" th:field="*{account}"
+                                    <label for="accountId" class="sr-only">Paid from account</label>
+                                    <input type="text" id="accountId" name="accountId" th:field="*{accountId}"
                                            class="form-control" placeholder="Select account" required>
                                 </p>
-
-
-
-
                                 <input name="_csrf" type="hidden" value="00b612fc-ffb3-4935-adca-4f65795f7770" />
                             </div>
                             <div class="row px-2 py-5">
