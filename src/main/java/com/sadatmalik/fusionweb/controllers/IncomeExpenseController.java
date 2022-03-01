@@ -1,11 +1,14 @@
 package com.sadatmalik.fusionweb.controllers;
 
 import com.sadatmalik.fusionweb.model.MonthlyExpense;
+import com.sadatmalik.fusionweb.model.User;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
+import com.sadatmalik.fusionweb.model.websecurity.UserPrincipal;
 import com.sadatmalik.fusionweb.services.AccountService;
 import com.sadatmalik.fusionweb.services.ExpenseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -25,11 +29,15 @@ public class IncomeExpenseController {
     private final ExpenseService expenseService;
 
     @GetMapping({"/income-and-expenses"})
-    public String incomeAndExpenses(Model model) {
+    public String incomeAndExpenses(Authentication authentication, Model model) {
         log.info("Returning income and expenses page");
 
         MonthlyExpenseDto monthlyExpense = new MonthlyExpenseDto();
         model.addAttribute("monthlyExpense", monthlyExpense);
+
+        User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
+        List<MonthlyExpense> monthlyExpenseList = expenseService.getMonthlyExpensesFor(user);
+        model.addAttribute("monthlyExpenseList", monthlyExpenseList);
 
         return "income-and-expenses";
     }
@@ -45,6 +53,7 @@ public class IncomeExpenseController {
     @PostMapping("/income-and-expenses/new-monthly-expense")
     public String save(@ModelAttribute("monthlyExpense") @Valid MonthlyExpenseDto monthlyExpenseDto,
                        BindingResult bindingResult,
+                       Authentication authentication,
                        Model model) {
         // @todo setup field validations for new expense
         if (bindingResult.hasErrors()) {
@@ -56,6 +65,8 @@ public class IncomeExpenseController {
         try {
             log.debug("Saving new monthly expense - " + monthlyExpenseDto);
 
+            User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
+
             // @todo use MapStruct
             MonthlyExpense monthlyExpense = MonthlyExpense.builder()
                     .name(monthlyExpenseDto.getName())
@@ -65,6 +76,7 @@ public class IncomeExpenseController {
                     .account(accountService.getAccountByAccountId(
                             monthlyExpenseDto.getAccountId())
                     )
+                    .user(user)
                     .build();
 
             MonthlyExpense saved = expenseService.saveExpense(monthlyExpense);
