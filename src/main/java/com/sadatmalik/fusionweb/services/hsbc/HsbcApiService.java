@@ -24,9 +24,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class HsbcApiService implements TransactionService {
-
-    private static final String ACCOUNT_INFO_URL = "https://sandbox.hsbc.com/psd2/obie/v3.1/accounts";
+public class HsbcApiService implements HsbcOpenBankingService, TransactionService {
 
     private final HsbcAuthenticationService hsbcAuth;
     private final RestTemplate restTemplate;

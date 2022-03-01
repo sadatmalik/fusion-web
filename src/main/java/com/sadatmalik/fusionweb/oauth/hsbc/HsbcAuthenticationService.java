@@ -1,8 +1,7 @@
 package com.sadatmalik.fusionweb.oauth.hsbc;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -10,12 +9,10 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-public final class HsbcAuthenticationService {
-
-    private static final Logger logger = LoggerFactory.getLogger(HsbcAuthenticationService.class);
-    static final String APP_REDIRECT_URL = "http://localhost:8080";
+public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoints {
 
     @Autowired
     RestTemplate restTemplate;
@@ -35,8 +32,6 @@ public final class HsbcAuthenticationService {
     // "https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2"
     public HsbcClientAccessToken getAccessToken() {
 
-        String access_token_url = "https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2";
-
         String grant_type = "client_credentials";
         String scope = "accounts";
         String client_assertion_type = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
@@ -53,9 +48,9 @@ public final class HsbcAuthenticationService {
 
         HttpEntity<String> request = new HttpEntity<>(body, headers);
         ResponseEntity<HsbcClientAccessToken> response =
-                restTemplate.exchange(access_token_url, HttpMethod.POST, request, HsbcClientAccessToken.class);
+                restTemplate.exchange(ACCESS_TOKEN_URL, HttpMethod.POST, request, HsbcClientAccessToken.class);
 
-        logger.debug("Access Token Response ---------" + response.getBody());
+        log.debug("Access Token Response ---------" + response.getBody());
 
         return response.getBody();
     }
@@ -89,7 +84,6 @@ public final class HsbcAuthenticationService {
     // "https://sandbox.hsbc.com/psd2/obie/v3.1/account-access-consents"
     public HsbcConsent getConsentID(HsbcClientAccessToken token) {
 
-        String account_access_consents_url = "https://sandbox.hsbc.com/psd2/obie/v3.1/account-access-consents";
         String accessToken = token.getAccessToken();
 
         // Construct Http request headers and body per HSBC OAuth API documentation
@@ -105,9 +99,9 @@ public final class HsbcAuthenticationService {
 
         HttpEntity<String> request = new HttpEntity<>(body, headers);
         ResponseEntity<HsbcConsent> response =
-                restTemplate.exchange(account_access_consents_url, HttpMethod.POST, request, HsbcConsent.class);
+                restTemplate.exchange(ACCOUNT_ACCESS_CONSENTS_URL, HttpMethod.POST, request, HsbcConsent.class);
 
-        logger.debug("Consent ID response ---------" + response.getBody());
+        log.debug("Consent ID response ---------" + response.getBody());
 
         return response.getBody();
     }
@@ -124,9 +118,8 @@ public final class HsbcAuthenticationService {
     // &request=eyJhbGciOiJQUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjdmYWI4MDdkLTQ5ODgtNDAxMi04ZjEwLWE3NzY1NTc4NzQ1MCJ9.eyJpc3MiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwiYXVkIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwicmVzcG9uc2VfdHlwZSI6ImNvZGUgaWRfdG9rZW4iLCJjbGllbnRfaWQiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJyZWRpcmVjdF91cmkiOiJodHRwOi8vZ29vZ2xlLmNvbSIsInNjb3BlIjoib3BlbmlkIGFjY291bnRzIiwiY2xhaW1zIjp7InVzZXJpbmZvIjp7Im9wZW5iYW5raW5nX2ludGVudF9pZCI6eyJ2YWx1ZSI6ImRlNjc4NmRlLTlhMTctNGE3OS04MTViLWZhYjg5MGJlZWU5MyIsImVzc2VudGlhbCI6dHJ1ZX19fX0.xm7Pc86lZjynBF6GXQ0CvLD1DYEOuMr21Hf3727tnHgb4v_iTyTOMdfZ0OPky0RrfPJ_QM4x1mfHuUS-4xWn5CUjA6REtMA7tHNGrHo8oQRJPRuIx3xuLodLBylMM9D6x_emh1LJXDB0GiKgJWS4QOsa56x8VDfTRqr_fuOI2T0ZVoWIOHP4pW9euem9kNf4Dh-7El-WflD7jdPVGD0ZKltBxMIjAc-vjfS4el2-MYBadxv_4E1SRtKyXX4VmihvPvyzMHzhydaOyl2nFro5inHC_Y7byY-xGih7d2-Fwboij_CI6jwvnN99HyAJRDv8qqlxFXXKqPIqchZQ309QeQ"
     // [request = JWT]
     public String getAuthorizationURL(HsbcConsent consent) {
-        String authorize_url = "https://sandbox.hsbc.com/psd2/obie/v3.1/authorize";
 
-        authorize_url += "?response_type=code%20id_token";
+        String authorize_url = AUTHORIZE_URL + "?response_type=code%20id_token";
         authorize_url += "&client_id=211e36de-64b2-479e-ae28-8a5b41a1a940";
         authorize_url += "&redirect_uri=" + APP_REDIRECT_URL;
         authorize_url += "&scope=openid%20accounts";
@@ -166,8 +159,6 @@ public final class HsbcAuthenticationService {
         String client_assertion_type = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
         String client_assertion = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkZThjYTc3LWQ2ODEtNDc4Mi04MTIyLWUwMzkyNTg5MDIxYiJ9.eyJpc3MiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJhdWQiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwic3ViIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwiaWF0IjoxNDk5MTgzNjAxLCJleHAiOjE3NzkzNDg1MjF9.uu282OmEHUa0t6z6T68MfXzEGGgq8PiWuyJxuNQ1be6iWdD5sVbw3W--_O6TFAH-ae7BYXsE0kncYgA6gF9AmkXuA77w_Wbn2YyjPCB9gDCkrlJUS6rvb3UJYcIBZ7W-WZlRAsRE0l6EV74c5xnyL9c7cpGMfQ-HfPsYOG4JCsrvtpAHdo7jHWTVgKoe67jWGQkNOYt1Ba7rCf4y-fqQ3d6hZoptAAcJd26yigvV4768GHQGrBvgAc7OzutOGzYARAgStpjQMp0kMiOGIzq-TUsDlvtMrx2fH8gfy2uG2HvzsROkbNedL-iO5PmswNrDvCYEWZmVjMcaVg--ZF0sjg";
 
-        String access_token_url = "https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2";
-
         String body = "grant_type=" + grant_type +
                 "&code=" + authCode +
                 "&redirect_uri=" + APP_REDIRECT_URL +
@@ -176,9 +167,9 @@ public final class HsbcAuthenticationService {
 
         HttpEntity<String> request = new HttpEntity<>(body, headers);
         ResponseEntity<HsbcUserAccessToken> response =
-                restTemplate.exchange(access_token_url, HttpMethod.POST, request, HsbcUserAccessToken.class);
+                restTemplate.exchange(ACCESS_TOKEN_URL, HttpMethod.POST, request, HsbcUserAccessToken.class);
 
-        logger.debug("User Access Token Response ---------" + response.getBody());
+        log.debug("User Access Token Response ---------" + response.getBody());
 
         return response.getBody();
     }
@@ -200,8 +191,6 @@ public final class HsbcAuthenticationService {
         String client_assertion_type = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
         String client_assertion = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkZThjYTc3LWQ2ODEtNDc4Mi04MTIyLWUwMzkyNTg5MDIxYiJ9.eyJpc3MiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJhdWQiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwic3ViIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwiaWF0IjoxNDk5MTgzNjAxLCJleHAiOjE3NzkzNDg1MjF9.uu282OmEHUa0t6z6T68MfXzEGGgq8PiWuyJxuNQ1be6iWdD5sVbw3W--_O6TFAH-ae7BYXsE0kncYgA6gF9AmkXuA77w_Wbn2YyjPCB9gDCkrlJUS6rvb3UJYcIBZ7W-WZlRAsRE0l6EV74c5xnyL9c7cpGMfQ-HfPsYOG4JCsrvtpAHdo7jHWTVgKoe67jWGQkNOYt1Ba7rCf4y-fqQ3d6hZoptAAcJd26yigvV4768GHQGrBvgAc7OzutOGzYARAgStpjQMp0kMiOGIzq-TUsDlvtMrx2fH8gfy2uG2HvzsROkbNedL-iO5PmswNrDvCYEWZmVjMcaVg--ZF0sjg";
 
-        String access_token_url = "https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2";
-
         String body = "grant_type=" + grant_type +
                 "&refresh_token=" + refreshToken.getRefreshToken() +
                 "&redirect_uri=" + APP_REDIRECT_URL +
@@ -210,12 +199,12 @@ public final class HsbcAuthenticationService {
 
         HttpEntity<String> request = new HttpEntity<>(body, headers);
         ResponseEntity<HsbcUserAccessToken> response =
-                restTemplate.exchange(access_token_url, HttpMethod.POST, request, HsbcUserAccessToken.class);
+                restTemplate.exchange(ACCESS_TOKEN_URL, HttpMethod.POST, request, HsbcUserAccessToken.class);
 
         // @todo add response validations
-        // @todo consider global exception handler down the road
+        // @todo consider global exception handler
 
-        logger.debug("Refresh User Access Token Response ---------" + response.getBody());
+        log.debug("Refresh User Access Token Response ---------" + response.getBody());
 
         return response.getBody();
     }
