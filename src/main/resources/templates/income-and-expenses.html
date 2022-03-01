@@ -184,7 +184,7 @@
                     <a th:href="@{'#'}" class="btn btn-md btn-primary mb-5" role="button">NEW WEEKLY INCOME</a>
                 </div>
 
-                <div class="collapse" id="collapseExample">
+                <div id="collapseExample" th:class="${collapseShow} ? 'collapse.show' : collapse">
                     <div class="col-xl-4 ie-form py-5 float-end">
                         <div class="row">
                             <h2>New monthly expense</h2>
@@ -194,14 +194,20 @@
 
                             <div class="row">
                                 <p>
-                                    <label for="name" class="sr-only">Description</label>
+                                    <label for="name" class="sr-only" th:classappend="${#fields.hasErrors('name')} ? error">Description</label>
+                                    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error">
+                                        Description error
+                                    </span>
                                     <input type="text" id="name" name="name" th:field="*{name}"
-                                           class="form-control" placeholder="Description" required autofocus>
+                                           class="form-control" placeholder="Description" required  th:autofocus="${#fields.hasErrors('name')} ? true">
                                 </p>
                                 <p>
-                                    <label for="amount" class="sr-only">Amount</label>
+                                    <label for="amount" class="sr-only" th:classappend="${#fields.hasErrors('amount')} ? error">Amount</label>
+                                    <span th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}" class="error">
+                                        Amount error
+                                    </span>
                                     <input type="text" id="amount" name="amount" th:field="*{amount}"
-                                           class="form-control" placeholder="Amount" required>
+                                           class="form-control" placeholder="Amount" required th:autofocus="${#fields.hasErrors('amount')} ? true">
                                 </p>
                                 <p>
                                     <label for="dayOfMonthPaid" class="sr-only" th:classappend="${#fields.hasErrors('dayOfMonthPaid')} ? error">
@@ -211,17 +217,23 @@
                                         Day of month paid error
                                     </span>
                                     <input type="text" id="dayOfMonthPaid" name="dayOfMonthPaid" th:field="*{dayOfMonthPaid}"
-                                           class="form-control" th:placeholder="#{'Day of month paid'}" required>
+                                           class="form-control" th:placeholder="#{'Day of month paid'}" required th:autofocus="${#fields.hasErrors('dayOfMonthPaid')} ? true">
                                 </p>
                                 <p>
-                                    <label for="type" class="sr-only">Type of expense</label>
+                                    <label for="type" class="sr-only" th:classappend="${#fields.hasErrors('type')} ? error">Type of expense</label>
+                                    <span th:if="${#fields.hasErrors('type')}" th:errors="*{type}" class="error">
+                                        Type of expense error
+                                    </span>
                                     <input type="text" id="type" name="type" th:field="*{type}"
-                                           class="form-control" placeholder="Expense type" required>
+                                           class="form-control" placeholder="Expense type" required th:autofocus="${#fields.hasErrors('type')} ? true">
                                 </p>
                                 <p>
-                                    <label for="accountId" class="sr-only">Paid from account</label>
+                                    <label for="accountId" class="sr-only" th:classappend="${#fields.hasErrors('accountId')} ? error">Paid from account</label>
+                                    <span th:if="${#fields.hasErrors('accountId')}" th:errors="*{accountId}" class="error">
+                                        Paid from account error
+                                    </span>
                                     <input type="text" id="accountId" name="accountId" th:field="*{accountId}"
-                                           class="form-control" placeholder="Select account" required>
+                                           class="form-control" placeholder="Select account" required th:autofocus="${#fields.hasErrors('accountId')} ? true">
                                 </p>
                                 <input name="_csrf" type="hidden" value="00b612fc-ffb3-4935-adca-4f65795f7770" />
                             </div>

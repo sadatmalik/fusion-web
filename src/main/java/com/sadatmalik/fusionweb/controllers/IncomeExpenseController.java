@@ -49,6 +49,7 @@ public class IncomeExpenseController {
         // @todo setup field validations for new expense
         if (bindingResult.hasErrors()) {
             log.debug("Validation errors on received monthlyExpenseDto");
+            model.addAttribute("collapseShow", true);
             return "income-and-expenses";
         }
 
