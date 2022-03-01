@@ -19,7 +19,7 @@ public class Account {
     private Long id;
 
     private String accountId;
-    private String name; // e.g. HSBC
+    private String name; // e.g. of account holder
 
     @Enumerated(value = EnumType.STRING)
     private AccountType type; // e.g current, savings, cash

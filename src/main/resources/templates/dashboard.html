@@ -37,9 +37,9 @@
         </thead>
         <tbody>
         <tr th:each="account : ${accountList}" th:onclick="|window.location='@{'/transactions/' + ${account.getAccountId()}}'|" class="clickable">
-          <td th:text="${account.getName()}">Bank</td>
+          <td th:text="${account.getBank().getName()}">Bank</td>
           <td th:text="${account.getAccountId()}">Account ID</td>
-          <td th:text="${'Mr ' + account.getUser().getFirstName() + ' ' + account.getUser().getLastName()}">Name</td>
+          <td th:text="${account.getName()}">Name</td>
           <td th:text="${account.displayBalance()}">Balance</td>
           <td th:text="${account.getCurrency()}">Currency</td>
           <td th:text="${account.getType()}">Type</td>

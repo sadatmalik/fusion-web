@@ -57,7 +57,7 @@ public class HsbcApiService implements HsbcOpenBankingService, TransactionServic
             for (HsbcAccount hsbcAccount : hsbcAccounts) {
                 Account account = Account.builder()
                         .accountId(hsbcAccount.getAccountId())
-                        .name("HSBC")
+                        .name(hsbcAccount.getAccountInfo().get(0).getName())
                         .type(AccountType.CURRENT) // @todo take this from hsbcAccount mapping String to Enum
                         .balance(hsbcAccount.getBalance().getAmount())
                         .currency(hsbcAccount.getCurrency())
