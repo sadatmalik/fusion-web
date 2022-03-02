@@ -4,6 +4,7 @@ import com.sadatmalik.fusionweb.model.MonthlyExpense;
 import com.sadatmalik.fusionweb.model.User;
 import com.sadatmalik.fusionweb.model.WeeklyExpense;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
+import com.sadatmalik.fusionweb.model.dto.WeeklyExpenseDto;
 import com.sadatmalik.fusionweb.model.websecurity.UserPrincipal;
 import com.sadatmalik.fusionweb.services.AccountService;
 import com.sadatmalik.fusionweb.services.ExpenseService;
@@ -33,8 +34,8 @@ public class IncomeExpenseController {
     public String incomeAndExpenses(Authentication authentication, Model model) {
         log.info("Returning income and expenses page");
 
-        MonthlyExpenseDto monthlyExpense = new MonthlyExpenseDto();
-        model.addAttribute("monthlyExpense", monthlyExpense);
+        model.addAttribute("monthlyExpenseDto", new MonthlyExpenseDto());
+        model.addAttribute("weeklyExpenseDto", new WeeklyExpenseDto());
 
         model.addAttribute("monthlyExpenseList", getMonthlyExpenses(authentication));
         model.addAttribute("weeklyExpenseList", getWeeklyExpenses(authentication));
@@ -55,45 +56,45 @@ public class IncomeExpenseController {
     }
 
     @PostMapping("/income-and-expenses/new-monthly-expense")
-    public String save(@ModelAttribute("monthlyExpense") @Valid MonthlyExpenseDto monthlyExpenseDto,
+    public String save(@ModelAttribute("monthlyExpenseDto") @Valid MonthlyExpenseDto monthlyExpenseDto,
                        BindingResult bindingResult,
                        Authentication authentication,
                        Model model) {
-        // @todo setup field validations for new expense
         if (bindingResult.hasErrors()) {
             log.debug("Validation errors on form submission - MonthlyExpenseDto has validation errors");
             model.addAttribute("collapseShow", true);
 
             model.addAttribute("monthlyExpenseList", getMonthlyExpenses(authentication));
-
             return "income-and-expenses";
         }
-
         try {
             log.debug("Saving new monthly expense - " + monthlyExpenseDto);
-
-            User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
-
-            // @todo use MapStruct
-            MonthlyExpense monthlyExpense = MonthlyExpense.builder()
-                    .name(monthlyExpenseDto.getName())
-                    .amount(new BigDecimal(monthlyExpenseDto.getAmount()))
-                    .dayOfMonthPaid(monthlyExpenseDto.getDayOfMonthPaid())
-                    .type(monthlyExpenseDto.getType())
-                    .account(accountService.getAccountByAccountId(
-                            monthlyExpenseDto.getAccountId())
-                    )
-                    .user(user)
-                    .build();
-
-            MonthlyExpense saved = expenseService.saveExpense(monthlyExpense);
-
-            log.debug("Saved new monthly expense to DB - " + saved);
+            saveMonthlyExpense(monthlyExpenseDto, authentication);
 
         } catch (IllegalStateException e) {
             model.addAttribute("error", e.getMessage());
             return "error";
         }
         return "redirect:/income-and-expenses";
+    }
+
+    private void saveMonthlyExpense(MonthlyExpenseDto monthlyExpenseDto, Authentication authentication) {
+
+        User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
+
+        // @todo use MapStruct
+        MonthlyExpense monthlyExpense = MonthlyExpense.builder()
+                .name(monthlyExpenseDto.getName())
+                .amount(new BigDecimal(monthlyExpenseDto.getAmount()))
+                .dayOfMonthPaid(monthlyExpenseDto.getDayOfMonthPaid())
+                .type(monthlyExpenseDto.getType())
+                .account(accountService.getAccountByAccountId(
+                        monthlyExpenseDto.getAccountId())
+                )
+                .user(user)
+                .build();
+
+        MonthlyExpense saved = expenseService.saveExpense(monthlyExpense);
+        log.debug("Saved new monthly expense to DB - " + saved);
     }
 }
