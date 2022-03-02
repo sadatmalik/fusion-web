@@ -20,7 +20,7 @@ public class WeeklyIncomeDto {
 
     @NotNull
     @Min(1)
-    @Max(31)
+    @Max(4)
     private int weeklyInterval;
 
     @NotBlank

@@ -216,7 +216,7 @@
                         </tbody>
                     </table>
                     <a th:href="@{'#'}" class="btn btn-md btn-primary mb-5" role="button"
-                       data-bs-toggle="collapse" data-bs-target="#collapseNewWeeklyExpense" aria-expanded="false" aria-controls="collapseNewWeeklyExpense">
+                       data-bs-toggle="collapse" data-bs-target="#collapseNewWeeklyIncome" aria-expanded="false" aria-controls="collapseNewWeeklyIncome">
                         NEW WEEKLY INCOME
                     </a>
                 </div>
@@ -392,6 +392,58 @@
                                         Paid to account error
                                     </span>
                                     <input type="text" id="mi-accountId" name="accountId" th:field="*{accountId}"
+                                           class="form-control" placeholder="Select account" required th:autofocus="${#fields.hasErrors('accountId')} ? true">
+                                </p>
+                                <input name="_csrf" type="hidden" value="00b612fc-ffb3-4935-adca-4f65795f7770" />
+                            </div>
+                            <div class="row px-2 py-5">
+                                <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="collapseNewWeeklyIncome" th:class="${showNewWeeklyIncomeForm} ? 'collapse.show' : collapse">
+                    <div class="col-xl-4 ie-form py-5 float-end">
+                        <div class="row">
+                            <h2>New weekly income</h2>
+                        </div>
+                        <form th:action="@{/income-and-expenses/new-weekly-income}" th:object="${weeklyIncomeDto}"
+                              class="form-signin mt-5" method="post">
+
+                            <div class="row">
+                                <p>
+                                    <label for="wi-name" class="sr-only" th:classappend="${#fields.hasErrors('source')} ? error">Description</label>
+                                    <span th:if="${#fields.hasErrors('source')}" th:errors="*{source}" class="error">
+                                        Description error
+                                    </span>
+                                    <input type="text" id="wi-name" name="source" th:field="*{source}"
+                                           class="form-control" placeholder="Description" required  th:autofocus="${#fields.hasErrors('source')} ? true">
+                                </p>
+                                <p>
+                                    <label for="wi-amount" class="sr-only" th:classappend="${#fields.hasErrors('amount')} ? error">Amount</label>
+                                    <span th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}" class="error">
+                                        Amount error
+                                    </span>
+                                    <input type="text" id="wi-amount" name="amount" th:field="*{amount}"
+                                           class="form-control" placeholder="Amount" required th:autofocus="${#fields.hasErrors('amount')} ? true">
+                                </p>
+                                <p>
+                                    <label for="wi-weeklyInterval" class="sr-only" th:classappend="${#fields.hasErrors('weeklyInterval')} ? error">
+                                        Weekly interval
+                                    </label>
+                                    <span th:if="${#fields.hasErrors('weeklyInterval')}" th:errors="*{weeklyInterval}" class="error">
+                                        Weekly interval error
+                                    </span>
+                                    <input type="text" id="wi-weeklyInterval" name="weeklyInterval" th:field="*{weeklyInterval}"
+                                           class="form-control" th:placeholder="#{'Weekly Interval'}" required th:autofocus="${#fields.hasErrors('weeklyInterval')} ? true">
+                                </p>
+                                <p>
+                                    <label for="wi-accountId" class="sr-only" th:classappend="${#fields.hasErrors('accountId')} ? error">Paid to account</label>
+                                    <span th:if="${#fields.hasErrors('accountId')}" th:errors="*{accountId}" class="error">
+                                        Paid to account error
+                                    </span>
+                                    <input type="text" id="wi-accountId" name="accountId" th:field="*{accountId}"
                                            class="form-control" placeholder="Select account" required th:autofocus="${#fields.hasErrors('accountId')} ? true">
                                 </p>
                                 <input name="_csrf" type="hidden" value="00b612fc-ffb3-4935-adca-4f65795f7770" />

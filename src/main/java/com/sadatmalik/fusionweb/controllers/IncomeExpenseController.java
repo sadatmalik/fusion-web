@@ -85,6 +85,7 @@ public class IncomeExpenseController {
 
             model.addAttribute("weeklyExpenseDto", new WeeklyExpenseDto());
             model.addAttribute("monthlyIncomeDto", new MonthlyIncomeDto());
+            model.addAttribute("weeklyIncomeDto", new WeeklyIncomeDto());
 
             loadTableData(authentication, model);
             return "income-and-expenses";
@@ -113,6 +114,7 @@ public class IncomeExpenseController {
 
             model.addAttribute("monthlyExpenseDto", new MonthlyExpenseDto());
             model.addAttribute("monthlyIncomeDto", new MonthlyIncomeDto());
+            model.addAttribute("weeklyIncomeDto", new WeeklyIncomeDto());
 
             loadTableData(authentication, model);
             return "income-and-expenses";
@@ -131,7 +133,7 @@ public class IncomeExpenseController {
     }
 
     @PostMapping("/income-and-expenses/new-monthly-income")
-    public String saveWeeklyExpense(@ModelAttribute("monthlyIncomeDto") @Valid MonthlyIncomeDto monthlyIncomeDto,
+    public String saveMonthlyIncome(@ModelAttribute("monthlyIncomeDto") @Valid MonthlyIncomeDto monthlyIncomeDto,
                                     BindingResult bindingResult,
                                     Authentication authentication,
                                     Model model) {
@@ -141,6 +143,7 @@ public class IncomeExpenseController {
 
             model.addAttribute("monthlyExpenseDto", new MonthlyExpenseDto());
             model.addAttribute("weeklyExpenseDto", new WeeklyExpenseDto());
+            model.addAttribute("weeklyIncomeDto", new WeeklyIncomeDto());
 
             loadTableData(authentication, model);
             return "income-and-expenses";
