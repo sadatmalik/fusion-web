@@ -6,7 +6,6 @@ import com.sadatmalik.fusionweb.model.WeeklyExpense;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
 import com.sadatmalik.fusionweb.model.dto.WeeklyExpenseDto;
 import com.sadatmalik.fusionweb.model.websecurity.UserPrincipal;
-import com.sadatmalik.fusionweb.services.AccountService;
 import com.sadatmalik.fusionweb.services.ExpenseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.util.List;
 
 @Slf4j
@@ -27,7 +25,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class IncomeExpenseController {
 
-    private final AccountService accountService;
     private final ExpenseService expenseService;
 
     @GetMapping({"/income-and-expenses"})
@@ -56,7 +53,7 @@ public class IncomeExpenseController {
     }
 
     @PostMapping("/income-and-expenses/new-monthly-expense")
-    public String save(@ModelAttribute("monthlyExpenseDto") @Valid MonthlyExpenseDto monthlyExpenseDto,
+    public String saveMonthlyExpense(@ModelAttribute("monthlyExpenseDto") @Valid MonthlyExpenseDto monthlyExpenseDto,
                        BindingResult bindingResult,
                        Authentication authentication,
                        Model model) {
@@ -64,37 +61,50 @@ public class IncomeExpenseController {
             log.debug("Validation errors on form submission - MonthlyExpenseDto has validation errors");
             model.addAttribute("collapseShow", true);
 
+            model.addAttribute("weeklyExpenseDto", new WeeklyExpenseDto());
+
             model.addAttribute("monthlyExpenseList", getMonthlyExpenses(authentication));
+            model.addAttribute("weeklyExpenseList", getWeeklyExpenses(authentication));
             return "income-and-expenses";
         }
+
         try {
             log.debug("Saving new monthly expense - " + monthlyExpenseDto);
-            saveMonthlyExpense(monthlyExpenseDto, authentication);
-
+            MonthlyExpense saved = expenseService.saveMonthlyExpense(monthlyExpenseDto, Utils.getUser(authentication));
+            log.debug("Saved new monthly expense to DB - " + saved);
         } catch (IllegalStateException e) {
             model.addAttribute("error", e.getMessage());
             return "error";
         }
+
         return "redirect:/income-and-expenses";
     }
 
-    private void saveMonthlyExpense(MonthlyExpenseDto monthlyExpenseDto, Authentication authentication) {
+    @PostMapping("/income-and-expenses/new-weekly-expense")
+    public String saveWeeklyExpense(@ModelAttribute("weeklyExpenseDto") @Valid WeeklyExpenseDto weeklyExpenseDto,
+                       BindingResult bindingResult,
+                       Authentication authentication,
+                       Model model) {
+        if (bindingResult.hasErrors()) {
+            log.debug("Validation errors on form submission - WeeklyExpenseDto has validation errors");
+            model.addAttribute("collapseShow", true);
 
-        User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
+            model.addAttribute("monthlyExpenseDto", new MonthlyExpenseDto());
 
-        // @todo use MapStruct
-        MonthlyExpense monthlyExpense = MonthlyExpense.builder()
-                .name(monthlyExpenseDto.getName())
-                .amount(new BigDecimal(monthlyExpenseDto.getAmount()))
-                .dayOfMonthPaid(monthlyExpenseDto.getDayOfMonthPaid())
-                .type(monthlyExpenseDto.getType())
-                .account(accountService.getAccountByAccountId(
-                        monthlyExpenseDto.getAccountId())
-                )
-                .user(user)
-                .build();
+            model.addAttribute("monthlyExpenseList", getMonthlyExpenses(authentication));
+            model.addAttribute("weeklyExpenseList", getWeeklyExpenses(authentication));
+            return "income-and-expenses";
+        }
 
-        MonthlyExpense saved = expenseService.saveExpense(monthlyExpense);
-        log.debug("Saved new monthly expense to DB - " + saved);
+        try {
+            log.debug("Saving new weekly expense - " + weeklyExpenseDto);
+            WeeklyExpense saved = expenseService.saveWeeklyExpense(weeklyExpenseDto, Utils.getUser(authentication));
+            log.debug("Saved new monthly expense to DB - " + saved);
+        } catch (IllegalStateException e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
+
+        return "redirect:/income-and-expenses";
     }
 }

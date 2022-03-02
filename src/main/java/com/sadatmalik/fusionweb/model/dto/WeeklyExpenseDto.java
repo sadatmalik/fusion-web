@@ -5,7 +5,6 @@ import lombok.Data;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.*;
-import java.math.BigDecimal;
 
 @Data
 public class WeeklyExpenseDto {
@@ -19,7 +18,7 @@ public class WeeklyExpenseDto {
 
     @Positive
     @NotNull
-    private BigDecimal amount;
+    private Double amount;
 
     @Nullable
     @Min(1)

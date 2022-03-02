@@ -1,7 +1,10 @@
 package com.sadatmalik.fusionweb.controllers;
 
 import com.sadatmalik.fusionweb.model.Account;
+import com.sadatmalik.fusionweb.model.User;
+import com.sadatmalik.fusionweb.model.websecurity.UserPrincipal;
 import lombok.experimental.UtilityClass;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -14,5 +17,9 @@ public class Utils {
             total += account.getBalance();
         }
         return String.format("£%,.2f", total);
+    }
+
+    public static User getUser(Authentication authentication) {
+        return ((UserPrincipal) authentication.getPrincipal()).getUser();
     }
 }
