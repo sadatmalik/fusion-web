@@ -158,54 +158,61 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
+                        <tr th:remove="all">
                             <td>1</td>
                             <td>LH</td>
                             <td>£60</td>
                             <td>HSBC</td>
                         </tr>
-                        <tr>
+                        <tr th:remove="all">
                             <td>2</td>
                             <td>TA</td>
                             <td>£70</td>
                             <td>HSBC</td>
                         </tr>
-                        <tr>
+                        <tr th:remove="all">
                             <td>2</td>
                             <td>HB</td>
                             <td>£60</td>
                             <td>HSBC</td>
                         </tr>
-                        <tr>
+                        <tr th:remove="all">
                             <td>2</td>
                             <td>DS</td>
                             <td>£70</td>
                             <td>HSBC</td>
                         </tr>
-                        <tr>
+                        <tr th:remove="all">
                             <td>2</td>
                             <td>JJ</td>
                             <td>£60</td>
                             <td>HSBC</td>
                         </tr>
-                        <tr>
+                        <tr th:remove="all">
                             <td>1</td>
                             <td>MC</td>
                             <td>£60</td>
                             <td>HSBC</td>
                         </tr>
-                        <tr>
+                        <tr th:remove="all">
                             <td>2</td>
                             <td>ALP</td>
                             <td>£50</td>
                             <td>HSBC</td>
                         </tr>
-                        <tr>
+                        <tr th:remove="all">
                             <td>2</td>
                             <td>KK</td>
                             <td>£70</td>
                             <td>PAYPAL</td>
                         </tr>
+                        <tr th:each="weeklyIncome : ${weeklyIncomeList}">
+                            <td th:text="${weeklyIncome.getWeeklyInterval()}">Weekly Interval</td>
+                            <td th:text="${weeklyIncome.getSource()}">Description</td>
+                            <td th:text="${weeklyIncome.displayAmount()}">Amount</td>
+                            <td th:text="${weeklyIncome.getAccount().getDescription()}">Paid To</td>
+                        </tr>
+
                         </tbody>
                     </table>
                     <a th:href="@{'#'}" class="btn btn-md btn-primary mb-5" role="button"

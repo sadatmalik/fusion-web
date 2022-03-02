@@ -1,12 +1,10 @@
 package com.sadatmalik.fusionweb.services;
 
-import com.sadatmalik.fusionweb.model.MonthlyExpense;
-import com.sadatmalik.fusionweb.model.MonthlyIncome;
-import com.sadatmalik.fusionweb.model.User;
-import com.sadatmalik.fusionweb.model.WeeklyExpense;
+import com.sadatmalik.fusionweb.model.*;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
 import com.sadatmalik.fusionweb.model.dto.MonthlyIncomeDto;
 import com.sadatmalik.fusionweb.model.dto.WeeklyExpenseDto;
+import com.sadatmalik.fusionweb.repositories.IncomeRepository;
 import com.sadatmalik.fusionweb.repositories.MonthlyExpenseRepository;
 import com.sadatmalik.fusionweb.repositories.MonthlyIncomeRepository;
 import com.sadatmalik.fusionweb.repositories.WeeklyExpenseRepository;
@@ -25,6 +23,7 @@ public class IncomeExpenseService {
     private final MonthlyExpenseRepository monthlyExpenseRepository;
     private final WeeklyExpenseRepository weeklyExpenseRepository;
     private final MonthlyIncomeRepository monthlyIncomeRepository;
+    private final IncomeRepository incomeRepository;
 
     private final AccountService accountService;
 
@@ -38,6 +37,10 @@ public class IncomeExpenseService {
 
     public List<MonthlyIncome> getMonthlyIncomeFor(User user) {
         return monthlyIncomeRepository.findByUser(user);
+    }
+
+    public List<Income> getWeeklyIncomeFor(User user) {
+        return incomeRepository.findByUser(user);
     }
 
     public MonthlyExpense saveMonthlyExpense(MonthlyExpenseDto monthlyExpenseDto, User user) {
@@ -86,4 +89,5 @@ public class IncomeExpenseService {
 
         return monthlyIncomeRepository.save(monthlyIncome);
     }
+
 }

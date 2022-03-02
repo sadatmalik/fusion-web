@@ -1,9 +1,6 @@
 package com.sadatmalik.fusionweb.controllers;
 
-import com.sadatmalik.fusionweb.model.MonthlyExpense;
-import com.sadatmalik.fusionweb.model.MonthlyIncome;
-import com.sadatmalik.fusionweb.model.User;
-import com.sadatmalik.fusionweb.model.WeeklyExpense;
+import com.sadatmalik.fusionweb.model.*;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
 import com.sadatmalik.fusionweb.model.dto.MonthlyIncomeDto;
 import com.sadatmalik.fusionweb.model.dto.WeeklyExpenseDto;
@@ -33,19 +30,24 @@ public class IncomeExpenseController {
     public String incomeAndExpenses(Authentication authentication, Model model) {
         log.info("Returning income and expenses page");
 
-        model.addAttribute("monthlyExpenseDto", new MonthlyExpenseDto());
-        model.addAttribute("weeklyExpenseDto", new WeeklyExpenseDto());
-        model.addAttribute("monthlyIncomeDto", new MonthlyIncomeDto());
-
+        loadFormBindingObjects(model);
         loadTableData(authentication, model);
 
         return "income-and-expenses";
+    }
+
+    private void loadFormBindingObjects(Model model) {
+        model.addAttribute("monthlyExpenseDto", new MonthlyExpenseDto());
+        model.addAttribute("weeklyExpenseDto", new WeeklyExpenseDto());
+        model.addAttribute("monthlyIncomeDto", new MonthlyIncomeDto());
+        model.addAttribute("weeklyIncomeDto", new WeeklyIncomeDto());
     }
 
     private void loadTableData(Authentication authentication, Model model) {
         model.addAttribute("monthlyExpenseList", getMonthlyExpenses(authentication));
         model.addAttribute("weeklyExpenseList", getWeeklyExpenses(authentication));
         model.addAttribute("monthlyIncomeList", getMonthlyIncome(authentication));
+        model.addAttribute("weeklyIncomeList", getWeeklyIncome(authentication));
     }
 
     private List<MonthlyExpense> getMonthlyExpenses(Authentication authentication) {
@@ -64,6 +66,12 @@ public class IncomeExpenseController {
         User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
         // @todo convert to Dto list?
         return incomeExpenseService.getMonthlyIncomeFor(user);
+    }
+
+    private List<Income> getWeeklyIncome(Authentication authentication) {
+        User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
+        // @todo convert to Dto list?
+        return incomeExpenseService.getWeeklyIncomeFor(user);
     }
 
     @PostMapping("/income-and-expenses/new-monthly-expense")
