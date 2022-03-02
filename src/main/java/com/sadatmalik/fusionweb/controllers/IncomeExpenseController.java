@@ -1,12 +1,13 @@
 package com.sadatmalik.fusionweb.controllers;
 
 import com.sadatmalik.fusionweb.model.MonthlyExpense;
+import com.sadatmalik.fusionweb.model.MonthlyIncome;
 import com.sadatmalik.fusionweb.model.User;
 import com.sadatmalik.fusionweb.model.WeeklyExpense;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
 import com.sadatmalik.fusionweb.model.dto.WeeklyExpenseDto;
 import com.sadatmalik.fusionweb.model.websecurity.UserPrincipal;
-import com.sadatmalik.fusionweb.services.ExpenseService;
+import com.sadatmalik.fusionweb.services.IncomeExpenseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -25,7 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class IncomeExpenseController {
 
-    private final ExpenseService expenseService;
+    private final IncomeExpenseService incomeExpenseService;
 
     @GetMapping({"/income-and-expenses"})
     public String incomeAndExpenses(Authentication authentication, Model model) {
@@ -34,22 +35,33 @@ public class IncomeExpenseController {
         model.addAttribute("monthlyExpenseDto", new MonthlyExpenseDto());
         model.addAttribute("weeklyExpenseDto", new WeeklyExpenseDto());
 
-        model.addAttribute("monthlyExpenseList", getMonthlyExpenses(authentication));
-        model.addAttribute("weeklyExpenseList", getWeeklyExpenses(authentication));
+        loadTableData(authentication, model);
 
         return "income-and-expenses";
     }
 
+    private void loadTableData(Authentication authentication, Model model) {
+        model.addAttribute("monthlyExpenseList", getMonthlyExpenses(authentication));
+        model.addAttribute("weeklyExpenseList", getWeeklyExpenses(authentication));
+        model.addAttribute("monthlyIncomeList", getMonthlyIncome(authentication));
+    }
+
     private List<MonthlyExpense> getMonthlyExpenses(Authentication authentication) {
         User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
-        // @todo convert to Dto?
-        return expenseService.getMonthlyExpensesFor(user);
+        // @todo convert to Dto list?
+        return incomeExpenseService.getMonthlyExpensesFor(user);
     }
 
     private List<WeeklyExpense> getWeeklyExpenses(Authentication authentication) {
         User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
-        // @todo convert to Dto?
-        return expenseService.getWeeklyExpensesFor(user);
+        // @todo convert to Dto list?
+        return incomeExpenseService.getWeeklyExpensesFor(user);
+    }
+
+    private List<MonthlyIncome> getMonthlyIncome(Authentication authentication) {
+        User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
+        // @todo convert to Dto list?
+        return incomeExpenseService.getMonthlyIncomeFor(user);
     }
 
     @PostMapping("/income-and-expenses/new-monthly-expense")
@@ -70,7 +82,7 @@ public class IncomeExpenseController {
 
         try {
             log.debug("Saving new monthly expense - " + monthlyExpenseDto);
-            MonthlyExpense saved = expenseService.saveMonthlyExpense(monthlyExpenseDto, Utils.getUser(authentication));
+            MonthlyExpense saved = incomeExpenseService.saveMonthlyExpense(monthlyExpenseDto, Utils.getUser(authentication));
             log.debug("Saved new monthly expense to DB - " + saved);
         } catch (IllegalStateException e) {
             model.addAttribute("error", e.getMessage());
@@ -98,7 +110,7 @@ public class IncomeExpenseController {
 
         try {
             log.debug("Saving new weekly expense - " + weeklyExpenseDto);
-            WeeklyExpense saved = expenseService.saveWeeklyExpense(weeklyExpenseDto, Utils.getUser(authentication));
+            WeeklyExpense saved = incomeExpenseService.saveWeeklyExpense(weeklyExpenseDto, Utils.getUser(authentication));
             log.debug("Saved new monthly expense to DB - " + saved);
         } catch (IllegalStateException e) {
             model.addAttribute("error", e.getMessage());

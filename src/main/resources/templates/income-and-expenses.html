@@ -116,23 +116,29 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
+                        <tr th:remove="all">
                             <td>5</td>
                             <td>Rent 1</td>
                             <td>£1,850</td>
                             <td>BARCLAYS</td>
                         </tr>
-                        <tr>
+                        <tr th:remove="all">
                             <td>25</td>
                             <td>Salary</td>
                             <td>£4,800</td>
                             <td>HSBC</td>
                         </tr>
-                        <tr>
+                        <tr th:remove="all">
                             <td>21</td>
                             <td>Art Sales</td>
                             <td>465</td>
                             <td>CASH</td>
+                        </tr>
+                        <tr th:each="monthlyIncome : ${monthlyIncomeList}">
+                            <td th:text="${monthlyIncome.getDayOfMonthReceived()}">Day Of Month</td>
+                            <td th:text="${monthlyIncome.getSource()}">Description</td>
+                            <td th:text="${monthlyIncome.displayAmount()}">Amount</td>
+                            <td th:text="${monthlyIncome.getAccount().getDescription()}">Paid To</td>
                         </tr>
                         </tbody>
                     </table>

@@ -7,7 +7,7 @@ import com.sadatmalik.fusionweb.model.User;
 import com.sadatmalik.fusionweb.model.websecurity.UserPrincipal;
 import com.sadatmalik.fusionweb.services.AccountService;
 import com.sadatmalik.fusionweb.services.DebtService;
-import com.sadatmalik.fusionweb.services.ExpenseService;
+import com.sadatmalik.fusionweb.services.IncomeExpenseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -26,7 +26,7 @@ import java.util.List;
 public class QuickStatsController {
 
     private final AccountService accountService;
-    private final ExpenseService expenseService;
+    private final IncomeExpenseService incomeExpenseService;
     private final DebtService debtService;
 
     @GetMapping("/quickstats")
@@ -43,7 +43,7 @@ public class QuickStatsController {
         model.addAttribute("chartData", getChartData());
 
         // payments
-        List<MonthlyExpense> paymentsList = expenseService.getMonthlyExpensesFor(user);
+        List<MonthlyExpense> paymentsList = incomeExpenseService.getMonthlyExpensesFor(user);
         List<List<Object>> paymentChartData = getPaymentChartData(paymentsList);
         model.addAttribute("paymentChartData", paymentChartData);
 
