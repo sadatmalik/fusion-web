@@ -90,4 +90,19 @@ public class IncomeExpenseService {
         return monthlyIncomeRepository.save(monthlyIncome);
     }
 
+    public Income saveWeeklyIncome(WeeklyIncomeDto weeklyIncomeDto, User user) {
+        // @todo use MapStruct
+        Income weeklyIncome = Income.builder()
+                .amount(new BigDecimal(weeklyIncomeDto.getAmount()))
+                .source(weeklyIncomeDto.getSource())
+                .weeklyInterval(weeklyIncomeDto.getWeeklyInterval())
+                .account(accountService.getAccountByAccountId(
+                        weeklyIncomeDto.getAccountId())
+                )
+                .user(user)
+                .build();
+
+        return incomeRepository.save(weeklyIncome);
+    }
+
 }

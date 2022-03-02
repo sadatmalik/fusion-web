@@ -160,4 +160,33 @@ public class IncomeExpenseController {
 
         return "redirect:/income-and-expenses";
     }
+
+    @PostMapping("/income-and-expenses/new-weekly-income")
+    public String saveWeeklyIncome(@ModelAttribute("weeklyIncomeDto") @Valid WeeklyIncomeDto weeklyIncomeDto,
+                                    BindingResult bindingResult,
+                                    Authentication authentication,
+                                    Model model) {
+        if (bindingResult.hasErrors()) {
+            log.debug("Validation errors on form submission - WeeklyIncomeDto has validation errors");
+            model.addAttribute("showNewWeeklyIncomeForm", true);
+
+            model.addAttribute("monthlyExpenseDto", new MonthlyExpenseDto());
+            model.addAttribute("weeklyExpenseDto", new WeeklyExpenseDto());
+            model.addAttribute("monthlyIncomeDto", new MonthlyIncomeDto());
+
+            loadTableData(authentication, model);
+            return "income-and-expenses";
+        }
+
+        try {
+            log.debug("Saving new weekly income - " + weeklyIncomeDto);
+            Income saved = incomeExpenseService.saveWeeklyIncome(weeklyIncomeDto, Utils.getUser(authentication));
+            log.debug("Saved new weekly income to DB - " + saved);
+        } catch (IllegalStateException e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
+
+        return "redirect:/income-and-expenses";
+    }
 }
