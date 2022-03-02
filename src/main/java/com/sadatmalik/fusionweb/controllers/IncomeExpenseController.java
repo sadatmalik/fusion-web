@@ -59,7 +59,7 @@ public class IncomeExpenseController {
                        Model model) {
         if (bindingResult.hasErrors()) {
             log.debug("Validation errors on form submission - MonthlyExpenseDto has validation errors");
-            model.addAttribute("collapseShow", true);
+            model.addAttribute("showNewMonthlyExpenseForm", true);
 
             model.addAttribute("weeklyExpenseDto", new WeeklyExpenseDto());
 
@@ -87,7 +87,7 @@ public class IncomeExpenseController {
                        Model model) {
         if (bindingResult.hasErrors()) {
             log.debug("Validation errors on form submission - WeeklyExpenseDto has validation errors");
-            model.addAttribute("collapseShow", true);
+            model.addAttribute("showNewWeeklyExpenseForm", true);
 
             model.addAttribute("monthlyExpenseDto", new MonthlyExpenseDto());
 
