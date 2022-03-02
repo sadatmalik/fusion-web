@@ -5,6 +5,7 @@ import com.sadatmalik.fusionweb.model.MonthlyIncome;
 import com.sadatmalik.fusionweb.model.User;
 import com.sadatmalik.fusionweb.model.WeeklyExpense;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
+import com.sadatmalik.fusionweb.model.dto.MonthlyIncomeDto;
 import com.sadatmalik.fusionweb.model.dto.WeeklyExpenseDto;
 import com.sadatmalik.fusionweb.model.websecurity.UserPrincipal;
 import com.sadatmalik.fusionweb.services.IncomeExpenseService;
@@ -34,6 +35,7 @@ public class IncomeExpenseController {
 
         model.addAttribute("monthlyExpenseDto", new MonthlyExpenseDto());
         model.addAttribute("weeklyExpenseDto", new WeeklyExpenseDto());
+        model.addAttribute("monthlyIncomeDto", new MonthlyIncomeDto());
 
         loadTableData(authentication, model);
 
