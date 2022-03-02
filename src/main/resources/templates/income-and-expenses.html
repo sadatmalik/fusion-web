@@ -66,26 +66,33 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
+                        <tr th:remove="all">
                             <td>1</td>
                             <td>1</td>
                             <td>Groceries</td>
                             <td>£80</td>
                             <td>HSBC</td>
                         </tr>
-                        <tr>
+                        <tr th:remove="all">
                             <td>1</td>
                             <td>1</td>
                             <td>Eating Out</td>
                             <td>£50</td>
                             <td>CASH</td>
                         </tr>
-                        <tr>
+                        <tr th:remove="all">
                             <td>1</td>
                             <td>2</td>
                             <td>Petrol</td>
                             <td>£80</td>
                             <td>CREDIT CARD</td>
+                        </tr>
+                        <tr th:each="weeklyExpense : ${weeklyExpenseList}">
+                            <td th:text="${weeklyExpense.getTimesPerWeek()}">Times Per Week</td>
+                            <td th:text="${weeklyExpense.getWeeklyInterval()}">Weekly Interval</td>
+                            <td th:text="${weeklyExpense.getName()}">Description</td>
+                            <td th:text="${weeklyExpense.displayAmount()}">Amount</td>
+                            <td th:text="${weeklyExpense.getAccount().getDescription()}">Paid From</td>
                         </tr>
                         </tbody>
                     </table>

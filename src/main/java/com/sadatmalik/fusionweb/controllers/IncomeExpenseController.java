@@ -2,6 +2,7 @@ package com.sadatmalik.fusionweb.controllers;
 
 import com.sadatmalik.fusionweb.model.MonthlyExpense;
 import com.sadatmalik.fusionweb.model.User;
+import com.sadatmalik.fusionweb.model.WeeklyExpense;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
 import com.sadatmalik.fusionweb.model.websecurity.UserPrincipal;
 import com.sadatmalik.fusionweb.services.AccountService;
@@ -36,14 +37,21 @@ public class IncomeExpenseController {
         model.addAttribute("monthlyExpense", monthlyExpense);
 
         model.addAttribute("monthlyExpenseList", getMonthlyExpenses(authentication));
+        model.addAttribute("weeklyExpenseList", getWeeklyExpenses(authentication));
 
         return "income-and-expenses";
     }
 
     private List<MonthlyExpense> getMonthlyExpenses(Authentication authentication) {
         User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
-        List<MonthlyExpense> monthlyExpenseList = expenseService.getMonthlyExpensesFor(user);
-        return monthlyExpenseList;
+        // @todo convert to Dto?
+        return expenseService.getMonthlyExpensesFor(user);
+    }
+
+    private List<WeeklyExpense> getWeeklyExpenses(Authentication authentication) {
+        User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
+        // @todo convert to Dto?
+        return expenseService.getWeeklyExpensesFor(user);
     }
 
     @PostMapping("/income-and-expenses/new-monthly-expense")
