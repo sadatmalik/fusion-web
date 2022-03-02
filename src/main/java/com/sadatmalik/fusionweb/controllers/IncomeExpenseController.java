@@ -35,20 +35,16 @@ public class IncomeExpenseController {
         MonthlyExpenseDto monthlyExpense = new MonthlyExpenseDto();
         model.addAttribute("monthlyExpense", monthlyExpense);
 
-        User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
-        List<MonthlyExpense> monthlyExpenseList = expenseService.getMonthlyExpensesFor(user);
-        model.addAttribute("monthlyExpenseList", monthlyExpenseList);
+        model.addAttribute("monthlyExpenseList", getMonthlyExpenses(authentication));
 
         return "income-and-expenses";
     }
 
-//    @GetMapping({"/income-and-expenses/new-monthly-expense"})
-//    public String newMonthlyExpense(Model model) {
-//        log.info("Returning create new monthly expense page");
-//        MonthlyExpense monthlyExpense = new MonthlyExpense();
-//        model.addAttribute("monthlyExpense", monthlyExpense);
-//        return "new-monthly-expense";
-//    }
+    private List<MonthlyExpense> getMonthlyExpenses(Authentication authentication) {
+        User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
+        List<MonthlyExpense> monthlyExpenseList = expenseService.getMonthlyExpensesFor(user);
+        return monthlyExpenseList;
+    }
 
     @PostMapping("/income-and-expenses/new-monthly-expense")
     public String save(@ModelAttribute("monthlyExpense") @Valid MonthlyExpenseDto monthlyExpenseDto,
@@ -57,8 +53,11 @@ public class IncomeExpenseController {
                        Model model) {
         // @todo setup field validations for new expense
         if (bindingResult.hasErrors()) {
-            log.debug("Validation errors on received monthlyExpenseDto");
+            log.debug("Validation errors on form submission - MonthlyExpenseDto has validation errors");
             model.addAttribute("collapseShow", true);
+
+            model.addAttribute("monthlyExpenseList", getMonthlyExpenses(authentication));
+
             return "income-and-expenses";
         }
 
