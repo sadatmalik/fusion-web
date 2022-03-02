@@ -18,7 +18,7 @@ public class MonthlyIncomeDto {
     @NotNull
     private Double amount;
 
-    @NotBlank
+    @NotNull
     @Min(1)
     @Max(31)
     private int dayOfMonthReceived;

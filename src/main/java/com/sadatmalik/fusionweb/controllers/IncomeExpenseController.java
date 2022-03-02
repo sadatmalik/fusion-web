@@ -76,9 +76,9 @@ public class IncomeExpenseController {
             model.addAttribute("showNewMonthlyExpenseForm", true);
 
             model.addAttribute("weeklyExpenseDto", new WeeklyExpenseDto());
+            model.addAttribute("monthlyIncomeDto", new MonthlyIncomeDto());
 
-            model.addAttribute("monthlyExpenseList", getMonthlyExpenses(authentication));
-            model.addAttribute("weeklyExpenseList", getWeeklyExpenses(authentication));
+            loadTableData(authentication, model);
             return "income-and-expenses";
         }
 
@@ -104,16 +104,44 @@ public class IncomeExpenseController {
             model.addAttribute("showNewWeeklyExpenseForm", true);
 
             model.addAttribute("monthlyExpenseDto", new MonthlyExpenseDto());
+            model.addAttribute("monthlyIncomeDto", new MonthlyIncomeDto());
 
-            model.addAttribute("monthlyExpenseList", getMonthlyExpenses(authentication));
-            model.addAttribute("weeklyExpenseList", getWeeklyExpenses(authentication));
+            loadTableData(authentication, model);
             return "income-and-expenses";
         }
 
         try {
             log.debug("Saving new weekly expense - " + weeklyExpenseDto);
             WeeklyExpense saved = incomeExpenseService.saveWeeklyExpense(weeklyExpenseDto, Utils.getUser(authentication));
-            log.debug("Saved new monthly expense to DB - " + saved);
+            log.debug("Saved new weekly expense to DB - " + saved);
+        } catch (IllegalStateException e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
+
+        return "redirect:/income-and-expenses";
+    }
+
+    @PostMapping("/income-and-expenses/new-monthly-income")
+    public String saveWeeklyExpense(@ModelAttribute("monthlyIncomeDto") @Valid MonthlyIncomeDto monthlyIncomeDto,
+                                    BindingResult bindingResult,
+                                    Authentication authentication,
+                                    Model model) {
+        if (bindingResult.hasErrors()) {
+            log.debug("Validation errors on form submission - MonthlyIncomeDto has validation errors");
+            model.addAttribute("showNewMonthlyIncomeForm", true);
+
+            model.addAttribute("monthlyExpenseDto", new MonthlyExpenseDto());
+            model.addAttribute("weeklyExpenseDto", new WeeklyExpenseDto());
+
+            loadTableData(authentication, model);
+            return "income-and-expenses";
+        }
+
+        try {
+            log.debug("Saving new monthly income - " + monthlyIncomeDto);
+            MonthlyIncome saved = incomeExpenseService.saveMonthlyIncome(monthlyIncomeDto, Utils.getUser(authentication));
+            log.debug("Saved new monthly income to DB - " + saved);
         } catch (IllegalStateException e) {
             model.addAttribute("error", e.getMessage());
             return "error";

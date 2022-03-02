@@ -5,6 +5,7 @@ import com.sadatmalik.fusionweb.model.MonthlyIncome;
 import com.sadatmalik.fusionweb.model.User;
 import com.sadatmalik.fusionweb.model.WeeklyExpense;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
+import com.sadatmalik.fusionweb.model.dto.MonthlyIncomeDto;
 import com.sadatmalik.fusionweb.model.dto.WeeklyExpenseDto;
 import com.sadatmalik.fusionweb.repositories.MonthlyExpenseRepository;
 import com.sadatmalik.fusionweb.repositories.MonthlyIncomeRepository;
@@ -56,7 +57,6 @@ public class IncomeExpenseService {
     }
 
     public WeeklyExpense saveWeeklyExpense(WeeklyExpenseDto weeklyExpenseDto, User user) {
-
         // @todo use MapStruct
         WeeklyExpense weeklyExpense = WeeklyExpense.builder()
                 .name(weeklyExpenseDto.getName())
@@ -72,4 +72,18 @@ public class IncomeExpenseService {
         return weeklyExpenseRepository.save(weeklyExpense);
     }
 
+    public MonthlyIncome saveMonthlyIncome(MonthlyIncomeDto monthlyIncomeDto, User user) {
+        // @todo use MapStruct
+        MonthlyIncome monthlyIncome = MonthlyIncome.builder()
+                .amount(new BigDecimal(monthlyIncomeDto.getAmount()))
+                .source(monthlyIncomeDto.getSource())
+                .dayOfMonthReceived(monthlyIncomeDto.getDayOfMonthReceived())
+                .account(accountService.getAccountByAccountId(
+                        monthlyIncomeDto.getAccountId())
+                )
+                .user(user)
+                .build();
+
+        return monthlyIncomeRepository.save(monthlyIncome);
+    }
 }
