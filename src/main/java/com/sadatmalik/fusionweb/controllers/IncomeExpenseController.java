@@ -1,5 +1,6 @@
 package com.sadatmalik.fusionweb.controllers;
 
+import com.sadatmalik.fusionweb.exceptions.NoSuchIncomeException;
 import com.sadatmalik.fusionweb.exceptions.NoSuchMonthlyExpenseException;
 import com.sadatmalik.fusionweb.exceptions.NoSuchMonthlyIncomeException;
 import com.sadatmalik.fusionweb.exceptions.NoSuchWeeklyExpenseException;
@@ -298,10 +299,10 @@ public class IncomeExpenseController {
 
     @PostMapping("/income-and-expenses/weekly-expense/{expenseId}/edit")
     public String updateWeeklyExpense(@PathVariable("expenseId") Long expenseId,
-                                       @ModelAttribute("weeklyExpenseDto") @Valid WeeklyExpenseDto weeklyExpenseDto,
-                                       BindingResult bindingResult,
-                                       Authentication authentication,
-                                       Model model) {
+                                      @ModelAttribute("weeklyExpenseDto") @Valid WeeklyExpenseDto weeklyExpenseDto,
+                                      BindingResult bindingResult,
+                                      Authentication authentication,
+                                      Model model) {
         if (bindingResult.hasErrors()) {
             log.debug("Validation errors on form submission - WeeklyExpenseDto has validation errors");
             model.addAttribute("showWeeklyExpenseEditDeleteForm", true);
@@ -345,6 +346,34 @@ public class IncomeExpenseController {
             MonthlyIncome updated = incomeExpenseService.updateMonthlyIncome(monthlyIncomeDto);
             log.debug("Updated new monthly income in DB - " + updated);
         } catch (IllegalStateException | NoSuchMonthlyIncomeException e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
+
+        return "redirect:/income-and-expenses";
+    }
+
+    @PostMapping("/income-and-expenses/weekly-income/{incomeId}/edit")
+    public String updateWeeklyIncome(@PathVariable("incomeId") Long incomeId,
+                                     @ModelAttribute("weeklyIncomeDto") @Valid WeeklyIncomeDto weeklyIncomeDto,
+                                     BindingResult bindingResult,
+                                     Authentication authentication,
+                                     Model model) {
+        if (bindingResult.hasErrors()) {
+            log.debug("Validation errors on form submission - WeeklyIncomeDto has validation errors");
+            model.addAttribute("showWeeklyIncomeEditDeleteForm", true);
+
+            loadFormBindingObjects(model);
+            loadTableData(authentication, model);
+            return "income-and-expenses";
+        }
+
+        try {
+            log.debug("Updating weekly income - " + weeklyIncomeDto);
+            weeklyIncomeDto.setId(incomeId);
+            Income updated = incomeExpenseService.updateWeeklyIncome(weeklyIncomeDto);
+            log.debug("Updated new weekly income in DB - " + updated);
+        } catch (IllegalStateException | NoSuchIncomeException e) {
             model.addAttribute("error", e.getMessage());
             return "error";
         }

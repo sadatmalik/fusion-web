@@ -1,5 +1,6 @@
 package com.sadatmalik.fusionweb.services;
 
+import com.sadatmalik.fusionweb.exceptions.NoSuchIncomeException;
 import com.sadatmalik.fusionweb.exceptions.NoSuchMonthlyExpenseException;
 import com.sadatmalik.fusionweb.exceptions.NoSuchMonthlyIncomeException;
 import com.sadatmalik.fusionweb.exceptions.NoSuchWeeklyExpenseException;
@@ -178,6 +179,29 @@ public class IncomeExpenseService {
                     " - update attempted for monthly income ID " + monthlyIncomeDto.getId());
         }
     }
+
+    public Income updateWeeklyIncome(WeeklyIncomeDto weeklyIncomeDto)
+            throws NoSuchIncomeException {
+        // get current
+        Income weeklyIncome =
+                incomeRepository.findById(weeklyIncomeDto.getId()).orElse(null);
+        if (weeklyIncome != null) {
+            weeklyIncome.setAmount(new BigDecimal(weeklyIncomeDto.getAmount()));
+            weeklyIncome.setSource(weeklyIncomeDto.getSource());
+            weeklyIncome.setWeeklyInterval(weeklyIncomeDto.getWeeklyInterval());
+            weeklyIncome.setAccount(accountService.getAccountByAccountId(
+                    weeklyIncomeDto.getAccountId()
+            ));
+            return incomeRepository.save(weeklyIncome);
+
+        } else {
+            log.error("Trying to update non-existing weekly income - update attempted for income ID "
+                    + weeklyIncomeDto.getId());
+            throw new NoSuchIncomeException("Trying to update non-existing weekly income" +
+                    " - update attempted for income ID " + weeklyIncomeDto.getId());
+        }
+    }
+
 
     public Income saveWeeklyIncome(WeeklyIncomeDto weeklyIncomeDto, User user) {
         // @todo use MapStruct
