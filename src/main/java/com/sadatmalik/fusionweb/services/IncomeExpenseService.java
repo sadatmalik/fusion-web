@@ -27,6 +27,10 @@ public class IncomeExpenseService {
 
     private final AccountService accountService;
 
+    public MonthlyExpense getMonthlyExpenseFor(Long id) {
+        return monthlyExpenseRepository.findById(id).orElse(null);
+    }
+
     public List<MonthlyExpense> getMonthlyExpensesFor(User user) {
         return monthlyExpenseRepository.findByUser(user);
     }
@@ -105,4 +109,13 @@ public class IncomeExpenseService {
         return incomeRepository.save(weeklyIncome);
     }
 
+    public void deleteMonthlyExpenseFor(Long expenseId) {
+        MonthlyExpense toDelete = monthlyExpenseRepository.findById(expenseId).orElse(null);
+        if (toDelete != null) {
+            monthlyExpenseRepository.deleteById(expenseId);
+        } else {
+            log.debug("Trying to delete non-existing monthly expense - no such monthly expense with ID - " + expenseId);
+        }
+        log.debug("Deleted - " + toDelete);
+    }
 }

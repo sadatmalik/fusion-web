@@ -1,5 +1,6 @@
 package com.sadatmalik.fusionweb.controllers;
 
+import com.sadatmalik.fusionweb.mappers.IncomeExpenseMapper;
 import com.sadatmalik.fusionweb.model.*;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
 import com.sadatmalik.fusionweb.model.dto.MonthlyIncomeDto;
@@ -14,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
@@ -188,5 +190,42 @@ public class IncomeExpenseController {
         }
 
         return "redirect:/income-and-expenses";
+    }
+
+    @GetMapping("/income-and-expenses/{expenseId}/view")
+    public String viewMonthlyExpenseDetails(@PathVariable("expenseId") String id, Model model,
+                                            Authentication authentication) {
+        log.debug("View MonthlyExpense details");
+
+        // retrieve the MonthlyExpense
+        MonthlyExpense monthlyExpense = incomeExpenseService.getMonthlyExpenseFor(Long.parseLong(id));
+
+        // set up the forms Dto
+        model.addAttribute("editableMonthlyExpenseDto",
+                IncomeExpenseMapper.monthlyExpenseToMonthlyExpenseDto(monthlyExpense));
+        model.addAttribute("showMonthlyExpenseEditDeleteForm", true);
+
+        model.addAttribute("monthlyExpenseDto", new MonthlyExpenseDto());
+        model.addAttribute("weeklyExpenseDto", new WeeklyExpenseDto());
+        model.addAttribute("monthlyIncomeDto", new MonthlyIncomeDto());
+        model.addAttribute("weeklyIncomeDto", new WeeklyIncomeDto());
+
+        loadTableData(authentication, model);
+        return "income-and-expenses";
+    }
+
+    @GetMapping("/income-and-expenses/{expenseId}/delete")
+    public String deleteMonthlyExpense(@PathVariable("expenseId") String id, Model model,
+                                       Authentication authentication) {
+        // delete the MonthlyExpense
+        incomeExpenseService.deleteMonthlyExpenseFor(Long.parseLong(id));
+
+        model.addAttribute("monthlyExpenseDto", new MonthlyExpenseDto());
+        model.addAttribute("weeklyExpenseDto", new WeeklyExpenseDto());
+        model.addAttribute("monthlyIncomeDto", new MonthlyIncomeDto());
+        model.addAttribute("weeklyIncomeDto", new WeeklyIncomeDto());
+
+        loadTableData(authentication, model);
+        return "income-and-expenses";
     }
 }
