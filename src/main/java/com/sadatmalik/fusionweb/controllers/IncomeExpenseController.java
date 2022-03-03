@@ -205,11 +205,25 @@ public class IncomeExpenseController {
                 IncomeExpenseMapper.monthlyExpenseToMonthlyExpenseDto(monthlyExpense));
         model.addAttribute("showMonthlyExpenseEditDeleteForm", true);
 
-        model.addAttribute("monthlyExpenseDto", new MonthlyExpenseDto());
-        model.addAttribute("weeklyExpenseDto", new WeeklyExpenseDto());
-        model.addAttribute("monthlyIncomeDto", new MonthlyIncomeDto());
-        model.addAttribute("weeklyIncomeDto", new WeeklyIncomeDto());
+        loadFormBindingObjects(model);
+        loadTableData(authentication, model);
+        return "income-and-expenses";
+    }
 
+    @GetMapping("/income-and-expenses/weekly-expense/{expenseId}/view")
+    public String viewWeeklyExpenseDetails(@PathVariable("expenseId") String id, Model model,
+                                            Authentication authentication) {
+        log.debug("View WeeklyExpense details - for expense id " + id);
+
+        // retrieve the WeeklyExpense
+        WeeklyExpense weeklyExpense = incomeExpenseService.getWeeklyExpenseFor(Long.parseLong(id));
+
+        // set up the forms Dto
+        model.addAttribute("editableWeeklyExpenseDto",
+                IncomeExpenseMapper.weeklyExpenseToWeeklyExpenseDto(weeklyExpense));
+        model.addAttribute("showWeeklyExpenseEditDeleteForm", true);
+
+        loadFormBindingObjects(model);
         loadTableData(authentication, model);
         return "income-and-expenses";
     }
@@ -220,12 +234,20 @@ public class IncomeExpenseController {
         // delete the MonthlyExpense
         incomeExpenseService.deleteMonthlyExpenseFor(Long.parseLong(id));
 
-        model.addAttribute("monthlyExpenseDto", new MonthlyExpenseDto());
-        model.addAttribute("weeklyExpenseDto", new WeeklyExpenseDto());
-        model.addAttribute("monthlyIncomeDto", new MonthlyIncomeDto());
-        model.addAttribute("weeklyIncomeDto", new WeeklyIncomeDto());
-
+        loadFormBindingObjects(model);
         loadTableData(authentication, model);
         return "income-and-expenses";
     }
+
+    @GetMapping("/income-and-expenses/weekly-expense/{expenseId}/delete")
+    public String deleteWeeklyExpense(@PathVariable("expenseId") String id, Model model,
+                                       Authentication authentication) {
+        // delete the WeeklylyExpense
+        incomeExpenseService.deleteWeeklyExpenseFor(Long.parseLong(id));
+
+        loadFormBindingObjects(model);
+        loadTableData(authentication, model);
+        return "income-and-expenses";
+    }
+
 }

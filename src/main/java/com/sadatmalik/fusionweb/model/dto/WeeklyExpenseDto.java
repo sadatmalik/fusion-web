@@ -1,12 +1,18 @@
 package com.sadatmalik.fusionweb.model.dto;
 
 import com.sadatmalik.fusionweb.model.ExpenseType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.*;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class WeeklyExpenseDto {
 
     @Nullable

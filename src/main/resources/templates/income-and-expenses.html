@@ -90,7 +90,8 @@
                             <td>£80</td>
                             <td>CREDIT CARD</td>
                         </tr>
-                        <tr th:each="weeklyExpense : ${weeklyExpenseList}">
+                        <tr th:each="weeklyExpense : ${weeklyExpenseList}" class="clickable"
+                            th:onclick="|window.location='@{'/income-and-expenses/weekly-expense/' + ${weeklyExpense.getId()} + '/view'}'|">
                             <td th:text="${weeklyExpense.getTimesPerWeek()}">Times Per Week</td>
                             <td th:text="${weeklyExpense.getWeeklyInterval()}">Weekly Interval</td>
                             <td th:text="${weeklyExpense.getName()}">Description</td>
@@ -521,6 +522,80 @@
                     </div>
                 </div>
 
+                <div id="collapseEditDeleteWeeklyExpense" th:if="${editableWeeklyExpenseDto != null}"
+                     th:class="${showWeeklyExpenseEditDeleteForm} ? 'collapse.show' : collapse">
+                    <div class="col-xl-4 ie-form py-5 float-end">
+                        <div class="row">
+                            <h2>Edit or Delete expense details</h2>
+                        </div>
+                        <form th:action="@{'/income-and-expenses/weekly-expense/' + ${editableWeeklyExpenseDto.getId()} + '/edit'}"
+                              th:object="${editableWeeklyExpenseDto}" class="form-signin mt-5" method="post">
+
+                            <div class="row">
+                                <p>
+                                    <label for="we-name" class="sr-only" th:classappend="${#fields.hasErrors('name')} ? error">Description</label>
+                                    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error">
+                                        Description error
+                                    </span>
+                                    <input type="text" id="we-name" name="name" th:field="*{name}"
+                                           class="form-control" placeholder="Description" required  th:autofocus="${#fields.hasErrors('name')} ? true">
+                                </p>
+                                <p>
+                                    <label for="we-amount" class="sr-only" th:classappend="${#fields.hasErrors('amount')} ? error">Amount</label>
+                                    <span th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}" class="error">
+                                        Amount error
+                                    </span>
+                                    <input type="text" id="we-amount" name="amount" th:field="*{amount}"
+                                           class="form-control" placeholder="Amount" required th:autofocus="${#fields.hasErrors('amount')} ? true">
+                                </p>
+                                <p>
+                                    <label for="timesPerWeek" class="sr-only" th:classappend="${#fields.hasErrors('timesPerWeek')} ? error">
+                                        Times per week
+                                    </label>
+                                    <span th:if="${#fields.hasErrors('timesPerWeek')}" th:errors="*{timesPerWeek}" class="error">
+                                        Times per week error
+                                    </span>
+                                    <input type="text" id="timesPerWeek" name="timesPerWeek" th:field="*{timesPerWeek}"
+                                           class="form-control" th:placeholder="#{'Times per week'}" required th:autofocus="${#fields.hasErrors('timesPerWeek')} ? true">
+                                </p>
+                                <p>
+                                    <label for="weeklyInterval" class="sr-only" th:classappend="${#fields.hasErrors('weeklyInterval')} ? error">
+                                        Weekly interval
+                                    </label>
+                                    <span th:if="${#fields.hasErrors('weeklyInterval')}" th:errors="*{weeklyInterval}" class="error">
+                                        Weekly interval error
+                                    </span>
+                                    <input type="text" id="weeklyInterval" name="weeklyInterval" th:field="*{weeklyInterval}"
+                                           class="form-control" th:placeholder="#{'Weekly interval'}" required th:autofocus="${#fields.hasErrors('weeklyInterval')} ? true">
+                                </p>
+                                <p>
+                                    <label for="we-type" class="sr-only" th:classappend="${#fields.hasErrors('type')} ? error">Type of expense</label>
+                                    <span th:if="${#fields.hasErrors('type')}" th:errors="*{type}" class="error">
+                                        Type of expense error
+                                    </span>
+                                    <input type="text" id="we-type" name="type" th:field="*{type}"
+                                           class="form-control" placeholder="Expense type" required th:autofocus="${#fields.hasErrors('type')} ? true">
+                                </p>
+                                <p>
+                                    <label for="we-accountId" class="sr-only" th:classappend="${#fields.hasErrors('accountId')} ? error">Paid from account</label>
+                                    <span th:if="${#fields.hasErrors('accountId')}" th:errors="*{accountId}" class="error">
+                                        Paid from account error
+                                    </span>
+                                    <input type="text" id="we-accountId" name="accountId" th:field="*{accountId}"
+                                           class="form-control" placeholder="Select account" required th:autofocus="${#fields.hasErrors('accountId')} ? true">
+                                </p>
+                                <input name="_csrf" type="hidden" value="00b612fc-ffb3-4935-adca-4f65795f7770" />
+                            </div>
+                            <div class="row px-2 py-5">
+                                <button class="btn btn-lg btn-primary btn-block" type="submit">Edit</button>
+                                <a th:href="@{'/income-and-expenses/weekly-expense/' + ${editableWeeklyExpenseDto.getId()} + '/delete'}"
+                                   class="btn btn-lg btn-danger btn-block mt-3" type="button">Delete</a>
+                            </div>
+                            <div class="row px-2 py-5">
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
