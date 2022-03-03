@@ -1,6 +1,7 @@
 package com.sadatmalik.fusionweb.controllers;
 
 import com.sadatmalik.fusionweb.exceptions.NoSuchMonthlyExpenseException;
+import com.sadatmalik.fusionweb.exceptions.NoSuchWeeklyExpenseException;
 import com.sadatmalik.fusionweb.mappers.IncomeExpenseMapper;
 import com.sadatmalik.fusionweb.model.*;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
@@ -284,9 +285,37 @@ public class IncomeExpenseController {
         try {
             log.debug("Updating monthly expense - " + monthlyExpenseDto);
             monthlyExpenseDto.setId(expenseId);
-            MonthlyExpense updated = incomeExpenseService.updateMonthlyExpense(monthlyExpenseDto, Utils.getUser(authentication));
+            MonthlyExpense updated = incomeExpenseService.updateMonthlyExpense(monthlyExpenseDto);
             log.debug("Updated new monthly expense in DB - " + updated);
         } catch (IllegalStateException | NoSuchMonthlyExpenseException e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
+
+        return "redirect:/income-and-expenses";
+    }
+
+    @PostMapping("/income-and-expenses/weekly-expense/{expenseId}/edit")
+    public String updateWeeklyExpense(@PathVariable("expenseId") Long expenseId,
+                                       @ModelAttribute("weeklyExpenseDto") @Valid WeeklyExpenseDto weeklyExpenseDto,
+                                       BindingResult bindingResult,
+                                       Authentication authentication,
+                                       Model model) {
+        if (bindingResult.hasErrors()) {
+            log.debug("Validation errors on form submission - WeeklyExpenseDto has validation errors");
+            model.addAttribute("showWeeklyExpenseEditDeleteForm", true);
+
+            loadFormBindingObjects(model);
+            loadTableData(authentication, model);
+            return "income-and-expenses";
+        }
+
+        try {
+            log.debug("Updating weekly expense - " + weeklyExpenseDto);
+            weeklyExpenseDto.setId(expenseId);
+            WeeklyExpense updated = incomeExpenseService.updateWeeklyExpense(weeklyExpenseDto);
+            log.debug("Updated new weekly expense in DB - " + updated);
+        } catch (IllegalStateException | NoSuchWeeklyExpenseException e) {
             model.addAttribute("error", e.getMessage());
             return "error";
         }

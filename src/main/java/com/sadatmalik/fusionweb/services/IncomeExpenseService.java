@@ -1,6 +1,7 @@
 package com.sadatmalik.fusionweb.services;
 
 import com.sadatmalik.fusionweb.exceptions.NoSuchMonthlyExpenseException;
+import com.sadatmalik.fusionweb.exceptions.NoSuchWeeklyExpenseException;
 import com.sadatmalik.fusionweb.model.*;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
 import com.sadatmalik.fusionweb.model.dto.MonthlyIncomeDto;
@@ -108,7 +109,7 @@ public class IncomeExpenseService {
         return monthlyIncomeRepository.save(monthlyIncome);
     }
 
-    public MonthlyExpense updateMonthlyExpense(MonthlyExpenseDto monthlyExpenseDto, User user)
+    public MonthlyExpense updateMonthlyExpense(MonthlyExpenseDto monthlyExpenseDto)
             throws NoSuchMonthlyExpenseException{
         // get current
         MonthlyExpense monthlyExpense =
@@ -131,6 +132,28 @@ public class IncomeExpenseService {
         }
     }
 
+    public WeeklyExpense updateWeeklyExpense(WeeklyExpenseDto weeklyExpenseDto) throws NoSuchWeeklyExpenseException{
+        // get current
+        WeeklyExpense weeklyExpense =
+                weeklyExpenseRepository.findById(weeklyExpenseDto.getId()).orElse(null);
+        if (weeklyExpense != null) {
+            weeklyExpense.setName(weeklyExpenseDto.getName());
+            weeklyExpense.setAmount(new BigDecimal(weeklyExpenseDto.getAmount()));
+            weeklyExpense.setTimesPerWeek(weeklyExpenseDto.getTimesPerWeek());
+            weeklyExpense.setWeeklyInterval(weeklyExpenseDto.getWeeklyInterval());
+            weeklyExpense.setType(weeklyExpenseDto.getType());
+            weeklyExpense.setAccount(accountService.getAccountByAccountId(
+                    weeklyExpenseDto.getAccountId()
+            ));
+            return weeklyExpenseRepository.save(weeklyExpense);
+
+        } else {
+            log.error("Trying to update non-existing weekly expense - update attempted for weekly expense ID "
+                    + weeklyExpenseDto.getId());
+            throw new NoSuchWeeklyExpenseException("Trying to update non-existing weekly expense" +
+                    " - update attempted for weekly expense ID " + weeklyExpenseDto.getId());
+        }
+    }
 
     public Income saveWeeklyIncome(WeeklyIncomeDto weeklyIncomeDto, User user) {
         // @todo use MapStruct
@@ -186,5 +209,4 @@ public class IncomeExpenseService {
         }
         log.debug("Deleted - " + deletable);
     }
-
 }
