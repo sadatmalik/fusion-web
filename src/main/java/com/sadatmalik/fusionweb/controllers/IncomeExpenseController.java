@@ -5,6 +5,7 @@ import com.sadatmalik.fusionweb.model.*;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
 import com.sadatmalik.fusionweb.model.dto.MonthlyIncomeDto;
 import com.sadatmalik.fusionweb.model.dto.WeeklyExpenseDto;
+import com.sadatmalik.fusionweb.model.dto.WeeklyIncomeDto;
 import com.sadatmalik.fusionweb.model.websecurity.UserPrincipal;
 import com.sadatmalik.fusionweb.services.IncomeExpenseService;
 import lombok.RequiredArgsConstructor;
@@ -228,8 +229,8 @@ public class IncomeExpenseController {
         return "income-and-expenses";
     }
 
-    @GetMapping("/income-and-expenses/monthly-income/{expenseId}/view")
-    public String viewMonthlyIncomeDetails(@PathVariable("expenseId") String id, Model model,
+    @GetMapping("/income-and-expenses/monthly-income/{incomeId}/view")
+    public String viewMonthlyIncomeDetails(@PathVariable("incomeId") String id, Model model,
                                            Authentication authentication) {
         log.debug("View MonthlyIncome details - for income id " + id);
 
@@ -240,6 +241,24 @@ public class IncomeExpenseController {
         model.addAttribute("editableMonthlyIncomeDto",
                 IncomeExpenseMapper.monthlyIncomeToMonthlyIncomeDto(monthlyIncome));
         model.addAttribute("showMonthlyIncomeEditDeleteForm", true);
+
+        loadFormBindingObjects(model);
+        loadTableData(authentication, model);
+        return "income-and-expenses";
+    }
+
+    @GetMapping("/income-and-expenses/weekly-income/{incomeId}/view")
+    public String viewWeeklyIncomeDetails(@PathVariable("incomeId") String id, Model model,
+                                           Authentication authentication) {
+        log.debug("View WeeklyIncome details - for income id " + id);
+
+        // retrieve the WeeklyIncome
+        Income weeklyIncome = incomeExpenseService.getWeeklyIncomeFor(Long.parseLong(id));
+
+        // set up the forms Dto
+        model.addAttribute("editableWeeklyIncomeDto",
+                IncomeExpenseMapper.incomeToWeeklyIncomeDto(weeklyIncome));
+        model.addAttribute("showWeeklyIncomeEditDeleteForm", true);
 
         loadFormBindingObjects(model);
         loadTableData(authentication, model);
@@ -273,6 +292,17 @@ public class IncomeExpenseController {
                                       Authentication authentication) {
         // delete the MonthlyIncome
         incomeExpenseService.deleteMonthlyIncomeFor(Long.parseLong(id));
+
+        loadFormBindingObjects(model);
+        loadTableData(authentication, model);
+        return "income-and-expenses";
+    }
+
+    @GetMapping("/income-and-expenses/weekly-income/{incomeId}/delete")
+    public String deleteWeeklyIncome(@PathVariable("incomeId") String id, Model model,
+                                      Authentication authentication) {
+        // delete the Weekly
+        incomeExpenseService.deleteWeeklyIncomeFor(Long.parseLong(id));
 
         loadFormBindingObjects(model);
         loadTableData(authentication, model);

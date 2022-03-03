@@ -1,11 +1,13 @@
 package com.sadatmalik.fusionweb.mappers;
 
+import com.sadatmalik.fusionweb.model.Income;
 import com.sadatmalik.fusionweb.model.MonthlyExpense;
 import com.sadatmalik.fusionweb.model.MonthlyIncome;
 import com.sadatmalik.fusionweb.model.WeeklyExpense;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
 import com.sadatmalik.fusionweb.model.dto.MonthlyIncomeDto;
 import com.sadatmalik.fusionweb.model.dto.WeeklyExpenseDto;
+import com.sadatmalik.fusionweb.model.dto.WeeklyIncomeDto;
 
 public class IncomeExpenseMapper {
 
@@ -39,6 +41,16 @@ public class IncomeExpenseMapper {
                 .amount(monthlyIncome.getAmount().doubleValue())
                 .dayOfMonthReceived(monthlyIncome.getDayOfMonthReceived())
                 .accountId(monthlyIncome.getAccount().getAccountId())
+                .build();
+    }
+
+    public static WeeklyIncomeDto incomeToWeeklyIncomeDto(Income weeklyIncome) {
+        return WeeklyIncomeDto.builder()
+                .id(weeklyIncome.getId())
+                .source(weeklyIncome.getSource())
+                .amount(weeklyIncome.getAmount().doubleValue())
+                .weeklyInterval(weeklyIncome.getWeeklyInterval())
+                .accountId(weeklyIncome.getAccount().getAccountId())
                 .build();
     }
 }

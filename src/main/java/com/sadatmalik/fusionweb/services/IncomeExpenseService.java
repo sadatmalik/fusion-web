@@ -4,6 +4,7 @@ import com.sadatmalik.fusionweb.model.*;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
 import com.sadatmalik.fusionweb.model.dto.MonthlyIncomeDto;
 import com.sadatmalik.fusionweb.model.dto.WeeklyExpenseDto;
+import com.sadatmalik.fusionweb.model.dto.WeeklyIncomeDto;
 import com.sadatmalik.fusionweb.repositories.IncomeRepository;
 import com.sadatmalik.fusionweb.repositories.MonthlyExpenseRepository;
 import com.sadatmalik.fusionweb.repositories.MonthlyIncomeRepository;
@@ -49,6 +50,10 @@ public class IncomeExpenseService {
 
     public List<MonthlyIncome> getMonthlyIncomeFor(User user) {
         return monthlyIncomeRepository.findByUser(user);
+    }
+
+    public Income getWeeklyIncomeFor(Long id) {
+        return incomeRepository.findById(id).orElse(null);
     }
 
     public List<Income> getWeeklyIncomeFor(User user) {
@@ -143,6 +148,16 @@ public class IncomeExpenseService {
             monthlyIncomeRepository.deleteById(incomeId);
         } else {
             log.debug("Trying to delete non-existing monthly income - no such monthly income with ID - " + incomeId);
+        }
+        log.debug("Deleted - " + deletable);
+    }
+
+    public void deleteWeeklyIncomeFor(Long incomeId) {
+        Income deletable = incomeRepository.findById(incomeId).orElse(null);
+        if (deletable != null) {
+            incomeRepository.deleteById(incomeId);
+        } else {
+            log.debug("Trying to delete non-existing weekly income - no such weekly income with ID - " + incomeId);
         }
         log.debug("Deleted - " + deletable);
     }
