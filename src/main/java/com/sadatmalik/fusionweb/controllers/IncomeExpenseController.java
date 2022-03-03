@@ -228,6 +228,24 @@ public class IncomeExpenseController {
         return "income-and-expenses";
     }
 
+    @GetMapping("/income-and-expenses/monthly-income/{expenseId}/view")
+    public String viewMonthlyIncomeDetails(@PathVariable("expenseId") String id, Model model,
+                                           Authentication authentication) {
+        log.debug("View MonthlyIncome details - for income id " + id);
+
+        // retrieve the MonthlyIncome
+        MonthlyIncome monthlyIncome = incomeExpenseService.getMonthlyIncomeFor(Long.parseLong(id));
+
+        // set up the forms Dto
+        model.addAttribute("editableMonthlyIncomeDto",
+                IncomeExpenseMapper.monthlyIncomeToMonthlyIncomeDto(monthlyIncome));
+        model.addAttribute("showMonthlyIncomeEditDeleteForm", true);
+
+        loadFormBindingObjects(model);
+        loadTableData(authentication, model);
+        return "income-and-expenses";
+    }
+
     @GetMapping("/income-and-expenses/{expenseId}/delete")
     public String deleteMonthlyExpense(@PathVariable("expenseId") String id, Model model,
                                        Authentication authentication) {
@@ -244,6 +262,17 @@ public class IncomeExpenseController {
                                        Authentication authentication) {
         // delete the WeeklylyExpense
         incomeExpenseService.deleteWeeklyExpenseFor(Long.parseLong(id));
+
+        loadFormBindingObjects(model);
+        loadTableData(authentication, model);
+        return "income-and-expenses";
+    }
+
+    @GetMapping("/income-and-expenses/monthly-income/{incomeId}/delete")
+    public String deleteMonthlyIncome(@PathVariable("incomeId") String id, Model model,
+                                      Authentication authentication) {
+        // delete the MonthlyIncome
+        incomeExpenseService.deleteMonthlyIncomeFor(Long.parseLong(id));
 
         loadFormBindingObjects(model);
         loadTableData(authentication, model);

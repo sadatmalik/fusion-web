@@ -43,6 +43,10 @@ public class IncomeExpenseService {
         return weeklyExpenseRepository.findByUser(user);
     }
 
+    public MonthlyIncome getMonthlyIncomeFor(Long id) {
+        return monthlyIncomeRepository.findById(id).orElse(null);
+    }
+
     public List<MonthlyIncome> getMonthlyIncomeFor(User user) {
         return monthlyIncomeRepository.findByUser(user);
     }
@@ -131,5 +135,15 @@ public class IncomeExpenseService {
             log.debug("Trying to delete non-existing weekly expense - no such weekly expense with ID - " + expenseId);
         }
         log.debug("Deleted - " + toDelete);
+    }
+
+    public void deleteMonthlyIncomeFor(Long incomeId) {
+        MonthlyIncome deletable = monthlyIncomeRepository.findById(incomeId).orElse(null);
+        if (deletable != null) {
+            monthlyIncomeRepository.deleteById(incomeId);
+        } else {
+            log.debug("Trying to delete non-existing monthly income - no such monthly income with ID - " + incomeId);
+        }
+        log.debug("Deleted - " + deletable);
     }
 }

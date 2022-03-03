@@ -136,7 +136,8 @@
                             <td>465</td>
                             <td>CASH</td>
                         </tr>
-                        <tr th:each="monthlyIncome : ${monthlyIncomeList}">
+                        <tr th:each="monthlyIncome : ${monthlyIncomeList}" class="clickable"
+                            th:onclick="|window.location='@{'/income-and-expenses/monthly-income/' + ${monthlyIncome.getId()} + '/view'}'|">
                             <td th:text="${monthlyIncome.getDayOfMonthReceived()}">Day Of Month</td>
                             <td th:text="${monthlyIncome.getSource()}">Description</td>
                             <td th:text="${monthlyIncome.displayAmount()}">Amount</td>
@@ -589,6 +590,63 @@
                             <div class="row px-2 py-5">
                                 <button class="btn btn-lg btn-primary btn-block" type="submit">Edit</button>
                                 <a th:href="@{'/income-and-expenses/weekly-expense/' + ${editableWeeklyExpenseDto.getId()} + '/delete'}"
+                                   class="btn btn-lg btn-danger btn-block mt-3" type="button">Delete</a>
+                            </div>
+                            <div class="row px-2 py-5">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="collapseEditDeleteMonthlyIncome" th:if="${editableMonthlyIncomeDto != null}"
+                     th:class="${showMonthlyIncomeEditDeleteForm} ? 'collapse.show' : collapse">
+                    <div class="col-xl-4 ie-form py-5 float-end">
+                        <div class="row">
+                            <h2>Edit or Delete income details</h2>
+                        </div>
+                        <form th:action="@{'/income-and-expenses/monthly-income/' + ${editableMonthlyIncomeDto.getId()} + '/edit'}"
+                              th:object="${editableMonthlyIncomeDto}" class="form-signin mt-5" method="post">
+
+                            <div class="row">
+                                <p>
+                                    <label for="mi-name" class="sr-only" th:classappend="${#fields.hasErrors('source')} ? error">Description</label>
+                                    <span th:if="${#fields.hasErrors('source')}" th:errors="*{source}" class="error">
+                                        Description error
+                                    </span>
+                                    <input type="text" id="mi-name" name="source" th:field="*{source}"
+                                           class="form-control" placeholder="Description" required  th:autofocus="${#fields.hasErrors('source')} ? true">
+                                </p>
+                                <p>
+                                    <label for="mi-amount" class="sr-only" th:classappend="${#fields.hasErrors('amount')} ? error">Amount</label>
+                                    <span th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}" class="error">
+                                        Amount error
+                                    </span>
+                                    <input type="text" id="mi-amount" name="amount" th:field="*{amount}"
+                                           class="form-control" placeholder="Amount" required th:autofocus="${#fields.hasErrors('amount')} ? true">
+                                </p>
+                                <p>
+                                    <label for="dayOfMonthReceived" class="sr-only" th:classappend="${#fields.hasErrors('dayOfMonthReceived')} ? error">
+                                        Day of month received
+                                    </label>
+                                    <span th:if="${#fields.hasErrors('dayOfMonthReceived')}" th:errors="*{dayOfMonthReceived}" class="error">
+                                        Day of month received error
+                                    </span>
+                                    <input type="text" id="dayOfMonthReceived" name="dayOfMonthReceived" th:field="*{dayOfMonthReceived}"
+                                           class="form-control" th:placeholder="#{'Day of month received'}" required th:autofocus="${#fields.hasErrors('dayOfMonthReceived')} ? true">
+                                </p>
+                                <p>
+                                    <label for="mi-accountId" class="sr-only" th:classappend="${#fields.hasErrors('accountId')} ? error">Paid to account</label>
+                                    <span th:if="${#fields.hasErrors('accountId')}" th:errors="*{accountId}" class="error">
+                                        Paid to account error
+                                    </span>
+                                    <input type="text" id="mi-accountId" name="accountId" th:field="*{accountId}"
+                                           class="form-control" placeholder="Select account" required th:autofocus="${#fields.hasErrors('accountId')} ? true">
+                                </p>
+                                <input name="_csrf" type="hidden" value="00b612fc-ffb3-4935-adca-4f65795f7770" />
+                            </div>
+                            <div class="row px-2 py-5">
+                                <button class="btn btn-lg btn-primary btn-block" type="submit">Edit</button>
+                                <a th:href="@{'/income-and-expenses/monthly-income/' + ${editableMonthlyIncomeDto.getId()} + '/delete'}"
                                    class="btn btn-lg btn-danger btn-block mt-3" type="button">Delete</a>
                             </div>
                             <div class="row px-2 py-5">
