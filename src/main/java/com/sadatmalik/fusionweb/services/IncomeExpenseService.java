@@ -1,6 +1,7 @@
 package com.sadatmalik.fusionweb.services;
 
 import com.sadatmalik.fusionweb.exceptions.NoSuchMonthlyExpenseException;
+import com.sadatmalik.fusionweb.exceptions.NoSuchMonthlyIncomeException;
 import com.sadatmalik.fusionweb.exceptions.NoSuchWeeklyExpenseException;
 import com.sadatmalik.fusionweb.model.*;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
@@ -132,7 +133,8 @@ public class IncomeExpenseService {
         }
     }
 
-    public WeeklyExpense updateWeeklyExpense(WeeklyExpenseDto weeklyExpenseDto) throws NoSuchWeeklyExpenseException{
+    public WeeklyExpense updateWeeklyExpense(WeeklyExpenseDto weeklyExpenseDto)
+            throws NoSuchWeeklyExpenseException {
         // get current
         WeeklyExpense weeklyExpense =
                 weeklyExpenseRepository.findById(weeklyExpenseDto.getId()).orElse(null);
@@ -152,6 +154,28 @@ public class IncomeExpenseService {
                     + weeklyExpenseDto.getId());
             throw new NoSuchWeeklyExpenseException("Trying to update non-existing weekly expense" +
                     " - update attempted for weekly expense ID " + weeklyExpenseDto.getId());
+        }
+    }
+
+    public MonthlyIncome updateMonthlyIncome(MonthlyIncomeDto monthlyIncomeDto)
+            throws NoSuchMonthlyIncomeException {
+        // get current
+        MonthlyIncome monthlyIncome =
+                monthlyIncomeRepository.findById(monthlyIncomeDto.getId()).orElse(null);
+        if (monthlyIncome != null) {
+            monthlyIncome.setAmount(new BigDecimal(monthlyIncomeDto.getAmount()));
+            monthlyIncome.setSource(monthlyIncomeDto.getSource());
+            monthlyIncome.setDayOfMonthReceived(monthlyIncomeDto.getDayOfMonthReceived());
+            monthlyIncome.setAccount(accountService.getAccountByAccountId(
+                    monthlyIncomeDto.getAccountId()
+            ));
+            return monthlyIncomeRepository.save(monthlyIncome);
+
+        } else {
+            log.error("Trying to update non-existing monthly income - update attempted for monthly income ID "
+                    + monthlyIncomeDto.getId());
+            throw new NoSuchMonthlyIncomeException("Trying to update non-existing monthly income" +
+                    " - update attempted for monthly income ID " + monthlyIncomeDto.getId());
         }
     }
 
@@ -209,4 +233,5 @@ public class IncomeExpenseService {
         }
         log.debug("Deleted - " + deletable);
     }
+
 }

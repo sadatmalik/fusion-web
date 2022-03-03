@@ -1,6 +1,7 @@
 package com.sadatmalik.fusionweb.controllers;
 
 import com.sadatmalik.fusionweb.exceptions.NoSuchMonthlyExpenseException;
+import com.sadatmalik.fusionweb.exceptions.NoSuchMonthlyIncomeException;
 import com.sadatmalik.fusionweb.exceptions.NoSuchWeeklyExpenseException;
 import com.sadatmalik.fusionweb.mappers.IncomeExpenseMapper;
 import com.sadatmalik.fusionweb.model.*;
@@ -323,6 +324,33 @@ public class IncomeExpenseController {
         return "redirect:/income-and-expenses";
     }
 
+    @PostMapping("/income-and-expenses/monthly-income/{incomeId}/edit")
+    public String updateMonthlyIncome(@PathVariable("incomeId") Long incomeId,
+                                      @ModelAttribute("monthlyIncomeDto") @Valid MonthlyIncomeDto monthlyIncomeDto,
+                                      BindingResult bindingResult,
+                                      Authentication authentication,
+                                      Model model) {
+        if (bindingResult.hasErrors()) {
+            log.debug("Validation errors on form submission - MonthlyIncomeDto has validation errors");
+            model.addAttribute("showMonthlyIncomeEditDeleteForm", true);
+
+            loadFormBindingObjects(model);
+            loadTableData(authentication, model);
+            return "income-and-expenses";
+        }
+
+        try {
+            log.debug("Updating monthly income - " + monthlyIncomeDto);
+            monthlyIncomeDto.setId(incomeId);
+            MonthlyIncome updated = incomeExpenseService.updateMonthlyIncome(monthlyIncomeDto);
+            log.debug("Updated new monthly income in DB - " + updated);
+        } catch (IllegalStateException | NoSuchMonthlyIncomeException e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
+
+        return "redirect:/income-and-expenses";
+    }
 
     @GetMapping("/income-and-expenses/{expenseId}/delete")
     public String deleteMonthlyExpense(@PathVariable("expenseId") String id, Model model,
