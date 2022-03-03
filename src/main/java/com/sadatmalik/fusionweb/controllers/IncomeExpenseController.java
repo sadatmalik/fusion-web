@@ -1,5 +1,6 @@
 package com.sadatmalik.fusionweb.controllers;
 
+import com.sadatmalik.fusionweb.exceptions.NoSuchMonthlyExpenseException;
 import com.sadatmalik.fusionweb.mappers.IncomeExpenseMapper;
 import com.sadatmalik.fusionweb.model.*;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
@@ -265,26 +266,49 @@ public class IncomeExpenseController {
         return "income-and-expenses";
     }
 
+    @PostMapping("/income-and-expenses/monthly-expense/{expenseId}/edit")
+    public String updateMonthlyExpense(@PathVariable("expenseId") Long expenseId,
+                                       @ModelAttribute("monthlyExpenseDto") @Valid MonthlyExpenseDto monthlyExpenseDto,
+                                       BindingResult bindingResult,
+                                       Authentication authentication,
+                                       Model model) {
+        if (bindingResult.hasErrors()) {
+            log.debug("Validation errors on form submission - MonthlyExpenseDto has validation errors");
+            model.addAttribute("showMonthlyExpenseEditDeleteForm", true);
+
+            loadFormBindingObjects(model);
+            loadTableData(authentication, model);
+            return "income-and-expenses";
+        }
+
+        try {
+            log.debug("Updating monthly expense - " + monthlyExpenseDto);
+            monthlyExpenseDto.setId(expenseId);
+            MonthlyExpense updated = incomeExpenseService.updateMonthlyExpense(monthlyExpenseDto, Utils.getUser(authentication));
+            log.debug("Updated new monthly expense in DB - " + updated);
+        } catch (IllegalStateException | NoSuchMonthlyExpenseException e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
+
+        return "redirect:/income-and-expenses";
+    }
+
+
     @GetMapping("/income-and-expenses/{expenseId}/delete")
     public String deleteMonthlyExpense(@PathVariable("expenseId") String id, Model model,
                                        Authentication authentication) {
         // delete the MonthlyExpense
         incomeExpenseService.deleteMonthlyExpenseFor(Long.parseLong(id));
-
-        loadFormBindingObjects(model);
-        loadTableData(authentication, model);
-        return "income-and-expenses";
+        return "redirect:/income-and-expenses";
     }
 
     @GetMapping("/income-and-expenses/weekly-expense/{expenseId}/delete")
     public String deleteWeeklyExpense(@PathVariable("expenseId") String id, Model model,
                                        Authentication authentication) {
-        // delete the WeeklylyExpense
+        // delete the WeeklyExpense
         incomeExpenseService.deleteWeeklyExpenseFor(Long.parseLong(id));
-
-        loadFormBindingObjects(model);
-        loadTableData(authentication, model);
-        return "income-and-expenses";
+        return "redirect:/income-and-expenses";
     }
 
     @GetMapping("/income-and-expenses/monthly-income/{incomeId}/delete")
@@ -292,21 +316,15 @@ public class IncomeExpenseController {
                                       Authentication authentication) {
         // delete the MonthlyIncome
         incomeExpenseService.deleteMonthlyIncomeFor(Long.parseLong(id));
-
-        loadFormBindingObjects(model);
-        loadTableData(authentication, model);
-        return "income-and-expenses";
+        return "redirect:/income-and-expenses";
     }
 
     @GetMapping("/income-and-expenses/weekly-income/{incomeId}/delete")
     public String deleteWeeklyIncome(@PathVariable("incomeId") String id, Model model,
                                       Authentication authentication) {
-        // delete the Weekly
+        // delete the Income
         incomeExpenseService.deleteWeeklyIncomeFor(Long.parseLong(id));
-
-        loadFormBindingObjects(model);
-        loadTableData(authentication, model);
-        return "income-and-expenses";
+        return "redirect:/income-and-expenses";
     }
 
 }

@@ -465,7 +465,7 @@
                         <div class="row">
                             <h2>Edit or Delete expense details</h2>
                         </div>
-                        <form th:action="@{'/income-and-expenses/' + ${editableMonthlyExpenseDto.getId()} + '/edit'}" th:object="${editableMonthlyExpenseDto}"
+                        <form th:action="@{'/income-and-expenses/monthly-expense/' + ${editableMonthlyExpenseDto.getId()} + '/edit'}" th:object="${editableMonthlyExpenseDto}"
                               class="form-signin mt-5" method="post">
 
                             <div class="row">

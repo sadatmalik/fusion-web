@@ -1,5 +1,6 @@
 package com.sadatmalik.fusionweb.services;
 
+import com.sadatmalik.fusionweb.exceptions.NoSuchMonthlyExpenseException;
 import com.sadatmalik.fusionweb.model.*;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
 import com.sadatmalik.fusionweb.model.dto.MonthlyIncomeDto;
@@ -107,6 +108,30 @@ public class IncomeExpenseService {
         return monthlyIncomeRepository.save(monthlyIncome);
     }
 
+    public MonthlyExpense updateMonthlyExpense(MonthlyExpenseDto monthlyExpenseDto, User user)
+            throws NoSuchMonthlyExpenseException{
+        // get current
+        MonthlyExpense monthlyExpense =
+                monthlyExpenseRepository.findById(monthlyExpenseDto.getId()).orElse(null);
+        if (monthlyExpense != null) {
+            monthlyExpense.setName(monthlyExpenseDto.getName());
+            monthlyExpense.setAmount(new BigDecimal(monthlyExpenseDto.getAmount()));
+            monthlyExpense.setDayOfMonthPaid(monthlyExpenseDto.getDayOfMonthPaid());
+            monthlyExpense.setType(monthlyExpenseDto.getType());
+            monthlyExpense.setAccount(accountService.getAccountByAccountId(
+                    monthlyExpenseDto.getAccountId()
+            ));
+            return monthlyExpenseRepository.save(monthlyExpense);
+
+        } else {
+            log.error("Trying to update non-existing monthly expense - update attempted for monthly expense ID "
+                    + monthlyExpenseDto.getId());
+            throw new NoSuchMonthlyExpenseException("Trying to update non-existing monthly expense - " +
+                    "update attempted for monthly expense ID " + monthlyExpenseDto.getId());
+        }
+    }
+
+
     public Income saveWeeklyIncome(WeeklyIncomeDto weeklyIncomeDto, User user) {
         // @todo use MapStruct
         Income weeklyIncome = Income.builder()
@@ -161,4 +186,5 @@ public class IncomeExpenseService {
         }
         log.debug("Deleted - " + deletable);
     }
+
 }
