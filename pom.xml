@@ -14,7 +14,7 @@
 	<name>Fusion Web Prototype</name>
 	<description>Base Project for Fusion Web</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>8</java.version>
 	</properties>
 	<dependencies>
 		<!-- Project -->
