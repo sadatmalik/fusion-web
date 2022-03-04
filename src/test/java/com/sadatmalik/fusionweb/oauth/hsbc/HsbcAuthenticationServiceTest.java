@@ -1,7 +1,7 @@
 package com.sadatmalik.fusionweb.oauth.hsbc;
 
 import com.nimbusds.jose.JWSObject;
-import com.sadatmalik.fusionweb.oauth.hsbc.*;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,6 +32,7 @@ class HsbcAuthenticationServiceTest {
     }
 
     @Test
+    @Disabled // just until deployment
     void testCreateNimbusJwt() {
         HsbcConsent consent = new HsbcConsent();
         consent.data = new HsbcConsentData();
