@@ -14,7 +14,7 @@
 	<name>Fusion Web Prototype</name>
 	<description>Base Project for Fusion Web</description>
 	<properties>
-		<java.version>8</java.version>
+		<java.version>11</java.version>
 	</properties>
 	<dependencies>
 		<!-- Project -->
@@ -106,6 +106,13 @@
 					</excludes>
 				</configuration>
 			</plugin>
+<!--			<plugin>-->
+<!--				<artifactId>maven-compiler-plugin</artifactId>-->
+<!--				<configuration>-->
+<!--					<source>1.8</source>-->
+<!--					<target>1.8</target>-->
+<!--				</configuration>-->
+<!--			</plugin>-->
 		</plugins>
 	</build>
 
