@@ -6,6 +6,10 @@
 /src/test/javascript/PhantomJS*/
 
 /src/main/scripts/mysql-init-prd.sql
+/src/main/scripts/mysql-init-qa2.sql
+
+/fusion_prd_aws.pem
+/fusion_prd_aws_ldn.pem
 
 ######################
 # Node
