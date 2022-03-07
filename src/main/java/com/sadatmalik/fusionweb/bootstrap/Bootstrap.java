@@ -49,6 +49,9 @@ public class Bootstrap implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
+        // todo - only run bootstrap if need to -- will run multiple times in QA2 as
+        // tables are note dropped on restart
+
         // set up a test user
         log.debug("Setting up Bootstrap user");
 
