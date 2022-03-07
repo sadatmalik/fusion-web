@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Slf4j
-@Profile({"dev", "qa"})
+@Profile({"dev", "qa", "qa2"})
 @RequiredArgsConstructor
 @Component
 public class Bootstrap implements CommandLineRunner {
