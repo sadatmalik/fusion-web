@@ -49,170 +49,171 @@ public class Bootstrap implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        // todo - only run bootstrap if need to -- will run multiple times in QA2 as
-        // tables are note dropped on restart
+        // only  bootstrap if need to
+        if (userPrincipalRepo.findAll().isEmpty()) {
 
-        // set up a test user
-        log.debug("Setting up Bootstrap user");
+            // set up a test user
+            log.debug("Setting up Bootstrap user");
 
-        User user = User.builder()
-                .firstName("Sadat")
-                .lastName("Malik")
-                .email("sadat.malik@me.com")
-                .build();
+            User user = User.builder()
+                    .firstName("Sadat")
+                    .lastName("Malik")
+                    .email("sadat.malik@me.com")
+                    .build();
 
-        User savedUser = userRepository.save(user);
+            User savedUser = userRepository.save(user);
 
-        // bootstrap web security
-        createDummyUserAndAuthority(savedUser);
+            // bootstrap web security
+            createDummyUserAndAuthority(savedUser);
 
-        // set up some banks
-        Bank hsbc = bankRepository.save(Bank.builder()
-                .name("HSBC")
-                .imageLocation("/images/hsbc.png")
-                .build()
-        );
+            // set up some banks
+            Bank hsbc = bankRepository.save(Bank.builder()
+                    .name("HSBC")
+                    .imageLocation("/images/hsbc.png")
+                    .build()
+            );
 
-        Bank barclays = bankRepository.save(Bank.builder()
-                .name("Barclays")
-                .imageLocation("/images/barclays-logo.png")
-                .build()
-        );
+            Bank barclays = bankRepository.save(Bank.builder()
+                    .name("Barclays")
+                    .imageLocation("/images/barclays-logo.png")
+                    .build()
+            );
 
-        bankRepository.save(hsbc);
+            bankRepository.save(hsbc);
 
-        // set up some test accounts
-        log.debug("Setting up Bootstrap accounts");
+            // set up some test accounts
+            log.debug("Setting up Bootstrap accounts");
 
-        Account account = accountRepository.save(Account.builder()
-                .accountId("HS000345678")
-                .type(AccountType.SAVINGS)
-                .name("Mr Sadat Malik")
-                .balance(14227.39)
-                .currency("GBP")
-                .user(user)
-                .description("HSBC Savings account")
-                .bank(hsbc)
-                .build()
-        );
+            Account account = accountRepository.save(Account.builder()
+                    .accountId("HS000345678")
+                    .type(AccountType.SAVINGS)
+                    .name("Mr Sadat Malik")
+                    .balance(14227.39)
+                    .currency("GBP")
+                    .user(user)
+                    .description("HSBC Savings account")
+                    .bank(hsbc)
+                    .build()
+            );
 
-        Account account2 = accountRepository.save(Account.builder()
-                .accountId("BARC0003456")
-                .type(AccountType.SAVINGS)
-                .name("MR S MALIK")
-                .balance(41075.29)
-                .currency("GBP")
-                .user(user)
-                .description("Barclays Everyday Saver account")
-                .bank(barclays)
-                .build()
-        );
+            Account account2 = accountRepository.save(Account.builder()
+                    .accountId("BARC0003456")
+                    .type(AccountType.SAVINGS)
+                    .name("MR S MALIK")
+                    .balance(41075.29)
+                    .currency("GBP")
+                    .user(user)
+                    .description("Barclays Everyday Saver account")
+                    .bank(barclays)
+                    .build()
+            );
 
 
-        Account account3 = accountRepository.save(Account.builder()
-                .accountId("BARC0007891")
-                .type(AccountType.CURRENT)
-                .name("MR S MALIK")
-                .balance(1268.08)
-                .currency("GBP")
-                .user(user)
-                .description("Barclays Cash OD account")
-                .bank(barclays)
-                .build()
-        );
+            Account account3 = accountRepository.save(Account.builder()
+                    .accountId("BARC0007891")
+                    .type(AccountType.CURRENT)
+                    .name("MR S MALIK")
+                    .balance(1268.08)
+                    .currency("GBP")
+                    .user(user)
+                    .description("Barclays Cash OD account")
+                    .bank(barclays)
+                    .build()
+            );
 
-        user.setAccounts(List.of(account, account2, account3));
+            user.setAccounts(List.of(account, account2, account3));
 
-        // Set Transaction Service for dummy accounts
-        AccountServicesRegistry.getInstance().registerTransactionService(account,
-                new DummyHsbcSavingsTransactionService());
-        AccountServicesRegistry.getInstance().registerTransactionService(account2,
-                new DummyBarclaysSavingsTransactionService());
-        AccountServicesRegistry.getInstance().registerTransactionService(account3,
-                new DummyTransactionService());
+            // Set Transaction Service for dummy accounts
+            AccountServicesRegistry.getInstance().registerTransactionService(account,
+                    new DummyHsbcSavingsTransactionService());
+            AccountServicesRegistry.getInstance().registerTransactionService(account2,
+                    new DummyBarclaysSavingsTransactionService());
+            AccountServicesRegistry.getInstance().registerTransactionService(account3,
+                    new DummyTransactionService());
 
-        // set up some income data
-        log.debug("Setting up Bootstrap income");
+            // set up some income data
+            log.debug("Setting up Bootstrap income");
 
-        Income income = Income.builder()
-                .account(account)
-                .user(user)
-                .amount(new BigDecimal(35))
-                .source("Job")
-                .weeklyInterval(2)
-                .build();
+            Income income = Income.builder()
+                    .account(account)
+                    .user(user)
+                    .amount(new BigDecimal(35))
+                    .source("Job")
+                    .weeklyInterval(2)
+                    .build();
 
-        account.setIncomeList(List.of(income));
-        user.setIncomeList(List.of(income));
-        incomeRepository.save(income);
+            account.setIncomeList(List.of(income));
+            user.setIncomeList(List.of(income));
+            incomeRepository.save(income);
 
-        // set up some income data
-        log.debug("Setting up Bootstrap monthly income");
+            // set up some income data
+            log.debug("Setting up Bootstrap monthly income");
 
-        MonthlyIncome monthly = MonthlyIncome.builder()
-                .account(account)
-                .user(user)
-                .amount(new BigDecimal(1850))
-                .source("Rent")
-                .dayOfMonthReceived(7)
-                .build();
+            MonthlyIncome monthly = MonthlyIncome.builder()
+                    .account(account)
+                    .user(user)
+                    .amount(new BigDecimal(1850))
+                    .source("Rent")
+                    .dayOfMonthReceived(7)
+                    .build();
 
-        account.setMonthlyIncomeList(List.of(monthly));
-        user.setMonthlyIncomeList(List.of(monthly));
-        monthlyIncomeRepository.save(monthly);
+            account.setMonthlyIncomeList(List.of(monthly));
+            user.setMonthlyIncomeList(List.of(monthly));
+            monthlyIncomeRepository.save(monthly);
 
-        // set up some debt data
-        log.debug("Setting up Bootstrap debt");
+            // set up some debt data
+            log.debug("Setting up Bootstrap debt");
 
-        Debt debt = Debt.builder()
-                .account(account)
-                .user(user)
-                .lender("Santander")
-                .totalBorrowed(new BigDecimal(295000))
-                .totalOwed(new BigDecimal(270000))
-                .dayOfMonthPaid(5)
-                .interestRate(new BigDecimal(1.95))
-                .dateBorrowed(new Date(119,1,1)) //2019-Feb-1st
-                .initialTermMonths(12*25)
-                .build();
+            Debt debt = Debt.builder()
+                    .account(account)
+                    .user(user)
+                    .lender("Santander")
+                    .totalBorrowed(new BigDecimal(295000))
+                    .totalOwed(new BigDecimal(270000))
+                    .dayOfMonthPaid(5)
+                    .interestRate(new BigDecimal(1.95))
+                    .dateBorrowed(new Date(119, 1, 1)) //2019-Feb-1st
+                    .initialTermMonths(12 * 25)
+                    .build();
 
-        Debt debt2 = Debt.builder()
-                .account(account)
-                .user(user)
-                .lender("Nationwide")
-                .totalBorrowed(new BigDecimal(400000))
-                .totalOwed(new BigDecimal(400000))
-                .dayOfMonthPaid(5)
-                .interestRate(new BigDecimal(2.34))
-                .dateBorrowed(new Date(119,1,1)) //2019-Feb-1st
-                .initialTermMonths(12*25)
-                .build();
+            Debt debt2 = Debt.builder()
+                    .account(account)
+                    .user(user)
+                    .lender("Nationwide")
+                    .totalBorrowed(new BigDecimal(400000))
+                    .totalOwed(new BigDecimal(400000))
+                    .dayOfMonthPaid(5)
+                    .interestRate(new BigDecimal(2.34))
+                    .dateBorrowed(new Date(119, 1, 1)) //2019-Feb-1st
+                    .initialTermMonths(12 * 25)
+                    .build();
 
-        account.setDebts(List.of(debt, debt2));
-        user.setDebts(List.of(debt, debt2));
+            account.setDebts(List.of(debt, debt2));
+            user.setDebts(List.of(debt, debt2));
 
-        debtRepository.save(debt);
-        debtRepository.save(debt2);
+            debtRepository.save(debt);
+            debtRepository.save(debt2);
 
-        // set up some expense data
-        createDummyExpenses(user, account);
+            // set up some expense data
+            createDummyExpenses(user, account);
 
-        // set up some goal data
-        log.debug("Setting up Bootstrap expenses");
+            // set up some goal data
+            log.debug("Setting up Bootstrap expenses");
 
-        Goal goal = Goal.builder()
-                .account(account)
-                .user(user)
-                .name("New Laptop")
-                .target(new BigDecimal(1500))
-                .achieved(new BigDecimal(0))
-                .currentContribution(new BigDecimal(200))
-                .contribWeekly(false) // monthly contribtuion to goal
-                .build();
+            Goal goal = Goal.builder()
+                    .account(account)
+                    .user(user)
+                    .name("New Laptop")
+                    .target(new BigDecimal(1500))
+                    .achieved(new BigDecimal(0))
+                    .currentContribution(new BigDecimal(200))
+                    .contribWeekly(false) // monthly contribtuion to goal
+                    .build();
 
-        account.setGoals(List.of(goal));
-        user.setGoals(List.of(goal));
-        goalRepository.save(goal);
+            account.setGoals(List.of(goal));
+            user.setGoals(List.of(goal));
+            goalRepository.save(goal);
+        }
 
     }
 

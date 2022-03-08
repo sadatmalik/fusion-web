@@ -36,7 +36,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .anyRequest().authenticated()
                     .and()
                 .formLogin()
-                    .loginPage("/login").permitAll();
+                    .loginPage("/login").permitAll()
+                    .and()
+                .logout()
+                    .logoutSuccessUrl("/login?logout").permitAll();
 
         // need these to enable h2-console
         httpSecurity.csrf().disable();
