@@ -21,7 +21,10 @@
                     <!-- react-text: 8 -->
                     FUSiON ECONO
                     <!-- /react-text -->
-                    <span id="beta"> BETA</span>
+                    <span id="beta" th:if="${@environment.getActiveProfiles()[0] eq 'dev'}"> DEV</span>
+                    <span id="beta" th:if="${@environment.getActiveProfiles()[0] eq 'qa'}"> QA</span>
+                    <span id="beta" th:if="${@environment.getActiveProfiles()[0] eq 'qa2'}"> QA-2</span>
+                    <span id="beta" th:if="${@environment.getActiveProfiles()[0] eq 'prd'}"> BETA</span>
                 </div>
             </div>
         </div>
