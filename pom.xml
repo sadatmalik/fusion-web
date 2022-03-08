@@ -98,6 +98,10 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+					<profiles> <!-- AWS profiles for mvn launch -->
+						<profile>qa2</profile>
+						<profile>prd</profile>
+					</profiles>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
