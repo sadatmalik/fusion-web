@@ -92,13 +92,51 @@
 		</dependency>
 	</dependencies>
 
+	<!-- maven profiles to mirror spring profiles e.g. mvn clean package -Pqa-->
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<spring.profiles.active>dev,test</spring.profiles.active>
+			</properties>
+		</profile>
+		<profile>
+			<id>qa</id>
+			<properties>
+				<spring.profiles.active>qa</spring.profiles.active>
+			</properties>
+		</profile>
+		<profile>
+			<id>qa2</id>
+			<properties>
+				<spring.profiles.active>qa2</spring.profiles.active>
+			</properties>
+		</profile>
+		<profile>
+			<id>prd</id>
+			<properties>
+				<spring.profiles.active>prd</spring.profiles.active>
+			</properties>
+		</profile>
+	</profiles>
+
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<profiles> <!-- AWS profiles for mvn launch -->
+					<profiles> <!-- profiles for mvn launch -->
+						<profile>qa</profile>
 						<profile>qa2</profile>
 						<profile>prd</profile>
 					</profiles>
@@ -110,13 +148,6 @@
 					</excludes>
 				</configuration>
 			</plugin>
-<!--			<plugin>-->
-<!--				<artifactId>maven-compiler-plugin</artifactId>-->
-<!--				<configuration>-->
-<!--					<source>1.8</source>-->
-<!--					<target>1.8</target>-->
-<!--				</configuration>-->
-<!--			</plugin>-->
 		</plugins>
 	</build>
 
