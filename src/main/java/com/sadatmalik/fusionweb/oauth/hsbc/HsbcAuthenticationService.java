@@ -1,5 +1,6 @@
 package com.sadatmalik.fusionweb.oauth.hsbc;
 
+import com.sadatmalik.fusionweb.config.OauthConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoi
 
     @Autowired
     JwtHelper jwtHelper;
+
+    @Autowired
+    OauthConfig oauthConfig;
 
     // curl -v -X POST --cert qwac.der --cert-type DER --key server.key
     // -H "Content-Type: application/x-www-form-urlencoded"
@@ -121,7 +125,7 @@ public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoi
 
         String authorize_url = AUTHORIZE_URL + "?response_type=code%20id_token";
         authorize_url += "&client_id=211e36de-64b2-479e-ae28-8a5b41a1a940";
-        authorize_url += "&redirect_uri=" + APP_REDIRECT_URL;
+        authorize_url += "&redirect_uri=" + oauthConfig.getAppRedirectUrl();
         authorize_url += "&scope=openid%20accounts";
         authorize_url += "&nonce=n-0S6_WzA2Mj";
         authorize_url += "&state=test";
@@ -161,7 +165,7 @@ public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoi
 
         String body = "grant_type=" + grant_type +
                 "&code=" + authCode +
-                "&redirect_uri=" + APP_REDIRECT_URL +
+                "&redirect_uri=" + oauthConfig.getAppRedirectUrl() +
                 "&client_assertion_type=" + client_assertion_type +
                 "&client_assertion=" + client_assertion;
 
@@ -193,7 +197,7 @@ public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoi
 
         String body = "grant_type=" + grant_type +
                 "&refresh_token=" + refreshToken.getRefreshToken() +
-                "&redirect_uri=" + APP_REDIRECT_URL +
+                "&redirect_uri=" + oauthConfig.getAppRedirectUrl() +
                 "&client_assertion_type=" + client_assertion_type +
                 "&client_assertion=" + client_assertion;
 

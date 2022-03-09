@@ -4,6 +4,7 @@ import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.bc.BouncyCastleFIPSProviderSingleton;
 import com.sadatmalik.fusionweb.config.JwtProperties;
+import com.sadatmalik.fusionweb.config.OauthConfig;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ public final class JwtHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtHelper.class);
     private final JwtProperties properties;
+    private final OauthConfig oauthConfig;
 
     // JWT -- header: {"alg":"PS256","typ":"JWT","kid":"7fab807d-4988-4012-8f10-a77655787450"}
     // JWT -- payload: {"iss":"https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2",
@@ -59,7 +61,7 @@ public final class JwtHelper {
         payload += "\"aud\":\"211e36de-64b2-479e-ae28-8a5b41a1a940\",";
         payload += "\"response_type\":\"code id_token\",";
         payload += "\"client_id\":\"211e36de-64b2-479e-ae28-8a5b41a1a940\",";
-        payload += "\"redirect_uri\":\"" + HsbcAuthenticationService.APP_REDIRECT_URL + "\",";
+        payload += "\"redirect_uri\":\"" + oauthConfig.getAppRedirectUrl() + "\",";
         payload += "\"scope\":\"openid accounts\",";
         payload += "\"claims\":";
         payload += "{\"userinfo\":";
