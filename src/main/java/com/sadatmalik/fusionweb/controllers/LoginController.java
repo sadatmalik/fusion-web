@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class LoginController {
 
     @GetMapping({"/login"})
-    public String home() {
+    public String login() {
         log.info("Returning login page");
         return "login";
     }
