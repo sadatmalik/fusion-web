@@ -19,6 +19,6 @@ class OauthConfigTest {
 
     @Test
     void getAppRedirectUrl() {
-        assertEquals("http://localhost:8080", oauthConfig.getAppRedirectUrl());
+        assertEquals("http://localhost:8081", oauthConfig.getAppRedirectUrl());
     }
 }

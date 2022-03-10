@@ -72,7 +72,7 @@ class QuickStatsControllerTest {
     }
 
     @Test
-    void quickStats() throws Exception {
+    void testQuickStatsReturnsQuickstatsModelAndView() throws Exception {
         mockMvc.perform(get("/quickstats")
                         .with(user(principal)))
 
@@ -88,4 +88,13 @@ class QuickStatsControllerTest {
                         LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM, dd yyyy"))));
 
     }
+
+    @Test
+    void testInvalidUrlReturnsNotFound() throws Exception {
+        mockMvc.perform(get("/quickstats/nosuhresource")
+                        .with(user(principal)))
+
+                .andExpect(status().isNotFound());
+    }
+
 }
