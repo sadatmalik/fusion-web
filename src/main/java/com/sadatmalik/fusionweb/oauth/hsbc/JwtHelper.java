@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.concurrent.TimeUnit;
 
 
 @Slf4j
@@ -81,9 +82,10 @@ public final class JwtHelper {
 
         try {
             log.debug("Signing JWSObject");
+            TimeUnit.SECONDS.sleep(1);
             jwsObject.sign(signer);
             log.debug("Signed JWSObject");
-        } catch (JOSEException e) {
+        } catch (JOSEException | InterruptedException e) {
             log.error("Error creating JWT - could not sign JWT");
             e.printStackTrace();
         }
