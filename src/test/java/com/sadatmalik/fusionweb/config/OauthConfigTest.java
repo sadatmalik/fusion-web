@@ -1,24 +1,28 @@
 package com.sadatmalik.fusionweb.config;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.Environment;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@ExtendWith(SpringExtension.class)
-@EnableConfigurationProperties(value = OauthConfig.class)
-@TestPropertySource("classpath:application-dev.properties")
+
+@SpringBootTest
 class OauthConfigTest {
 
     @Autowired
     OauthConfig oauthConfig;
 
+    @Autowired
+    Environment env;
+
     @Test
     void getAppRedirectUrl() {
-        assertEquals("http://localhost:8081", oauthConfig.getAppRedirectUrl());
+        assertNotNull(oauthConfig.getAppRedirectUrl());
+
+        assertEquals(env.getProperty("creativefusion.net.app-redirect-url"),
+                oauthConfig.getAppRedirectUrl());
     }
 }
