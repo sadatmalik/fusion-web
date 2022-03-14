@@ -32,7 +32,7 @@ class HsbcAuthenticationServiceTest {
     }
 
     @Test
-    @Disabled // just until deployment
+    //@Disabled // just until deployment
     void testCreateNimbusJwt() {
         HsbcConsent consent = new HsbcConsent();
         consent.data = new HsbcConsentData();
