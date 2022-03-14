@@ -6,8 +6,7 @@ import com.nimbusds.jose.crypto.bc.BouncyCastleFIPSProviderSingleton;
 import com.sadatmalik.fusionweb.config.JwtProperties;
 import com.sadatmalik.fusionweb.config.OauthConfig;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +18,12 @@ import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 
 
+@Slf4j
 @EnableConfigurationProperties(JwtProperties.class)
 @RequiredArgsConstructor
 @Service
 public final class JwtHelper {
 
-    private static final Logger logger = LoggerFactory.getLogger(JwtHelper.class);
     private final JwtProperties properties;
     private final OauthConfig oauthConfig;
 
@@ -47,7 +46,7 @@ public final class JwtHelper {
         try {
             privateKey = getPrivateKey(properties.getKey());
         } catch (Exception e) {
-            logger.error("Error creating JWT - could not load private key");
+            log.error("Error creating JWT - could not load private key");
             e.printStackTrace();
         }
 
@@ -68,19 +67,24 @@ public final class JwtHelper {
         payload += "{\"openbanking_intent_id\":";
         payload += "{\"value\":\"" + consent.getConsentID() + "\",";
         payload += "\"essential\":true} }}}";
-        logger.debug(payload);
+        log.debug(payload);
 
         // Create and sign
+        log.debug("Creating JWSObject");
         JWSObject jwsObject = new JWSObject(
                 new JWSHeader.Builder(JWSAlgorithm.PS256)
                         .keyID("7fab807d-4988-4012-8f10-a77655787450")
                         .type(JOSEObjectType.JWT)
                         .build(),
                 new Payload(payload));
+        log.debug("Created JWSObject");
+
         try {
+            log.debug("Signing JWSObject");
             jwsObject.sign(signer);
+            log.debug("Signed JWSObject");
         } catch (JOSEException e) {
-            logger.error("Error creating JWT - could not sign JWT");
+            log.error("Error creating JWT - could not sign JWT");
             e.printStackTrace();
         }
 
