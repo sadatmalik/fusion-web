@@ -14,9 +14,9 @@ import com.sadatmalik.fusionweb.services.DummyTransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -26,7 +26,7 @@ import java.util.List;
 @Slf4j
 @Profile({"dev", "qa", "qa2"})
 @RequiredArgsConstructor
-@Component
+@SpringBootApplication
 public class Bootstrap implements CommandLineRunner {
 
     // application model
