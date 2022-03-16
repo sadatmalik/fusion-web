@@ -8,15 +8,19 @@
 		<version>2.5.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>com.sadatmalik</groupId>
 	<artifactId>fusionweb</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Fusion Web Prototype</name>
 	<description>Base Project for Fusion Web</description>
+
 	<properties>
 		<java.version>11</java.version>
 	</properties>
+
 	<dependencies>
+
 		<!-- Project -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -95,6 +99,7 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
 
 	<!-- maven profiles to mirror spring profiles e.g. mvn clean package -Pqa-->
@@ -141,6 +146,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<profiles> <!-- profiles for mvn launch -->
+<!--						<profile>dev</profile>-->
 						<profile>qa</profile>
 						<profile>qa2</profile>
 						<profile>prd</profile>
@@ -155,5 +161,18 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<distributionManagement>
+		<repository>
+			<id>central</id>
+			<name>a0ozoyqkyydkc-artifactory-primary-0-releases</name>
+			<url>https://creativefusion.jfrog.io/artifactory/creativefusion-libs-release</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>a0ozoyqkyydkc-artifactory-primary-0-snapshots</name>
+			<url>https://creativefusion.jfrog.io/artifactory/creativefusion-libs-snapshot</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 </project>
