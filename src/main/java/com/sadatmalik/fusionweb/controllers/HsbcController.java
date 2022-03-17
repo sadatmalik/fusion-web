@@ -2,7 +2,6 @@ package com.sadatmalik.fusionweb.controllers;
 
 import com.sadatmalik.fusionweb.model.Account;
 import com.sadatmalik.fusionweb.model.User;
-import com.sadatmalik.fusionweb.model.websecurity.UserPrincipal;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcAuthenticationService;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcClientAccessToken;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcConsent;
@@ -13,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -31,8 +29,8 @@ public class HsbcController {
     private HsbcClientAccessToken clientAccessToken;
 
     @GetMapping("/hsbc")
-    public String connectHsbc(Model model) {
-        // @todo integrate this into UserDetails
+    public String hsbcAuthorizationUrl() {
+        // @todo client access token belongs to creative fusion - store in DB?
         if (clientAccessToken == null) {
             clientAccessToken = hsbcAuth.getAccessToken();
         }
@@ -47,22 +45,29 @@ public class HsbcController {
     @GetMapping({"", "/"})
     public String hsbcCallback(@RequestParam(name = "code", required = false) String authCode,
                                Authentication authentication) {
-
         if (authCode != null) {
             log.debug("Received authCode: " + authCode);
-            HsbcUserAccessToken.setCurrentToken(hsbcAuth.getAccessToken(authCode));
 
-            // get accounts and add to logged-in user's account list
-            List<Account> accounts = hsbc.getUserAccounts();
-            User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
-            for (Account account : accounts) {
-                accountService.saveUserAccount(user, account);
+            // try load hsbc accounts adding to logged-in user's accounts
+            try {
+                HsbcUserAccessToken.setCurrentToken(hsbcAuth.getAccessToken(authCode));
+                loadUserAccounts(authentication);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-
             return "redirect:/dashboard";
         }
 
         log.info("Redirecting to Quickstats controller");
         return "redirect:/quickstats";
+    }
+
+    private void loadUserAccounts(Authentication authentication) {
+        List<Account> accounts = hsbc.getUserAccounts();
+
+        User user = Utils.getUser(authentication);
+        for (Account account : accounts) {
+            accountService.saveUserAccount(user, account);
+        }
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 
 @SpringBootTest
-class HsbcAuthenticationServiceTest {
+class HsbcAuthenticationServiceIT {
 
     private HsbcClientAccessToken accessToken;
     private HsbcConsent consent;
