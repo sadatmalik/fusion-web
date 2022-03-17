@@ -129,7 +129,9 @@ public class IncomeExpenseController {
 
         try {
             log.debug("Saving new weekly expense - " + weeklyExpenseDto);
-            WeeklyExpense saved = incomeExpenseService.saveWeeklyExpense(weeklyExpenseDto, Utils.getUser(authentication));
+            WeeklyExpense saved =
+                    incomeExpenseService.saveWeeklyExpense(weeklyExpenseDto,
+                            Utils.getUser(authentication));
             log.debug("Saved new weekly expense to DB - " + saved);
         } catch (IllegalStateException e) {
             model.addAttribute("error", e.getMessage());

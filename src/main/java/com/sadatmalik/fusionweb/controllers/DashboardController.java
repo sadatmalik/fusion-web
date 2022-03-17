@@ -23,7 +23,7 @@ public class DashboardController {
     private final AccountService accountService;
 
     @GetMapping("/dashboard")
-    public String dashboard(Authentication authentication, Model model) {
+    public String getDashboard(Authentication authentication, Model model) {
 
         // get logged in users accounts
         log.debug("Authentication: " + authentication);

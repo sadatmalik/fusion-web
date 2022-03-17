@@ -1,8 +1,6 @@
 package com.sadatmalik.fusionweb.controllers;
 
 import com.sadatmalik.fusionweb.services.AccountService;
-import com.sadatmalik.fusionweb.services.DebtService;
-import com.sadatmalik.fusionweb.services.IncomeExpenseService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,24 +18,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest({QuickStatsController.class})
+@WebMvcTest({DashboardController.class})
 @AutoConfigureMockMvc
-class QuickStatsControllerTest extends TestBase {
+class DashboardControllerTest extends TestBase {
 
     @Autowired
-    QuickStatsController controller;
+    private DashboardController controller;
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @MockBean
-    AccountService accountService;
-
-    @MockBean
-    IncomeExpenseService incomeExpenseService;
-
-    @MockBean
-    DebtService debtService;
+    private AccountService accountService;
 
     @BeforeEach
     void setUp() {
@@ -50,29 +42,20 @@ class QuickStatsControllerTest extends TestBase {
     }
 
     @Test
-    void testQuickStatsReturnsQuickstatsModelAndView() throws Exception {
-        mockMvc.perform(get("/quickstats")
+    void testGetDashboardModelAndView() throws Exception {
+        mockMvc.perform(get("/dashboard")
                         .with(user(principal)))
 
                 .andDo(print())
 
                 .andExpect(status().isOk())
-                .andExpect(view().name(("quickstats")))
+
+                .andExpect(model().attributeExists("accountList"))
                 .andExpect(model().attribute("totalBalance", "£0.00"))
-                .andExpect(model().attributeExists("chartData"))
-                .andExpect(model().attributeExists("paymentChartData"))
-                .andExpect(model().attributeExists("debtChartData"))
                 .andExpect(model().attribute("date",
-                        LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM, dd yyyy"))));
+                        LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM, dd yyyy"))))
+
+                .andExpect(view().name(("dashboard")));
 
     }
-
-    @Test
-    void testInvalidUrlReturnsNotFound() throws Exception {
-        mockMvc.perform(get("/quickstats/nosuhresource")
-                        .with(user(principal)))
-
-                .andExpect(status().isNotFound());
-    }
-
 }
