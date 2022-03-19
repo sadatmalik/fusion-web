@@ -1,6 +1,6 @@
 package com.sadatmalik.fusionweb.controllers;
 
-import com.sadatmalik.fusionweb.model.User;
+import com.sadatmalik.fusionweb.model.*;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
 import com.sadatmalik.fusionweb.model.dto.MonthlyIncomeDto;
 import com.sadatmalik.fusionweb.model.dto.WeeklyExpenseDto;
@@ -17,8 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static com.sadatmalik.fusionweb.controllers.TestUtils.mockMonthlyExpense;
-import static com.sadatmalik.fusionweb.controllers.TestUtils.mockMonthlyExpenseDto;
+import static com.sadatmalik.fusionweb.controllers.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -97,19 +96,187 @@ class IncomeExpenseControllerTest extends TestBase {
 
     @Test
     void testSaveMonthlyExpenseValidationErrors() throws Exception {
+        MonthlyExpenseDto missingNameAndAccountId = MonthlyExpenseDto.builder()
+                //.name("BROADBAND")
+                .amount(31.95)
+                .dayOfMonthPaid(18)
+                .type(ExpenseType.UTILITIES)
+                //.accountId("TEST")
+                .build();
+
+        mockMvc
+                .perform(post("/income-and-expenses/new-monthly-expense")
+                        .flashAttr("monthlyExpenseDto", missingNameAndAccountId)
+                        .with(user(principal))
+                )
+
+                .andExpect(model().attributeHasFieldErrors("monthlyExpenseDto",
+                        "name", "accountId"))
+                .andExpect(model().attribute("showNewMonthlyExpenseForm",
+                        Matchers.equalTo(true)))
+
+                .andExpect(model().attribute("weeklyExpenseDto",
+                        Matchers.any(WeeklyExpenseDto.class)))
+                .andExpect(model().attribute("monthlyIncomeDto",
+                        Matchers.any(MonthlyIncomeDto.class)))
+                .andExpect(model().attribute("weeklyIncomeDto",
+                        Matchers.any(WeeklyIncomeDto.class)))
+
+                .andExpect(status().isOk())
+                .andExpect(view().name("income-and-expenses"));
+    }
+
+    @Test
+    void testSaveWeeklyExpenseSuccess() throws Exception {
+        WeeklyExpenseDto validExpenseDto = mockWeeklyExpenseDto();
+        WeeklyExpense expense = mockWeeklyExpense();
+
+        given(
+                incomeExpenseService.saveWeeklyExpense(any(WeeklyExpenseDto.class),
+                        any(User.class))).willReturn(expense);
+
+        mockMvc
+                .perform(post("/income-and-expenses/new-weekly-expense")
+                        .flashAttr("weeklyExpenseDto", validExpenseDto)
+                        .with(user(principal))
+                )
+
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/income-and-expenses"));
+    }
+
+    @Test
+    void testSaveWeeklyExpenseWithValidationErrors() throws Exception {
+        WeeklyExpenseDto missingAmountAndTimesPerWeek = WeeklyExpenseDto.builder()
+                .accountId("TEST")
+                .name("Sainsburys")
+                //.amount(80d)
+                //.timesPerWeek(1)
+                .weeklyInterval(1)
+                .type(ExpenseType.GROCERIES)
+                .build();
+
+        mockMvc
+                .perform(post("/income-and-expenses/new-weekly-expense")
+                        .flashAttr("weeklyExpenseDto", missingAmountAndTimesPerWeek)
+                        .with(user(principal))
+                )
+
+                .andExpect(model().attributeHasFieldErrors("weeklyExpenseDto",
+                        "amount", "timesPerWeek"))
+                .andExpect(model().attribute("showNewWeeklyExpenseForm",
+                        Matchers.equalTo(true)))
+
+                .andExpect(model().attribute("monthlyExpenseDto",
+                        Matchers.any(MonthlyExpenseDto.class)))
+                .andExpect(model().attribute("monthlyIncomeDto",
+                        Matchers.any(MonthlyIncomeDto.class)))
+                .andExpect(model().attribute("weeklyIncomeDto",
+                        Matchers.any(WeeklyIncomeDto.class)))
+
+                .andExpect(status().isOk())
+                .andExpect(view().name("income-and-expenses"));
+    }
+
+    @Test
+    void testSaveMonthlyIncomeSuccess() throws Exception {
+        MonthlyIncomeDto validIncomeDto = mockMonthlyIncomeDto();
+        MonthlyIncome income = mockMonthlyIncome();
+
+        given(
+                incomeExpenseService.saveMonthlyIncome(any(MonthlyIncomeDto.class),
+                        any(User.class))).willReturn(income);
+
+        mockMvc
+                .perform(post("/income-and-expenses/new-monthly-income")
+                        .flashAttr("monthlyIncomeDto", validIncomeDto)
+                        .with(user(principal))
+                )
+
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/income-and-expenses"));
+    }
+
+    @Test
+    void testSaveMonthlyIncomeWithValidationErrors() throws Exception {
+        MonthlyIncomeDto missingSourceAndDayOfMonthReceived = MonthlyIncomeDto.builder()
+                .accountId("TEST")
+                .amount(1850d)
+                //.source("Rent")
+                //.dayOfMonthReceived(7)
+                .build();
+
+        mockMvc
+                .perform(post("/income-and-expenses/new-monthly-income")
+                        .flashAttr("monthlyIncomeDto", missingSourceAndDayOfMonthReceived)
+                        .with(user(principal))
+                )
+
+                .andExpect(model().attributeHasFieldErrors("monthlyIncomeDto",
+                        "source", "dayOfMonthReceived"))
+                .andExpect(model().attribute("showNewMonthlyIncomeForm",
+                        Matchers.equalTo(true)))
+
+                .andExpect(model().attribute("monthlyExpenseDto",
+                        Matchers.any(MonthlyExpenseDto.class)))
+                .andExpect(model().attribute("weeklyExpenseDto",
+                        Matchers.any(WeeklyExpenseDto.class)))
+                .andExpect(model().attribute("weeklyIncomeDto",
+                        Matchers.any(WeeklyIncomeDto.class)))
+
+                .andExpect(status().isOk())
+                .andExpect(view().name("income-and-expenses"));
 
     }
 
     @Test
-    void saveWeeklyExpense() {
+    void testSaveWeeklyIncomeSuccess() throws Exception {
+        WeeklyIncomeDto validIncomeDto = mockWeeklyIncomeDto();
+        Income income = mockWeeklyIncome();
+
+        given(
+                incomeExpenseService.saveWeeklyIncome(any(WeeklyIncomeDto.class),
+                        any(User.class))).willReturn(income);
+
+        mockMvc
+                .perform(post("/income-and-expenses/new-weekly-income")
+                        .flashAttr("weeklyIncomeDto", validIncomeDto)
+                        .with(user(principal))
+                )
+
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/income-and-expenses"));
     }
 
     @Test
-    void saveMonthlyIncome() {
-    }
+    void testSaveWeeklyIncomeWithValidationErrors() throws Exception {
+        WeeklyIncomeDto missingAmountAndWeeklyInterval = WeeklyIncomeDto.builder()
+                .accountId("TEST")
+                //.amount(35d)
+                .source("Job")
+                //.weeklyInterval(2)
+                .build();
 
-    @Test
-    void saveWeeklyIncome() {
+        mockMvc
+                .perform(post("/income-and-expenses/new-weekly-income")
+                        .flashAttr("weeklyIncomeDto", missingAmountAndWeeklyInterval)
+                        .with(user(principal))
+                )
+
+                .andExpect(model().attributeHasFieldErrors("weeklyIncomeDto",
+                        "amount", "weeklyInterval"))
+                .andExpect(model().attribute("showNewWeeklyIncomeForm",
+                        Matchers.equalTo(true)))
+
+                .andExpect(model().attribute("monthlyExpenseDto",
+                        Matchers.any(MonthlyExpenseDto.class)))
+                .andExpect(model().attribute("weeklyExpenseDto",
+                        Matchers.any(WeeklyExpenseDto.class)))
+                .andExpect(model().attribute("monthlyIncomeDto",
+                        Matchers.any(MonthlyIncomeDto.class)))
+
+                .andExpect(status().isOk())
+                .andExpect(view().name("income-and-expenses"));
     }
 
     @Test
