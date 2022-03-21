@@ -1,5 +1,9 @@
 package com.sadatmalik.fusionweb.controllers;
 
+import com.sadatmalik.fusionweb.exceptions.NoSuchIncomeException;
+import com.sadatmalik.fusionweb.exceptions.NoSuchMonthlyExpenseException;
+import com.sadatmalik.fusionweb.exceptions.NoSuchMonthlyIncomeException;
+import com.sadatmalik.fusionweb.exceptions.NoSuchWeeklyExpenseException;
 import com.sadatmalik.fusionweb.model.*;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
 import com.sadatmalik.fusionweb.model.dto.MonthlyIncomeDto;
@@ -389,23 +393,79 @@ class IncomeExpenseControllerTest extends TestBase {
     }
 
     @Test
-    void updateMonthlyExpense() {
+    void testUpdateMonthlyExpenseSuccess() throws Exception, NoSuchMonthlyExpenseException {
+        given(
+                incomeExpenseService
+                        .updateMonthlyExpense(mockMonthlyExpenseDto()))
+                .willReturn(mockMonthlyExpense()
+        );
+
+        mockMvc
+                .perform(post("/income-and-expenses/monthly-expense/1/edit")
+                        .flashAttr("monthlyExpenseDto", mockMonthlyExpenseDto())
+                        .with(user(principal))
+                )
+
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/income-and-expenses"));
     }
 
     @Test
-    void updateWeeklyExpense() {
+    void testUpdateWeeklyExpenseSuccess() throws NoSuchWeeklyExpenseException, Exception {
+        given(
+                incomeExpenseService
+                        .updateWeeklyExpense(mockWeeklyExpenseDto()))
+                .willReturn(mockWeeklyExpense()
+                );
+
+        mockMvc
+                .perform(post("/income-and-expenses/weekly-expense/1/edit")
+                        .flashAttr("weeklyExpenseDto", mockWeeklyExpenseDto())
+                        .with(user(principal))
+                )
+
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/income-and-expenses"));
     }
 
     @Test
-    void updateMonthlyIncome() {
+    void testUpdateMonthlyIncomeSuccess() throws NoSuchMonthlyIncomeException, Exception {
+        given(
+                incomeExpenseService
+                        .updateMonthlyIncome(mockMonthlyIncomeDto()))
+                .willReturn(mockMonthlyIncome()
+                );
+
+        mockMvc
+                .perform(post("/income-and-expenses/monthly-income/1/edit")
+                        .flashAttr("monthlyIncomeDto", mockMonthlyIncomeDto())
+                        .with(user(principal))
+                )
+
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/income-and-expenses"));
     }
 
     @Test
-    void updateWeeklyIncome() {
+    void testUpdateWeeklyIncomeSuccess() throws NoSuchIncomeException, Exception {
+        given(
+                incomeExpenseService
+                        .updateWeeklyIncome(mockWeeklyIncomeDto()))
+                .willReturn(mockWeeklyIncome()
+                );
+
+        mockMvc
+                .perform(post("/income-and-expenses/weekly-income/1/edit")
+                        .flashAttr("weeklyIncomeDto", mockWeeklyIncomeDto())
+                        .with(user(principal))
+                )
+
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/income-and-expenses"));
     }
 
     @Test
-    void deleteMonthlyExpense() {
+    void deleteMonthlyExpense() throws Exception {
     }
 
     @Test
