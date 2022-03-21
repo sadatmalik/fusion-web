@@ -21,6 +21,7 @@ import static com.sadatmalik.fusionweb.controllers.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -280,19 +281,111 @@ class IncomeExpenseControllerTest extends TestBase {
     }
 
     @Test
-    void viewMonthlyExpenseDetails() {
+    void testViewMonthlyExpenseDetails() throws Exception {
+        when(incomeExpenseService.getMonthlyExpenseFor(1L))
+                .thenReturn(mockMonthlyExpense());
+
+        mockMvc
+                .perform(get("/income-and-expenses/1/view")
+                        .with(user(principal)))
+
+                .andExpect(model().attribute("editableMonthlyExpenseDto",
+                        Matchers.any(MonthlyExpenseDto.class)))
+                .andExpect(model().attribute("showMonthlyExpenseEditDeleteForm",
+                        Matchers.equalTo(true)))
+
+                .andExpect(model().attribute("monthlyExpenseDto", Matchers.any(MonthlyExpenseDto.class)))
+                .andExpect(model().attribute("weeklyExpenseDto", Matchers.any(WeeklyExpenseDto.class)))
+                .andExpect(model().attribute("monthlyIncomeDto", Matchers.any(MonthlyIncomeDto.class)))
+                .andExpect(model().attribute("weeklyIncomeDto", Matchers.any(WeeklyIncomeDto.class)))
+
+                .andExpect(model().attribute("monthlyExpenseList", Matchers.any(List.class)))
+                .andExpect(model().attribute("weeklyExpenseList", Matchers.any(List.class)))
+                .andExpect(model().attribute("monthlyIncomeList", Matchers.any(List.class)))
+                .andExpect(model().attribute("weeklyIncomeList", Matchers.any(List.class)))
+
+                .andExpect(view().name(("income-and-expenses")));
     }
 
     @Test
-    void viewWeeklyExpenseDetails() {
+    void testViewWeeklyExpenseDetails() throws Exception {
+        when(incomeExpenseService.getWeeklyExpenseFor(1L))
+                .thenReturn(mockWeeklyExpense());
+
+        mockMvc
+                .perform(get("/income-and-expenses/weekly-expense/1/view")
+                        .with(user(principal)))
+
+                .andExpect(model().attribute("editableWeeklyExpenseDto",
+                        Matchers.any(WeeklyExpenseDto.class)))
+                .andExpect(model().attribute("showWeeklyExpenseEditDeleteForm",
+                        Matchers.equalTo(true)))
+
+                .andExpect(model().attribute("monthlyExpenseDto", Matchers.any(MonthlyExpenseDto.class)))
+                .andExpect(model().attribute("weeklyExpenseDto", Matchers.any(WeeklyExpenseDto.class)))
+                .andExpect(model().attribute("monthlyIncomeDto", Matchers.any(MonthlyIncomeDto.class)))
+                .andExpect(model().attribute("weeklyIncomeDto", Matchers.any(WeeklyIncomeDto.class)))
+
+                .andExpect(model().attribute("monthlyExpenseList", Matchers.any(List.class)))
+                .andExpect(model().attribute("weeklyExpenseList", Matchers.any(List.class)))
+                .andExpect(model().attribute("monthlyIncomeList", Matchers.any(List.class)))
+                .andExpect(model().attribute("weeklyIncomeList", Matchers.any(List.class)))
+
+                .andExpect(view().name(("income-and-expenses")));
     }
 
     @Test
-    void viewMonthlyIncomeDetails() {
+    void testViewMonthlyIncomeDetails() throws Exception {
+        when(incomeExpenseService.getMonthlyIncomeFor(1L))
+                .thenReturn(mockMonthlyIncome());
+
+        mockMvc
+                .perform(get("/income-and-expenses/monthly-income/1/view")
+                        .with(user(principal)))
+
+                .andExpect(model().attribute("editableMonthlyIncomeDto",
+                        Matchers.any(MonthlyIncomeDto.class)))
+                .andExpect(model().attribute("showMonthlyIncomeEditDeleteForm",
+                        Matchers.equalTo(true)))
+
+                .andExpect(model().attribute("monthlyExpenseDto", Matchers.any(MonthlyExpenseDto.class)))
+                .andExpect(model().attribute("weeklyExpenseDto", Matchers.any(WeeklyExpenseDto.class)))
+                .andExpect(model().attribute("monthlyIncomeDto", Matchers.any(MonthlyIncomeDto.class)))
+                .andExpect(model().attribute("weeklyIncomeDto", Matchers.any(WeeklyIncomeDto.class)))
+
+                .andExpect(model().attribute("monthlyExpenseList", Matchers.any(List.class)))
+                .andExpect(model().attribute("weeklyExpenseList", Matchers.any(List.class)))
+                .andExpect(model().attribute("monthlyIncomeList", Matchers.any(List.class)))
+                .andExpect(model().attribute("weeklyIncomeList", Matchers.any(List.class)))
+
+                .andExpect(view().name(("income-and-expenses")));
     }
 
     @Test
-    void viewWeeklyIncomeDetails() {
+    void testViewWeeklyIncomeDetails() throws Exception {
+        when(incomeExpenseService.getWeeklyIncomeFor(1L))
+                .thenReturn(mockWeeklyIncome());
+
+        mockMvc
+                .perform(get("/income-and-expenses/weekly-income/1/view")
+                        .with(user(principal)))
+
+                .andExpect(model().attribute("editableWeeklyIncomeDto",
+                        Matchers.any(WeeklyIncomeDto.class)))
+                .andExpect(model().attribute("showWeeklyIncomeEditDeleteForm",
+                        Matchers.equalTo(true)))
+
+                .andExpect(model().attribute("monthlyExpenseDto", Matchers.any(MonthlyExpenseDto.class)))
+                .andExpect(model().attribute("weeklyExpenseDto", Matchers.any(WeeklyExpenseDto.class)))
+                .andExpect(model().attribute("monthlyIncomeDto", Matchers.any(MonthlyIncomeDto.class)))
+                .andExpect(model().attribute("weeklyIncomeDto", Matchers.any(WeeklyIncomeDto.class)))
+
+                .andExpect(model().attribute("monthlyExpenseList", Matchers.any(List.class)))
+                .andExpect(model().attribute("weeklyExpenseList", Matchers.any(List.class)))
+                .andExpect(model().attribute("monthlyIncomeList", Matchers.any(List.class)))
+                .andExpect(model().attribute("weeklyIncomeList", Matchers.any(List.class)))
+
+                .andExpect(view().name(("income-and-expenses")));
     }
 
     @Test
