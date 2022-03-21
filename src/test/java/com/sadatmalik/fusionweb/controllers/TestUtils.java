@@ -96,7 +96,7 @@ public class TestUtils {
                 .build();
     }
 
-    static Account mockAccount() {
+    public static Account mockAccount() {
         Bank bank = Bank.builder()
                 .name("HSBC")
                 .imageLocation("/images/hsbc.png")
