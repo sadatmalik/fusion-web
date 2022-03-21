@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.sadatmalik.fusionweb.controllers.TestUtils.mockAccount;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -51,6 +52,11 @@ class TransactionControllerTest extends ControllerTestBase {
     @BeforeEach
     void setUp() {
         createPrincipal();
+    }
+
+    @Test
+    public void testWebOnlyContextLoads() {
+        assertThat(controller).isNotNull();
     }
 
     @Test
