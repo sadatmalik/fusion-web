@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest({IncomeExpenseController.class})
 @AutoConfigureMockMvc
-class IncomeExpenseControllerTest extends TestBase {
+class IncomeExpenseControllerTest extends ControllerTestBase {
 
     @Autowired
     IncomeExpenseController controller;

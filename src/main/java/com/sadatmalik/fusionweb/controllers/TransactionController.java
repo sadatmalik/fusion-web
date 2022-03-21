@@ -24,6 +24,8 @@ public class TransactionController {
 
     private final AccountService accountService;
 
+    private final AccountServicesRegistry accountServicesRegistry;
+
     @GetMapping("/transactions/{accountId}")
     public String transactionsByAccount(Model model, @PathVariable String accountId) {
 
@@ -37,7 +39,7 @@ public class TransactionController {
         model.addAttribute("totalBalance", totalBalance);
 
         model.addAttribute("transactions",
-                AccountServicesRegistry.getInstance().getTransactionServiceFor(account).getTransactions(account));
+                accountServicesRegistry.getTransactionServiceFor(account).getTransactions(account));
 
         return "account-transactions";
     }
@@ -53,8 +55,7 @@ public class TransactionController {
         List<Transaction> transactionList = new ArrayList<>();
         for (Account account : accounts) {
             transactionList.addAll(
-                    AccountServicesRegistry.getInstance()
-                            .getTransactionServiceFor(account)
+                    accountServicesRegistry.getTransactionServiceFor(account)
                             .getTransactions(account)
             );
         }

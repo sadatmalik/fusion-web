@@ -12,7 +12,7 @@ import java.util.Collections;
 /**
  * @author sm@creativefusion.net
  */
-public class TestBase {
+public class ControllerTestBase {
 
     protected UserPrincipal principal;
 

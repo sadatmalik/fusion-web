@@ -29,14 +29,17 @@ public class HsbcApiService implements HsbcOpenBankingService, TransactionServic
     private final HsbcAuthenticationService hsbcAuth;
     private final RestTemplate restTemplate;
     private final BankRepository bankRepository;
+    private final AccountServicesRegistry accountServicesRegistry;
 
     private final Bank hsbc;
 
     @Autowired
     public HsbcApiService(HsbcAuthenticationService hsbcAuth,
-                          RestTemplate restTemplate, BankRepository bankRepository) {
+                          RestTemplate restTemplate, AccountServicesRegistry accountServicesRegistry,
+                          BankRepository bankRepository) {
         this.hsbcAuth = hsbcAuth;
         this.restTemplate = restTemplate;
+        this.accountServicesRegistry = accountServicesRegistry;
         this.bankRepository = bankRepository;
         this.hsbc = bankRepository.save(Bank.builder()
                 .name("HSBC")
@@ -66,7 +69,7 @@ public class HsbcApiService implements HsbcOpenBankingService, TransactionServic
                         .build();
                 accounts.add(account);
 
-                AccountServicesRegistry.getInstance().registerTransactionService(account, this);
+                accountServicesRegistry.registerTransactionService(account, this);
             }
         }
         return accounts;

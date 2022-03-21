@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest({AddAccountController.class})
 @AutoConfigureMockMvc
-class AddAccountControllerTest extends TestBase {
+class AddAccountControllerTest extends ControllerTestBase {
 
     @Autowired
     AddAccountController controller;

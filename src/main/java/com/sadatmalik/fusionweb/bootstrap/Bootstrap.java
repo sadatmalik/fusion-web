@@ -46,6 +46,9 @@ public class Bootstrap implements CommandLineRunner {
     private final UserPrincipalRepo userPrincipalRepo;
     private final PasswordEncoder passwordEncoder;
 
+    // account registry
+    private final AccountServicesRegistry accountServicesRegistry;
+
     @Override
     public void run(String... args) throws Exception {
 
@@ -124,11 +127,11 @@ public class Bootstrap implements CommandLineRunner {
             user.setAccounts(List.of(account, account2, account3));
 
             // Set Transaction Service for dummy accounts
-            AccountServicesRegistry.getInstance().registerTransactionService(account,
+            accountServicesRegistry.registerTransactionService(account,
                     new DummyHsbcSavingsTransactionService());
-            AccountServicesRegistry.getInstance().registerTransactionService(account2,
+            accountServicesRegistry.registerTransactionService(account2,
                     new DummyBarclaysSavingsTransactionService());
-            AccountServicesRegistry.getInstance().registerTransactionService(account3,
+            accountServicesRegistry.registerTransactionService(account3,
                     new DummyTransactionService());
 
             // set up some income data
