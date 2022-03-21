@@ -25,7 +25,7 @@ import static com.sadatmalik.fusionweb.controllers.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -465,18 +465,50 @@ class IncomeExpenseControllerTest extends TestBase {
     }
 
     @Test
-    void deleteMonthlyExpense() throws Exception {
+    void testDeleteMonthlyExpense() throws Exception {
+        mockMvc
+                .perform(get("/income-and-expenses/1/delete")
+                        .with(user(principal))
+                )
+                .andExpect(view().name("redirect:/income-and-expenses"));
+
+        verify(incomeExpenseService, times(1))
+                .deleteMonthlyExpenseFor(1L);
     }
 
     @Test
-    void deleteWeeklyExpense() {
+    void testDeleteWeeklyExpense() throws Exception {
+        mockMvc
+                .perform(get("/income-and-expenses/weekly-expense/1/delete")
+                        .with(user(principal))
+                )
+                .andExpect(view().name("redirect:/income-and-expenses"));
+
+        verify(incomeExpenseService, times(1))
+                .deleteWeeklyExpenseFor(1L);
     }
 
     @Test
-    void deleteMonthlyIncome() {
+    void testDeleteMonthlyIncome() throws Exception {
+        mockMvc
+                .perform(get("/income-and-expenses/monthly-income/1/delete")
+                        .with(user(principal))
+                )
+                .andExpect(view().name("redirect:/income-and-expenses"));
+
+        verify(incomeExpenseService, times(1))
+                .deleteMonthlyIncomeFor(1L);
     }
 
     @Test
-    void deleteWeeklyIncome() {
+    void testDeleteWeeklyIncome() throws Exception {
+        mockMvc
+                .perform(get("/income-and-expenses/weekly-income/1/delete")
+                        .with(user(principal))
+                )
+                .andExpect(view().name("redirect:/income-and-expenses"));
+
+        verify(incomeExpenseService, times(1))
+                .deleteWeeklyIncomeFor(1L);
     }
 }
