@@ -24,7 +24,7 @@ public class TestUtils {
                 .build();
     }
 
-    static MonthlyExpense mockMonthlyExpense() {
+    public static MonthlyExpense mockMonthlyExpense() {
         return MonthlyExpense.builder()
                 .id(1L)
                 .user(new User())
@@ -47,7 +47,7 @@ public class TestUtils {
                 .build();
     }
 
-    static WeeklyExpense mockWeeklyExpense() {
+    public static WeeklyExpense mockWeeklyExpense() {
         return WeeklyExpense.builder()
                 .account(new Account())
                 .user(new User())
@@ -68,7 +68,7 @@ public class TestUtils {
                 .build();
     }
 
-    static MonthlyIncome mockMonthlyIncome() {
+    public static MonthlyIncome mockMonthlyIncome() {
         return MonthlyIncome.builder()
                 .account(new Account())
                 .user(new User())
@@ -87,7 +87,7 @@ public class TestUtils {
                 .build();
     }
 
-    static Income mockWeeklyIncome() {
+    public static Income mockWeeklyIncome() {
         return Income.builder()
                 .account(new Account())
                 .user(new User())
