@@ -1,6 +1,7 @@
 package com.sadatmalik.fusionweb.services;
 
 import com.sadatmalik.fusionweb.FusionWebPrototypeApplication;
+import com.sadatmalik.fusionweb.model.Account;
 import com.sadatmalik.fusionweb.model.User;
 import com.sadatmalik.fusionweb.repositories.AccountRepository;
 import org.junit.jupiter.api.Test;
@@ -47,14 +48,37 @@ class AccountServiceTest {
     }
 
     @Test
-    void getAccountById() {
+    void testGetAccountById() {
+        given(accountRepository
+                .findByAccountId("AB12345678"))
+                .willReturn(mockAccount());
+
+        assertThat(accountService.getAccountById("AB12345678"))
+                .isEqualTo(mockAccount());
+
+        verify(accountRepository, times(1))
+                .findByAccountId(any(String.class));
     }
 
     @Test
-    void saveUserAccount() {
+    void testSaveUserAccount() {
+
+        Account account = mockAccount();
+
+        given(accountRepository
+                .save(mockAccount()))
+                .willReturn(account);
+
+        User user = new User();
+
+        assertThat(accountService.saveUserAccount(user, account))
+                .isEqualTo(account);
+
+        assertThat(accountService.saveUserAccount(user, account))
+                .hasFieldOrPropertyWithValue("user", user);
+
+        verify(accountRepository, times(2))
+                .save(any(Account.class));
     }
 
-    @Test
-    void getAccountByAccountId() {
-    }
 }
