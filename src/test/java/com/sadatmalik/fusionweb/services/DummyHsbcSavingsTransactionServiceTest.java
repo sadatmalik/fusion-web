@@ -14,10 +14,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = FusionWebPrototypeApplication.class)
 @ActiveProfiles("test")
-class DummyBarclaysSavingsTransactionServiceTest {
+class DummyHsbcSavingsTransactionServiceTest {
 
     @Autowired
-    @Qualifier("dummyBarclaysSavingsTransactionService")
+    @Qualifier("dummyHsbcSavingsTransactionService")
     private TransactionService transactionService;
 
     @BeforeEach
@@ -39,6 +39,6 @@ class DummyBarclaysSavingsTransactionServiceTest {
         assertThat(
                 transactionService
                         .getTransactions(mockAccount()))
-                .hasSize(14);
+                .hasSize(6);
     }
 }
