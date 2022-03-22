@@ -7,6 +7,7 @@ import com.sadatmalik.fusionweb.model.dto.WeeklyExpenseDto;
 import com.sadatmalik.fusionweb.model.dto.WeeklyIncomeDto;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 
 /**
  * @author sm@creativefusion.net
@@ -113,6 +114,28 @@ public class TestUtils {
                 .bank(bank)
                 .build();
 
+    }
+
+    public static User mockUser() {
+        return User.builder()
+                .firstName("Sadat")
+                .lastName("Malik")
+                .email("sm@creativefusion.net")
+                .build();
+    }
+
+    public static Debt mockDebt() {
+        return Debt.builder()
+                .account(mockAccount())
+                .user(mockUser())
+                .lender("Santander")
+                .totalBorrowed(new BigDecimal(295000))
+                .totalOwed(new BigDecimal(270000))
+                .dayOfMonthPaid(5)
+                .interestRate(new BigDecimal(1.95))
+                .dateBorrowed(new Date(119, 1, 1)) //2019-Feb-1st
+                .initialTermMonths(12 * 25)
+                .build();
     }
 
 }
