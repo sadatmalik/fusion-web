@@ -14,7 +14,7 @@ import java.sql.Date;
  */
 public class TestUtils {
 
-    static MonthlyExpenseDto mockMonthlyExpenseDto() {
+    public static MonthlyExpenseDto mockMonthlyExpenseDto() {
         return MonthlyExpenseDto.builder()
                 .name("BROADBAND")
                 .amount(31.95)
@@ -36,7 +36,7 @@ public class TestUtils {
                 .build();
     }
 
-    static WeeklyExpenseDto mockWeeklyExpenseDto() {
+    public static WeeklyExpenseDto mockWeeklyExpenseDto() {
         return WeeklyExpenseDto.builder()
                 .accountId("TEST")
                 .name("Sainsburys")
@@ -59,7 +59,7 @@ public class TestUtils {
                 .build();
     }
 
-    static MonthlyIncomeDto mockMonthlyIncomeDto() {
+    public static MonthlyIncomeDto mockMonthlyIncomeDto() {
         return MonthlyIncomeDto.builder()
                 .accountId("TEST")
                 .amount(1850d)
@@ -78,7 +78,7 @@ public class TestUtils {
                 .build();
     }
 
-    static WeeklyIncomeDto mockWeeklyIncomeDto() {
+    public static WeeklyIncomeDto mockWeeklyIncomeDto() {
         return WeeklyIncomeDto.builder()
                 .accountId("TEST")
                 .amount(35d)
