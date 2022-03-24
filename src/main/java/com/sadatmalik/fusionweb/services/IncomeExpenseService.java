@@ -168,8 +168,8 @@ public class IncomeExpenseService {
         } else {
             log.error("Trying to update non-existing weekly expense - update attempted for weekly expense ID "
                     + weeklyExpenseDto.getId());
-            throw new NoSuchWeeklyExpenseException("Trying to update non-existing weekly expense" +
-                    " - update attempted for weekly expense ID " + weeklyExpenseDto.getId());
+            throw new NoSuchWeeklyExpenseException("Trying to update non-existing weekly expense - " +
+                    "update attempted for weekly expense ID " + weeklyExpenseDto.getId());
         }
     }
 
@@ -213,7 +213,7 @@ public class IncomeExpenseService {
             log.error("Trying to update non-existing weekly income - update attempted for income ID "
                     + weeklyIncomeDto.getId());
             throw new NoSuchIncomeException("Trying to update non-existing weekly income" +
-                    " - update attempted for income ID " + weeklyIncomeDto.getId());
+                    " - update attempted for weekly income ID " + weeklyIncomeDto.getId());
         }
     }
 

@@ -1,7 +1,15 @@
 package com.sadatmalik.fusionweb.services;
 
 import com.sadatmalik.fusionweb.FusionWebPrototypeApplication;
+import com.sadatmalik.fusionweb.exceptions.NoSuchIncomeException;
+import com.sadatmalik.fusionweb.exceptions.NoSuchMonthlyExpenseException;
+import com.sadatmalik.fusionweb.exceptions.NoSuchMonthlyIncomeException;
+import com.sadatmalik.fusionweb.exceptions.NoSuchWeeklyExpenseException;
 import com.sadatmalik.fusionweb.model.*;
+import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
+import com.sadatmalik.fusionweb.model.dto.MonthlyIncomeDto;
+import com.sadatmalik.fusionweb.model.dto.WeeklyExpenseDto;
+import com.sadatmalik.fusionweb.model.dto.WeeklyIncomeDto;
 import com.sadatmalik.fusionweb.repositories.IncomeRepository;
 import com.sadatmalik.fusionweb.repositories.MonthlyExpenseRepository;
 import com.sadatmalik.fusionweb.repositories.MonthlyIncomeRepository;
@@ -18,6 +26,8 @@ import java.util.Optional;
 
 import static com.sadatmalik.fusionweb.controllers.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -376,34 +386,296 @@ class IncomeExpenseServiceTest {
     }
 
     @Test
-    void updateMonthlyExpense() {
+    void testUpdateMonthlyExpenseSuccess() throws NoSuchMonthlyExpenseException {
+        MonthlyExpenseDto expenseDto = mockMonthlyExpenseDto();
+        expenseDto.setId(1L);
+
+        MonthlyExpense expense = mockMonthlyExpense();
+
+        assert expenseDto.getId() != null;
+
+        given(
+                monthlyExpenseRepository
+                        .findById(expenseDto.getId())
+        ).willReturn(Optional.of(expense));
+
+        given(
+                accountService
+                        .getAccountById(expenseDto.getAccountId())
+        ).willReturn(mockAccount());
+
+        given(
+                monthlyExpenseRepository
+                        .save(expense)
+        ).willReturn(expense);
+
+        assertThat(incomeExpenseService
+                .updateMonthlyExpense(expenseDto))
+                .isEqualTo(expense);
     }
 
     @Test
-    void updateWeeklyExpense() {
+    void testUpdateMonthlyExpenseNotFound() {
+        MonthlyExpenseDto expenseDto = mockMonthlyExpenseDto();
+        expenseDto.setId(1L);
+
+        assert expenseDto.getId() != null;
+
+        given(
+                monthlyExpenseRepository
+                        .findById(expenseDto.getId())
+        ).willReturn(Optional.empty());
+
+        NoSuchMonthlyExpenseException exception = assertThrows(NoSuchMonthlyExpenseException.class, () -> {
+            incomeExpenseService
+                    .updateMonthlyExpense(expenseDto);
+        });
+
+        String expectedMessage = "Trying to update non-existing monthly expense - " +
+                "update attempted for monthly expense ID 1";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
-    void updateMonthlyIncome() {
+    void testUpdateWeeklyExpenseSuccess() throws NoSuchWeeklyExpenseException {
+        WeeklyExpenseDto expenseDto = mockWeeklyExpenseDto();
+        expenseDto.setId(1L);
+
+        WeeklyExpense expense = mockWeeklyExpense();
+
+        assert expenseDto.getId() != null;
+
+        given(
+                weeklyExpenseRepository
+                        .findById(expenseDto.getId())
+        ).willReturn(Optional.of(expense));
+
+        given(
+                accountService
+                        .getAccountById(expenseDto.getAccountId())
+        ).willReturn(mockAccount());
+
+        given(
+                weeklyExpenseRepository
+                        .save(expense)
+        ).willReturn(expense);
+
+        assertThat(incomeExpenseService
+                .updateWeeklyExpense(expenseDto))
+                .isEqualTo(expense);
     }
 
     @Test
-    void updateWeeklyIncome() {
+    void testUpdateWeeklyExpenseNotFound() {
+        WeeklyExpenseDto expenseDto = mockWeeklyExpenseDto();
+        expenseDto.setId(1L);
+
+        assert expenseDto.getId() != null;
+
+        given(
+                weeklyExpenseRepository
+                        .findById(expenseDto.getId())
+        ).willReturn(Optional.empty());
+
+        NoSuchWeeklyExpenseException exception = assertThrows(NoSuchWeeklyExpenseException.class, () -> {
+            incomeExpenseService
+                    .updateWeeklyExpense(expenseDto);
+        });
+
+        String expectedMessage = "Trying to update non-existing weekly expense - " +
+                "update attempted for weekly expense ID 1";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
-    void deleteMonthlyExpenseFor() {
+    void testUpdateMonthlyIncomeSuccess() throws NoSuchMonthlyIncomeException {
+        MonthlyIncomeDto incomeDto = mockMonthlyIncomeDto();
+        incomeDto.setId(1L);
+
+        MonthlyIncome income = mockMonthlyIncome();
+
+        assert incomeDto.getId() != null;
+
+        given(
+                monthlyIncomeRepository
+                        .findById(incomeDto.getId())
+        ).willReturn(Optional.of(income));
+
+        given(
+                accountService
+                        .getAccountById(incomeDto.getAccountId())
+        ).willReturn(mockAccount());
+
+        given(
+                monthlyIncomeRepository
+                        .save(income)
+        ).willReturn(income);
+
+        assertThat(incomeExpenseService
+                .updateMonthlyIncome(incomeDto))
+                .isEqualTo(income);
     }
 
     @Test
-    void deleteWeeklyExpenseFor() {
+    void testUpdateMonthlyIncomeNotFound() {
+        MonthlyIncomeDto incomeDto = mockMonthlyIncomeDto();
+        incomeDto.setId(1L);
+
+        assert incomeDto.getId() != null;
+
+        given(
+                monthlyIncomeRepository
+                        .findById(incomeDto.getId())
+        ).willReturn(Optional.empty());
+
+        NoSuchMonthlyIncomeException exception = assertThrows(NoSuchMonthlyIncomeException.class, () -> {
+            incomeExpenseService
+                    .updateMonthlyIncome(incomeDto);
+        });
+
+        String expectedMessage = "Trying to update non-existing monthly income - " +
+                "update attempted for monthly income ID 1";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
-    void deleteMonthlyIncomeFor() {
+    void updateWeeklyIncome() throws NoSuchIncomeException {
+        WeeklyIncomeDto incomeDto = mockWeeklyIncomeDto();
+        incomeDto.setId(1L);
+
+        Income income = mockWeeklyIncome();
+
+        assert incomeDto.getId() != null;
+
+        given(
+                incomeRepository
+                        .findById(incomeDto.getId())
+        ).willReturn(Optional.of(income));
+
+        given(
+                accountService
+                        .getAccountById(incomeDto.getAccountId())
+        ).willReturn(mockAccount());
+
+        given(
+                incomeRepository.save(income)
+        ).willReturn(income);
+
+        assertThat(incomeExpenseService
+                .updateWeeklyIncome(incomeDto))
+                .isEqualTo(income);
     }
 
     @Test
-    void deleteWeeklyIncomeFor() {
+    void testUpdateWeeklyIncomeNotFound() {
+        WeeklyIncomeDto incomeDto = mockWeeklyIncomeDto();
+        incomeDto.setId(1L);
+
+        assert incomeDto.getId() != null;
+
+        given(
+                monthlyIncomeRepository
+                        .findById(incomeDto.getId())
+        ).willReturn(Optional.empty());
+
+        NoSuchIncomeException exception = assertThrows(NoSuchIncomeException.class, () -> {
+            incomeExpenseService
+                    .updateWeeklyIncome(incomeDto);
+        });
+
+        String expectedMessage = "Trying to update non-existing weekly income - " +
+                "update attempted for weekly income ID 1";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    void testDeleteMonthlyExpenseFor() {
+        MonthlyExpense expense = mockMonthlyExpense();
+        expense.setId(1L);
+
+        assert expense.getId() != null;
+
+        given(
+                monthlyExpenseRepository
+                        .findById(1L)
+        ).willReturn(Optional.of(expense));
+
+        incomeExpenseService.deleteMonthlyExpenseFor(1L);
+
+        verify(monthlyExpenseRepository, times(1))
+                .findById(any(Long.class));
+
+        verify(monthlyExpenseRepository, times(1))
+                .deleteById(expense.getId());
+    }
+
+    @Test
+    void testDeleteWeeklyExpenseFor() {
+        WeeklyExpense expense = mockWeeklyExpense();
+        expense.setId(1L);
+
+        assert expense.getId() != null;
+
+        given(
+                weeklyExpenseRepository
+                        .findById(1L)
+        ).willReturn(Optional.of(expense));
+
+        incomeExpenseService.deleteWeeklyExpenseFor(1L);
+
+        verify(weeklyExpenseRepository, times(1))
+                .findById(any(Long.class));
+
+        verify(weeklyExpenseRepository, times(1))
+                .deleteById(expense.getId());
+    }
+
+    @Test
+    void testDeleteMonthlyIncomeFor() {
+        MonthlyIncome income = mockMonthlyIncome();
+        income.setId(1L);
+
+        assert income.getId() != null;
+
+        given(
+                monthlyIncomeRepository
+                        .findById(1L)
+        ).willReturn(Optional.of(income));
+
+        incomeExpenseService.deleteMonthlyIncomeFor(1L);
+
+        verify(monthlyIncomeRepository, times(1))
+                .findById(any(Long.class));
+
+        verify(monthlyIncomeRepository, times(1))
+                .deleteById(income.getId());
+    }
+
+    @Test
+    void testDeleteWeeklyIncomeFor() {
+        Income income = mockWeeklyIncome();
+        income.setId(1L);
+
+        assert income.getId() != null;
+
+        given(
+                incomeRepository.findById(1L)
+        ).willReturn(Optional.of(income));
+
+        incomeExpenseService.deleteWeeklyIncomeFor(1L);
+
+        verify(incomeRepository, times(1))
+                .findById(any(Long.class));
+
+        verify(incomeRepository, times(1))
+                .deleteById(income.getId());
     }
 }
