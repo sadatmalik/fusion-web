@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
- * Controller class for the /login endpoint.
+ * Spring MVC controller class for the /login endpoint.
  *
  * Overrides the default login form provided by Spring, to match the look and
  * feel of the web application templates.
