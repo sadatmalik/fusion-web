@@ -1,5 +1,9 @@
 package com.sadatmalik.fusionweb.controllers;
 
+import com.sadatmalik.fusionweb.exceptions.NoSuchIncomeException;
+import com.sadatmalik.fusionweb.exceptions.NoSuchMonthlyExpenseException;
+import com.sadatmalik.fusionweb.exceptions.NoSuchMonthlyIncomeException;
+import com.sadatmalik.fusionweb.exceptions.NoSuchWeeklyExpenseException;
 import com.sadatmalik.fusionweb.model.*;
 import com.sadatmalik.fusionweb.model.dto.MonthlyExpenseDto;
 import com.sadatmalik.fusionweb.model.dto.MonthlyIncomeDto;
@@ -21,6 +25,7 @@ import static com.sadatmalik.fusionweb.controllers.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -28,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest({IncomeExpenseController.class})
 @AutoConfigureMockMvc
-class IncomeExpenseControllerTest extends TestBase {
+class IncomeExpenseControllerTest extends ControllerTestBase {
 
     @Autowired
     IncomeExpenseController controller;
@@ -280,50 +285,230 @@ class IncomeExpenseControllerTest extends TestBase {
     }
 
     @Test
-    void viewMonthlyExpenseDetails() {
+    void testViewMonthlyExpenseDetails() throws Exception {
+        when(incomeExpenseService.getMonthlyExpenseFor(1L))
+                .thenReturn(mockMonthlyExpense());
+
+        mockMvc
+                .perform(get("/income-and-expenses/1/view")
+                        .with(user(principal)))
+
+                .andExpect(model().attribute("editableMonthlyExpenseDto",
+                        Matchers.any(MonthlyExpenseDto.class)))
+                .andExpect(model().attribute("showMonthlyExpenseEditDeleteForm",
+                        Matchers.equalTo(true)))
+
+                .andExpect(model().attribute("monthlyExpenseDto", Matchers.any(MonthlyExpenseDto.class)))
+                .andExpect(model().attribute("weeklyExpenseDto", Matchers.any(WeeklyExpenseDto.class)))
+                .andExpect(model().attribute("monthlyIncomeDto", Matchers.any(MonthlyIncomeDto.class)))
+                .andExpect(model().attribute("weeklyIncomeDto", Matchers.any(WeeklyIncomeDto.class)))
+
+                .andExpect(model().attribute("monthlyExpenseList", Matchers.any(List.class)))
+                .andExpect(model().attribute("weeklyExpenseList", Matchers.any(List.class)))
+                .andExpect(model().attribute("monthlyIncomeList", Matchers.any(List.class)))
+                .andExpect(model().attribute("weeklyIncomeList", Matchers.any(List.class)))
+
+                .andExpect(view().name(("income-and-expenses")));
     }
 
     @Test
-    void viewWeeklyExpenseDetails() {
+    void testViewWeeklyExpenseDetails() throws Exception {
+        when(incomeExpenseService.getWeeklyExpenseFor(1L))
+                .thenReturn(mockWeeklyExpense());
+
+        mockMvc
+                .perform(get("/income-and-expenses/weekly-expense/1/view")
+                        .with(user(principal)))
+
+                .andExpect(model().attribute("editableWeeklyExpenseDto",
+                        Matchers.any(WeeklyExpenseDto.class)))
+                .andExpect(model().attribute("showWeeklyExpenseEditDeleteForm",
+                        Matchers.equalTo(true)))
+
+                .andExpect(model().attribute("monthlyExpenseDto", Matchers.any(MonthlyExpenseDto.class)))
+                .andExpect(model().attribute("weeklyExpenseDto", Matchers.any(WeeklyExpenseDto.class)))
+                .andExpect(model().attribute("monthlyIncomeDto", Matchers.any(MonthlyIncomeDto.class)))
+                .andExpect(model().attribute("weeklyIncomeDto", Matchers.any(WeeklyIncomeDto.class)))
+
+                .andExpect(model().attribute("monthlyExpenseList", Matchers.any(List.class)))
+                .andExpect(model().attribute("weeklyExpenseList", Matchers.any(List.class)))
+                .andExpect(model().attribute("monthlyIncomeList", Matchers.any(List.class)))
+                .andExpect(model().attribute("weeklyIncomeList", Matchers.any(List.class)))
+
+                .andExpect(view().name(("income-and-expenses")));
     }
 
     @Test
-    void viewMonthlyIncomeDetails() {
+    void testViewMonthlyIncomeDetails() throws Exception {
+        when(incomeExpenseService.getMonthlyIncomeFor(1L))
+                .thenReturn(mockMonthlyIncome());
+
+        mockMvc
+                .perform(get("/income-and-expenses/monthly-income/1/view")
+                        .with(user(principal)))
+
+                .andExpect(model().attribute("editableMonthlyIncomeDto",
+                        Matchers.any(MonthlyIncomeDto.class)))
+                .andExpect(model().attribute("showMonthlyIncomeEditDeleteForm",
+                        Matchers.equalTo(true)))
+
+                .andExpect(model().attribute("monthlyExpenseDto", Matchers.any(MonthlyExpenseDto.class)))
+                .andExpect(model().attribute("weeklyExpenseDto", Matchers.any(WeeklyExpenseDto.class)))
+                .andExpect(model().attribute("monthlyIncomeDto", Matchers.any(MonthlyIncomeDto.class)))
+                .andExpect(model().attribute("weeklyIncomeDto", Matchers.any(WeeklyIncomeDto.class)))
+
+                .andExpect(model().attribute("monthlyExpenseList", Matchers.any(List.class)))
+                .andExpect(model().attribute("weeklyExpenseList", Matchers.any(List.class)))
+                .andExpect(model().attribute("monthlyIncomeList", Matchers.any(List.class)))
+                .andExpect(model().attribute("weeklyIncomeList", Matchers.any(List.class)))
+
+                .andExpect(view().name(("income-and-expenses")));
     }
 
     @Test
-    void viewWeeklyIncomeDetails() {
+    void testViewWeeklyIncomeDetails() throws Exception {
+        when(incomeExpenseService.getWeeklyIncomeFor(1L))
+                .thenReturn(mockWeeklyIncome());
+
+        mockMvc
+                .perform(get("/income-and-expenses/weekly-income/1/view")
+                        .with(user(principal)))
+
+                .andExpect(model().attribute("editableWeeklyIncomeDto",
+                        Matchers.any(WeeklyIncomeDto.class)))
+                .andExpect(model().attribute("showWeeklyIncomeEditDeleteForm",
+                        Matchers.equalTo(true)))
+
+                .andExpect(model().attribute("monthlyExpenseDto", Matchers.any(MonthlyExpenseDto.class)))
+                .andExpect(model().attribute("weeklyExpenseDto", Matchers.any(WeeklyExpenseDto.class)))
+                .andExpect(model().attribute("monthlyIncomeDto", Matchers.any(MonthlyIncomeDto.class)))
+                .andExpect(model().attribute("weeklyIncomeDto", Matchers.any(WeeklyIncomeDto.class)))
+
+                .andExpect(model().attribute("monthlyExpenseList", Matchers.any(List.class)))
+                .andExpect(model().attribute("weeklyExpenseList", Matchers.any(List.class)))
+                .andExpect(model().attribute("monthlyIncomeList", Matchers.any(List.class)))
+                .andExpect(model().attribute("weeklyIncomeList", Matchers.any(List.class)))
+
+                .andExpect(view().name(("income-and-expenses")));
     }
 
     @Test
-    void updateMonthlyExpense() {
+    void testUpdateMonthlyExpenseSuccess() throws Exception, NoSuchMonthlyExpenseException {
+        given(
+                incomeExpenseService
+                        .updateMonthlyExpense(mockMonthlyExpenseDto()))
+                .willReturn(mockMonthlyExpense()
+        );
+
+        mockMvc
+                .perform(post("/income-and-expenses/monthly-expense/1/edit")
+                        .flashAttr("monthlyExpenseDto", mockMonthlyExpenseDto())
+                        .with(user(principal))
+                )
+
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/income-and-expenses"));
     }
 
     @Test
-    void updateWeeklyExpense() {
+    void testUpdateWeeklyExpenseSuccess() throws NoSuchWeeklyExpenseException, Exception {
+        given(
+                incomeExpenseService
+                        .updateWeeklyExpense(mockWeeklyExpenseDto()))
+                .willReturn(mockWeeklyExpense()
+                );
+
+        mockMvc
+                .perform(post("/income-and-expenses/weekly-expense/1/edit")
+                        .flashAttr("weeklyExpenseDto", mockWeeklyExpenseDto())
+                        .with(user(principal))
+                )
+
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/income-and-expenses"));
     }
 
     @Test
-    void updateMonthlyIncome() {
+    void testUpdateMonthlyIncomeSuccess() throws NoSuchMonthlyIncomeException, Exception {
+        given(
+                incomeExpenseService
+                        .updateMonthlyIncome(mockMonthlyIncomeDto()))
+                .willReturn(mockMonthlyIncome()
+                );
+
+        mockMvc
+                .perform(post("/income-and-expenses/monthly-income/1/edit")
+                        .flashAttr("monthlyIncomeDto", mockMonthlyIncomeDto())
+                        .with(user(principal))
+                )
+
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/income-and-expenses"));
     }
 
     @Test
-    void updateWeeklyIncome() {
+    void testUpdateWeeklyIncomeSuccess() throws NoSuchIncomeException, Exception {
+        given(
+                incomeExpenseService
+                        .updateWeeklyIncome(mockWeeklyIncomeDto()))
+                .willReturn(mockWeeklyIncome()
+                );
+
+        mockMvc
+                .perform(post("/income-and-expenses/weekly-income/1/edit")
+                        .flashAttr("weeklyIncomeDto", mockWeeklyIncomeDto())
+                        .with(user(principal))
+                )
+
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/income-and-expenses"));
     }
 
     @Test
-    void deleteMonthlyExpense() {
+    void testDeleteMonthlyExpense() throws Exception {
+        mockMvc
+                .perform(get("/income-and-expenses/1/delete")
+                        .with(user(principal))
+                )
+                .andExpect(view().name("redirect:/income-and-expenses"));
+
+        verify(incomeExpenseService, times(1))
+                .deleteMonthlyExpenseFor(1L);
     }
 
     @Test
-    void deleteWeeklyExpense() {
+    void testDeleteWeeklyExpense() throws Exception {
+        mockMvc
+                .perform(get("/income-and-expenses/weekly-expense/1/delete")
+                        .with(user(principal))
+                )
+                .andExpect(view().name("redirect:/income-and-expenses"));
+
+        verify(incomeExpenseService, times(1))
+                .deleteWeeklyExpenseFor(1L);
     }
 
     @Test
-    void deleteMonthlyIncome() {
+    void testDeleteMonthlyIncome() throws Exception {
+        mockMvc
+                .perform(get("/income-and-expenses/monthly-income/1/delete")
+                        .with(user(principal))
+                )
+                .andExpect(view().name("redirect:/income-and-expenses"));
+
+        verify(incomeExpenseService, times(1))
+                .deleteMonthlyIncomeFor(1L);
     }
 
     @Test
-    void deleteWeeklyIncome() {
+    void testDeleteWeeklyIncome() throws Exception {
+        mockMvc
+                .perform(get("/income-and-expenses/weekly-income/1/delete")
+                        .with(user(principal))
+                )
+                .andExpect(view().name("redirect:/income-and-expenses"));
+
+        verify(incomeExpenseService, times(1))
+                .deleteWeeklyIncomeFor(1L);
     }
 }

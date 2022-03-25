@@ -1,6 +1,7 @@
 package com.sadatmalik.fusionweb.services.hsbc.model.balances;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -8,6 +9,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Builder
 public class HsbcBalance {
     @JsonProperty("AccountId")
     private String accountId;

@@ -1,26 +1,22 @@
 package com.sadatmalik.fusionweb.services;
 
 import com.sadatmalik.fusionweb.model.Account;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Service
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class AccountServicesRegistry {
-
-    private static AccountServicesRegistry instance;
 
     // @todo refactor to Map<Account, TransactionService>
     private final Map<String, TransactionService> transactionServiceByAccount;
 
     private AccountServicesRegistry() {
         transactionServiceByAccount = new HashMap<>();
-    }
-
-    public static AccountServicesRegistry getInstance() {
-        if (instance == null) {
-            instance = new AccountServicesRegistry();
-        }
-        return instance;
     }
 
     public void registerTransactionService(Account account, TransactionService transactionService) {

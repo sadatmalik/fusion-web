@@ -6,6 +6,4 @@ public class NoSuchIncomeException extends Throwable {
         super(message);
     }
 
-    public NoSuchIncomeException() {
-    }
 }

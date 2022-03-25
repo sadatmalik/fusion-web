@@ -46,4 +46,12 @@ class LoginControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().string("Location", containsString("login")));
     }
+
+    @Test
+    public void testLogoutRedirectsToLoginViewWithLogoutAttribute() throws Exception {
+        mockMvc.perform(get("/logout"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login?logout"));
+    }
 }

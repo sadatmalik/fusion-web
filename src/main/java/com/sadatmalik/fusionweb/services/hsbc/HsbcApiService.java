@@ -29,14 +29,17 @@ public class HsbcApiService implements HsbcOpenBankingService, TransactionServic
     private final HsbcAuthenticationService hsbcAuth;
     private final RestTemplate restTemplate;
     private final BankRepository bankRepository;
+    private final AccountServicesRegistry accountServicesRegistry;
 
     private final Bank hsbc;
 
     @Autowired
     public HsbcApiService(HsbcAuthenticationService hsbcAuth,
-                          RestTemplate restTemplate, BankRepository bankRepository) {
+                          RestTemplate restTemplate, AccountServicesRegistry accountServicesRegistry,
+                          BankRepository bankRepository) {
         this.hsbcAuth = hsbcAuth;
         this.restTemplate = restTemplate;
+        this.accountServicesRegistry = accountServicesRegistry;
         this.bankRepository = bankRepository;
         this.hsbc = bankRepository.save(Bank.builder()
                 .name("HSBC")
@@ -45,7 +48,7 @@ public class HsbcApiService implements HsbcOpenBankingService, TransactionServic
         );
     }
 
-    // Public methods
+    // Public methods - getAccounts()
     public List<Account> getUserAccounts() {
         final List<Account> accounts = new ArrayList<>();
 
@@ -66,12 +69,13 @@ public class HsbcApiService implements HsbcOpenBankingService, TransactionServic
                         .build();
                 accounts.add(account);
 
-                AccountServicesRegistry.getInstance().registerTransactionService(account, this);
+                accountServicesRegistry.registerTransactionService(account, this);
             }
         }
         return accounts;
     }
 
+    // Public methods - getTransactions()
     public List<Transaction> getTransactions(Account account) {
         final List<Transaction> transactions = new ArrayList<>();
 
@@ -95,6 +99,9 @@ public class HsbcApiService implements HsbcOpenBankingService, TransactionServic
         return transactions;
     }
 
+
+
+
     // Private methods - handling of the OAuth flows is not exposed
 
     // curl -v -X GET --cert qwac.der --cert-type DER --key server.key
@@ -109,13 +116,18 @@ public class HsbcApiService implements HsbcOpenBankingService, TransactionServic
                 restTemplate.exchange(ACCOUNT_INFO_URL, HttpMethod.GET, request, HsbcAccountList.class);
 
         // sets account balances with a rest call per account
-        for (HsbcAccount account : response.getBody().getData().getAccounts()) {
-            account.setBalance(getAccountBalance(account, accessToken));
+        if (response.hasBody()) {
+            for (HsbcAccount account : response.getBody().getData().getAccounts()) {
+                account.setBalance(getAccountBalance(account, accessToken));
+            }
+
+            log.debug("User Accounts ---------" + response.getBody());
+
+            return response.getBody().getData().getAccounts();
+        } else {
+            // todo consider an exception here?
+            return null;
         }
-
-        log.debug("User Accounts ---------" + response.getBody());
-
-        return response.getBody().getData().getAccounts();
     }
 
     private HttpHeaders getGetHeaders(HsbcUserAccessToken accessToken) {
@@ -148,12 +160,17 @@ public class HsbcApiService implements HsbcOpenBankingService, TransactionServic
 
         log.debug("Balance for AccountID ---------" + response.getBody());
 
-        Balance balance = new Balance(
-                response.getBody().getData().getBalanceList().get(0).getAmount().getAmount(),
-                response.getBody().getData().getBalanceList().get(0).getCreditDebit().equals("Credit"),
-                response.getBody().getData().getBalanceList().get(0).getAmount().getCurrency());
+        if (response.hasBody()) {
+            Balance balance = new Balance(
+                    response.getBody().getData().getBalanceList().get(0).getAmount().getAmount(),
+                    response.getBody().getData().getBalanceList().get(0).getCreditDebit().equals("Credit"),
+                    response.getBody().getData().getBalanceList().get(0).getAmount().getCurrency());
 
-        return balance;
+            return balance;
+        } else {
+            // todo consider an exception here?
+            return null;
+        }
     }
 
     // "GET /accounts/{AccountId}/transactions"

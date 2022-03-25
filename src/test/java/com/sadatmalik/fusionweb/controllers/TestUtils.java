@@ -7,13 +7,14 @@ import com.sadatmalik.fusionweb.model.dto.WeeklyExpenseDto;
 import com.sadatmalik.fusionweb.model.dto.WeeklyIncomeDto;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 
 /**
  * @author sm@creativefusion.net
  */
 public class TestUtils {
 
-    static MonthlyExpenseDto mockMonthlyExpenseDto() {
+    public static MonthlyExpenseDto mockMonthlyExpenseDto() {
         return MonthlyExpenseDto.builder()
                 .name("BROADBAND")
                 .amount(31.95)
@@ -23,7 +24,7 @@ public class TestUtils {
                 .build();
     }
 
-    static MonthlyExpense mockMonthlyExpense() {
+    public static MonthlyExpense mockMonthlyExpense() {
         return MonthlyExpense.builder()
                 .id(1L)
                 .user(new User())
@@ -35,7 +36,7 @@ public class TestUtils {
                 .build();
     }
 
-    static WeeklyExpenseDto mockWeeklyExpenseDto() {
+    public static WeeklyExpenseDto mockWeeklyExpenseDto() {
         return WeeklyExpenseDto.builder()
                 .accountId("TEST")
                 .name("Sainsburys")
@@ -46,7 +47,7 @@ public class TestUtils {
                 .build();
     }
 
-    static WeeklyExpense mockWeeklyExpense() {
+    public static WeeklyExpense mockWeeklyExpense() {
         return WeeklyExpense.builder()
                 .account(new Account())
                 .user(new User())
@@ -58,7 +59,7 @@ public class TestUtils {
                 .build();
     }
 
-    static MonthlyIncomeDto mockMonthlyIncomeDto() {
+    public static MonthlyIncomeDto mockMonthlyIncomeDto() {
         return MonthlyIncomeDto.builder()
                 .accountId("TEST")
                 .amount(1850d)
@@ -67,7 +68,7 @@ public class TestUtils {
                 .build();
     }
 
-    static MonthlyIncome mockMonthlyIncome() {
+    public static MonthlyIncome mockMonthlyIncome() {
         return MonthlyIncome.builder()
                 .account(new Account())
                 .user(new User())
@@ -77,7 +78,7 @@ public class TestUtils {
                 .build();
     }
 
-    static WeeklyIncomeDto mockWeeklyIncomeDto() {
+    public static WeeklyIncomeDto mockWeeklyIncomeDto() {
         return WeeklyIncomeDto.builder()
                 .accountId("TEST")
                 .amount(35d)
@@ -86,7 +87,7 @@ public class TestUtils {
                 .build();
     }
 
-    static Income mockWeeklyIncome() {
+    public static Income mockWeeklyIncome() {
         return Income.builder()
                 .account(new Account())
                 .user(new User())
@@ -95,4 +96,46 @@ public class TestUtils {
                 .weeklyInterval(2)
                 .build();
     }
+
+    public static Account mockAccount() {
+        Bank bank = Bank.builder()
+                .name("HSBC")
+                .imageLocation("/images/hsbc.png")
+                .build();
+
+        return Account.builder()
+                .accountId("HS000345678")
+                .type(AccountType.SAVINGS)
+                .name("Mr Sadat Malik")
+                .balance(1234.56)
+                .currency("GBP")
+                .user(new User())
+                .description("HSBC Savings account")
+                .bank(bank)
+                .build();
+
+    }
+
+    public static User mockUser() {
+        return User.builder()
+                .firstName("Sadat")
+                .lastName("Malik")
+                .email("sm@creativefusion.net")
+                .build();
+    }
+
+    public static Debt mockDebt() {
+        return Debt.builder()
+                .account(mockAccount())
+                .user(mockUser())
+                .lender("Santander")
+                .totalBorrowed(new BigDecimal(295000))
+                .totalOwed(new BigDecimal(270000))
+                .dayOfMonthPaid(5)
+                .interestRate(new BigDecimal(1.95))
+                .dateBorrowed(new Date(119, 1, 1)) //2019-Feb-1st
+                .initialTermMonths(12 * 25)
+                .build();
+    }
+
 }

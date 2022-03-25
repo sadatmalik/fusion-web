@@ -6,6 +6,4 @@ public class NoSuchMonthlyExpenseException extends Throwable {
         super(message);
     }
 
-    public NoSuchMonthlyExpenseException() {
-    }
 }

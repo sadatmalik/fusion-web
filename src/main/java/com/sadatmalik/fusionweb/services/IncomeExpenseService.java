@@ -71,7 +71,7 @@ public class IncomeExpenseService {
                 .amount(new BigDecimal(monthlyExpenseDto.getAmount()))
                 .dayOfMonthPaid(monthlyExpenseDto.getDayOfMonthPaid())
                 .type(monthlyExpenseDto.getType())
-                .account(accountService.getAccountByAccountId(
+                .account(accountService.getAccountById(
                         monthlyExpenseDto.getAccountId())
                 )
                 .user(user)
@@ -87,7 +87,7 @@ public class IncomeExpenseService {
                 .amount(new BigDecimal(weeklyExpenseDto.getAmount()))
                 .timesPerWeek(weeklyExpenseDto.getTimesPerWeek())
                 .type(weeklyExpenseDto.getType())
-                .account(accountService.getAccountByAccountId(
+                .account(accountService.getAccountById(
                         weeklyExpenseDto.getAccountId())
                 )
                 .user(user)
@@ -102,13 +102,28 @@ public class IncomeExpenseService {
                 .amount(new BigDecimal(monthlyIncomeDto.getAmount()))
                 .source(monthlyIncomeDto.getSource())
                 .dayOfMonthReceived(monthlyIncomeDto.getDayOfMonthReceived())
-                .account(accountService.getAccountByAccountId(
+                .account(accountService.getAccountById(
                         monthlyIncomeDto.getAccountId())
                 )
                 .user(user)
                 .build();
 
         return monthlyIncomeRepository.save(monthlyIncome);
+    }
+
+    public Income saveWeeklyIncome(WeeklyIncomeDto weeklyIncomeDto, User user) {
+        // @todo use MapStruct
+        Income weeklyIncome = Income.builder()
+                .amount(new BigDecimal(weeklyIncomeDto.getAmount()))
+                .source(weeklyIncomeDto.getSource())
+                .weeklyInterval(weeklyIncomeDto.getWeeklyInterval())
+                .account(accountService.getAccountById(
+                        weeklyIncomeDto.getAccountId())
+                )
+                .user(user)
+                .build();
+
+        return incomeRepository.save(weeklyIncome);
     }
 
     public MonthlyExpense updateMonthlyExpense(MonthlyExpenseDto monthlyExpenseDto)
@@ -121,7 +136,7 @@ public class IncomeExpenseService {
             monthlyExpense.setAmount(new BigDecimal(monthlyExpenseDto.getAmount()));
             monthlyExpense.setDayOfMonthPaid(monthlyExpenseDto.getDayOfMonthPaid());
             monthlyExpense.setType(monthlyExpenseDto.getType());
-            monthlyExpense.setAccount(accountService.getAccountByAccountId(
+            monthlyExpense.setAccount(accountService.getAccountById(
                     monthlyExpenseDto.getAccountId()
             ));
             return monthlyExpenseRepository.save(monthlyExpense);
@@ -145,7 +160,7 @@ public class IncomeExpenseService {
             weeklyExpense.setTimesPerWeek(weeklyExpenseDto.getTimesPerWeek());
             weeklyExpense.setWeeklyInterval(weeklyExpenseDto.getWeeklyInterval());
             weeklyExpense.setType(weeklyExpenseDto.getType());
-            weeklyExpense.setAccount(accountService.getAccountByAccountId(
+            weeklyExpense.setAccount(accountService.getAccountById(
                     weeklyExpenseDto.getAccountId()
             ));
             return weeklyExpenseRepository.save(weeklyExpense);
@@ -153,8 +168,8 @@ public class IncomeExpenseService {
         } else {
             log.error("Trying to update non-existing weekly expense - update attempted for weekly expense ID "
                     + weeklyExpenseDto.getId());
-            throw new NoSuchWeeklyExpenseException("Trying to update non-existing weekly expense" +
-                    " - update attempted for weekly expense ID " + weeklyExpenseDto.getId());
+            throw new NoSuchWeeklyExpenseException("Trying to update non-existing weekly expense - " +
+                    "update attempted for weekly expense ID " + weeklyExpenseDto.getId());
         }
     }
 
@@ -167,7 +182,7 @@ public class IncomeExpenseService {
             monthlyIncome.setAmount(new BigDecimal(monthlyIncomeDto.getAmount()));
             monthlyIncome.setSource(monthlyIncomeDto.getSource());
             monthlyIncome.setDayOfMonthReceived(monthlyIncomeDto.getDayOfMonthReceived());
-            monthlyIncome.setAccount(accountService.getAccountByAccountId(
+            monthlyIncome.setAccount(accountService.getAccountById(
                     monthlyIncomeDto.getAccountId()
             ));
             return monthlyIncomeRepository.save(monthlyIncome);
@@ -189,7 +204,7 @@ public class IncomeExpenseService {
             weeklyIncome.setAmount(new BigDecimal(weeklyIncomeDto.getAmount()));
             weeklyIncome.setSource(weeklyIncomeDto.getSource());
             weeklyIncome.setWeeklyInterval(weeklyIncomeDto.getWeeklyInterval());
-            weeklyIncome.setAccount(accountService.getAccountByAccountId(
+            weeklyIncome.setAccount(accountService.getAccountById(
                     weeklyIncomeDto.getAccountId()
             ));
             return incomeRepository.save(weeklyIncome);
@@ -198,24 +213,8 @@ public class IncomeExpenseService {
             log.error("Trying to update non-existing weekly income - update attempted for income ID "
                     + weeklyIncomeDto.getId());
             throw new NoSuchIncomeException("Trying to update non-existing weekly income" +
-                    " - update attempted for income ID " + weeklyIncomeDto.getId());
+                    " - update attempted for weekly income ID " + weeklyIncomeDto.getId());
         }
-    }
-
-
-    public Income saveWeeklyIncome(WeeklyIncomeDto weeklyIncomeDto, User user) {
-        // @todo use MapStruct
-        Income weeklyIncome = Income.builder()
-                .amount(new BigDecimal(weeklyIncomeDto.getAmount()))
-                .source(weeklyIncomeDto.getSource())
-                .weeklyInterval(weeklyIncomeDto.getWeeklyInterval())
-                .account(accountService.getAccountByAccountId(
-                        weeklyIncomeDto.getAccountId())
-                )
-                .user(user)
-                .build();
-
-        return incomeRepository.save(weeklyIncome);
     }
 
     public void deleteMonthlyExpenseFor(Long expenseId) {

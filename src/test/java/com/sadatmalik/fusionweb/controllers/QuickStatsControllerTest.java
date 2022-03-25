@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest({QuickStatsController.class})
 @AutoConfigureMockMvc
-class QuickStatsControllerTest extends TestBase {
+class QuickStatsControllerTest extends ControllerTestBase {
 
     @Autowired
     QuickStatsController controller;

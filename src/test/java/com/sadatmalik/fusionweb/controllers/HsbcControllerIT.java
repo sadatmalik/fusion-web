@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class HsbcControllerIT extends TestBase {
+class HsbcControllerIT extends ControllerTestBase {
 
     @Autowired
     HsbcController controller;
