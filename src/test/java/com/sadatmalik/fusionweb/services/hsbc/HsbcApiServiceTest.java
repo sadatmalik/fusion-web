@@ -2,11 +2,13 @@ package com.sadatmalik.fusionweb.services.hsbc;
 
 import com.sadatmalik.fusionweb.FusionWebPrototypeApplication;
 import com.sadatmalik.fusionweb.model.Account;
+import com.sadatmalik.fusionweb.model.Transaction;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcUserAccessToken;
 import com.sadatmalik.fusionweb.repositories.BankRepository;
 import com.sadatmalik.fusionweb.services.AccountServicesRegistry;
 import com.sadatmalik.fusionweb.services.hsbc.model.accounts.HsbcAccountList;
 import com.sadatmalik.fusionweb.services.hsbc.model.balances.HsbcBalanceObject;
+import com.sadatmalik.fusionweb.services.hsbc.model.transacations.HsbcTransactionObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -92,5 +94,32 @@ class HsbcApiServiceTest {
 
     @Test
     void getTransactions() {
+        Account account = mockAccount();
+
+        assert HsbcUserAccessToken.current() == userAccessToken;
+        assert account != null;
+
+        given(
+                restTemplate.exchange(
+                        ArgumentMatchers.eq(HsbcOpenBankingService.ACCOUNT_INFO_URL +
+                                "/" + mockAccount().getAccountId() + "/transactions"),
+                        ArgumentMatchers.eq(HttpMethod.GET),
+                        ArgumentMatchers.<HttpEntity<String>>any(),
+                        ArgumentMatchers.<Class<HsbcTransactionObject>>any()
+                )
+        ).willReturn(mockHsbcTransactionObjectResponseEntity());
+
+
+        assertThat(hsbcApiService.getTransactions(account))
+                .hasOnlyElementsOfType(Transaction.class);
+
+        assertThat(hsbcApiService.getTransactions(account))
+                .hasSize(1);
+
+        verify(restTemplate, times(2))
+                .exchange(ArgumentMatchers.contains(HsbcOpenBankingService.ACCOUNT_INFO_URL),
+                        ArgumentMatchers.eq(HttpMethod.GET),
+                        ArgumentMatchers.<HttpEntity<String>>any(),
+                        ArgumentMatchers.<Class<?>>any());
     }
 }

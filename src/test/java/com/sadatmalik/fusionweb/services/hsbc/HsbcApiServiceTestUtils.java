@@ -1,5 +1,8 @@
 package com.sadatmalik.fusionweb.services.hsbc;
 
+import com.sadatmalik.fusionweb.model.Account;
+import com.sadatmalik.fusionweb.model.AccountType;
+import com.sadatmalik.fusionweb.model.Bank;
 import com.sadatmalik.fusionweb.oauth.hsbc.HsbcUserAccessToken;
 import com.sadatmalik.fusionweb.services.hsbc.model.accounts.HsbcAccount;
 import com.sadatmalik.fusionweb.services.hsbc.model.accounts.HsbcAccountData;
@@ -9,6 +12,9 @@ import com.sadatmalik.fusionweb.services.hsbc.model.balances.HsbcAmount;
 import com.sadatmalik.fusionweb.services.hsbc.model.balances.HsbcBalance;
 import com.sadatmalik.fusionweb.services.hsbc.model.balances.HsbcBalanceData;
 import com.sadatmalik.fusionweb.services.hsbc.model.balances.HsbcBalanceObject;
+import com.sadatmalik.fusionweb.services.hsbc.model.transacations.HsbcTransaction;
+import com.sadatmalik.fusionweb.services.hsbc.model.transacations.HsbcTransactionData;
+import com.sadatmalik.fusionweb.services.hsbc.model.transacations.HsbcTransactionObject;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -96,9 +102,7 @@ public class HsbcApiServiceTestUtils {
     }
 
     private static HsbcBalance mockHsbcBalance() {
-        HsbcAmount amount = new HsbcAmount();
-        amount.setAmount(12345d);
-        amount.setCurrency("GBP");
+        HsbcAmount amount = getAmount(12345d);
 
         return HsbcBalance.builder()
                 .accountId("AB12345678")
@@ -106,5 +110,65 @@ public class HsbcApiServiceTestUtils {
                 .amount(amount)
                 .build();
     }
+
+    private static HsbcAmount getAmount(double value) {
+        HsbcAmount amount = new HsbcAmount();
+        amount.setAmount(value);
+        amount.setCurrency("GBP");
+        return amount;
+    }
+
+    static Account mockAccount() {
+        return Account.builder()
+                .bank(Bank.builder()
+                        .name(mockHsbcAccount().getBank())
+                        .build())
+                .accountId(
+                        mockHsbcAccount().getAccountId())
+                .currency(
+                        mockHsbcAccount().getCurrency())
+                .type(AccountType.CURRENT)
+                .description(
+                        mockHsbcAccount().getDescription())
+                .build();
+    }
+
+    static ResponseEntity<HsbcTransactionObject> mockHsbcTransactionObjectResponseEntity() {
+        HsbcTransactionObject transaction = mockHsbcTransactionObject();
+
+        assert transaction != null;
+
+        return ResponseEntity.of(Optional.of(transaction));
+
+    }
+
+    private static HsbcTransactionObject mockHsbcTransactionObject() {
+        HsbcTransactionObject transactionObject = new HsbcTransactionObject();
+        transactionObject.setData(mockHsbcTransactionData());
+
+        return transactionObject;
+    }
+
+    private static HsbcTransactionData mockHsbcTransactionData() {
+        HsbcTransactionData data = new HsbcTransactionData();
+        data.setTransactionList(List.of(mockHsbcTransaction()));
+
+        return data;
+    }
+
+    private static HsbcTransaction mockHsbcTransaction() {
+        HsbcAmount amount = getAmount(12.345d);
+
+        HsbcTransaction transaction = new HsbcTransaction();
+        transaction.setAccountId(mockAccount().getAccountId());
+        transaction.setTransactionId("TXN_ID_TEST_1234");
+        transaction.setCreditDebitIndicator("Credit");
+        transaction.setStatus("Booked");
+        transaction.setBookingDateTime("2022-03-25T18:12:03Z");
+        transaction.setHsbcAmount(amount);
+
+        return transaction;
+    }
+
 
 }
