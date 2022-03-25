@@ -97,7 +97,7 @@ public class QuickStatsController {
 
     private List<List<Object>> getPaymentChartData(List<MonthlyExpense> paymentsList) {
         List<List<Object>> paymentChartData = new ArrayList<>(List.of(List.of("TYPE", "To pay:")));
-        paymentsList.stream()
+        paymentsList
                 .forEach(expense ->
                         paymentChartData.add(List.of(expense.getName(), expense.getAmount()))
                 );
@@ -106,7 +106,7 @@ public class QuickStatsController {
 
     private List<List<Object>> getDebtChartData(List<Debt> debtList) {
         List<List<Object>> debtChartData = new ArrayList<>(List.of(List.of("Lender", "Borrowing")));
-        debtList.stream()
+        debtList
                 .forEach(debt ->
                     debtChartData.add(List.of(debt.getLender(), debt.getTotalBorrowed()))
                 );
