@@ -20,6 +20,22 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Spring MVC controller class for QuickStats view related endpoints.
+ *
+ * Several methods, for example {@code quickStats(Authentication authentication,
+ * Model model)} return chart data in the MVC model. Note that the current
+ * implementation uses Google Charts for the rendering of chart graphics in the
+ * HTML application views.
+ *
+ * The return type of data for rendering using Google forms is: {@code
+ * List<List<Object>>}
+ *
+ * The controller is intended as the handler for future release endpoints that
+ * will implement enhanced charts and analytics information.
+ *
+ * @author sadatmalik
+ */
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -29,6 +45,27 @@ public class QuickStatsController {
     private final IncomeExpenseService incomeExpenseService;
     private final DebtService debtService;
 
+    /**
+     * Handles /quickstats endpoint GET requests. It is the primary method of the
+     * controller class.
+     *
+     * Retrieves account infomration from the {@code AccountService} instance for
+     * the user corresponding to the current authentication. The total balance for
+     * all user accounts is calculated and returned in the MVC model as a formatted
+     * String.
+     *
+     * Retrieves monthly expense data from the {@code IncomeExpenseService} instance
+     * for the current user, and translates this into the charting format required
+     * by Google Charts.
+     *
+     * Similarly, for debt data, retrieves the details for the current user from the
+     * {@code DebtService instance} and translates this into a data format that can
+     * be rendered by Google Charts.
+     *
+     * @param authentication provided by the Spring context.
+     * @param model injected by the Spring context.
+     * @return returns the quickstats view.
+     */
     @GetMapping("/quickstats")
     public String quickStats(Authentication authentication, Model model) {
         log.info("Returning Quickstats page");
@@ -60,7 +97,7 @@ public class QuickStatsController {
 
     private List<List<Object>> getPaymentChartData(List<MonthlyExpense> paymentsList) {
         List<List<Object>> paymentChartData = new ArrayList<>(List.of(List.of("TYPE", "To pay:")));
-        paymentsList.stream()
+        paymentsList
                 .forEach(expense ->
                         paymentChartData.add(List.of(expense.getName(), expense.getAmount()))
                 );
@@ -69,7 +106,7 @@ public class QuickStatsController {
 
     private List<List<Object>> getDebtChartData(List<Debt> debtList) {
         List<List<Object>> debtChartData = new ArrayList<>(List.of(List.of("Lender", "Borrowing")));
-        debtList.stream()
+        debtList
                 .forEach(debt ->
                     debtChartData.add(List.of(debt.getLender(), debt.getTotalBorrowed()))
                 );

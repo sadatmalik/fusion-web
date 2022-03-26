@@ -23,6 +23,14 @@ import java.sql.Date;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Bootstrap data initialises the essential data tables with some basic
+ * objects.
+ *
+ * Primary use case if for demo purposes and for integration testing.
+ *
+ * @author sadatmalik
+ */
 @Slf4j
 @Profile({"dev", "qa", "qa2"})
 @RequiredArgsConstructor
