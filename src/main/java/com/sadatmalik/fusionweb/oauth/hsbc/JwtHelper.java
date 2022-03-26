@@ -17,7 +17,6 @@ import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 
-
 /**
  * A JWT helper class. Helps with the creation and signing of JWT specific to the
  * Hsbc Api OAuth flow sequence.
