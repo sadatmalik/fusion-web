@@ -17,6 +17,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Spring MVC controller that handles all transaction processing related endpoints,
+ * interacting with the transaction related view templates, via the standard Spring
+ * MVC model.
+ *
+ * @author sadatmalik
+ */
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -26,6 +33,22 @@ public class TransactionController {
 
     private final AccountServicesRegistry accountServicesRegistry;
 
+    /**
+     * Listens for requests to the /transactions/{accountId endpoint}. It looks up the
+     * corresponding account for the received accountId via the {@code AccountService}
+     * instance.
+     *
+     * Formats the account balance and attaches this to the returned MVC model. Together
+     * with the account object itself. Uses the {@code AccountServiceRegistry} to find the
+     * {@code TransactionService} connected to the {@code Account}. Then requests all
+     * transactions for the account from the {@code TransactionService}.
+     *
+     * Attached the returned transactions list to the MVC model for display.
+     *
+     * @param model injected by the Spring context.
+     * @param accountId received as a path variable with the HTTP GET request.
+     * @return returns the account-transactions view
+     */
     @GetMapping("/transactions/{accountId}")
     public String transactionsByAccount(Model model, @PathVariable String accountId) {
 
@@ -44,6 +67,23 @@ public class TransactionController {
         return "account-transactions";
     }
 
+    /**
+     * Listens for requests to the /transactions endpoint. It looks up all accounts
+     * via the {@code AccountService} instance for the user corresponding to the current
+     * authentication.
+     *
+     * Calculates and formats the total account balance for all user accounts and attaches
+     * this to the returned MVC model.
+     *
+     * Uses the {@code AccountServiceRegistry} to find the {@code TransactionService}
+     * connected to each {@code Account} belonging to the user. Requesting all transactions
+     * for each account from the {@code TransactionService} and returning the full list of
+     * transactions across all accounts in the MVC model for display.
+     *
+     * @param model injected by the Spring context.
+     * @param authentication provided by the Spring context.
+     * @return returns the transactions view.
+     */
     @GetMapping("/transactions")
     public String allTransactions(Model model, Authentication authentication) {
         // Get logged-in User's accounts
