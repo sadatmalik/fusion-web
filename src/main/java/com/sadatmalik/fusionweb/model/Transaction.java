@@ -8,6 +8,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * JPA entity class that models a single transaction for a particular user
+ * Account.
+ *
+ * @author sadatmalik
+ */
 @Data
 @Builder
 public class Transaction {

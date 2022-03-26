@@ -7,6 +7,11 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+/**
+ * JPA entity class that models a single bank.
+ *
+ * @author sadatmalik
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

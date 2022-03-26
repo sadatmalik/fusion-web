@@ -3,6 +3,12 @@ package com.sadatmalik.fusionweb.model;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Enumerates the permitted account types that can be associated with a user's
+ * bank Account.
+ *
+ * @author sadatmalik
+ */
 public enum AccountType {
     CURRENT(1),
     SAVINGS(2),
@@ -22,6 +28,12 @@ public enum AccountType {
         this.typeId = id;
     }
 
+    /**
+     * Utility method that enables the quick mapping of database stored numerical
+     * ids that correspond to an AccountType.
+     *
+     * @param id database numeric id for the account type
+     */
     public static AccountType from(int id) {
         return accountTypeById.get(id);
     }

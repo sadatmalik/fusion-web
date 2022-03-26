@@ -5,6 +5,13 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 
+/**
+ * JPA entity class that models an application user - the intention is to
+ * separate application specific user data from security specific user data.
+ * The latter is encapsulated within the {@code UserPrincipal} type.
+ *
+ * @see com.sadatmalik.fusionweb.model.websecurity.UserPrincipal
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

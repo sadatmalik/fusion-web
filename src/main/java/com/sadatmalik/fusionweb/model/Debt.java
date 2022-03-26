@@ -9,6 +9,11 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
 
+/**
+ * JPA entity class that models a single user debt.
+ *
+ * @author sadatmalik
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

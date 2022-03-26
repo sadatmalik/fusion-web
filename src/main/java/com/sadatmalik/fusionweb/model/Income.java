@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
+/**
+ * JPA entity class that models a single user income.
+ *
+ * @author sadatmalik
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

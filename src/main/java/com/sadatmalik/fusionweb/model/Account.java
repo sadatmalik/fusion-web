@@ -5,6 +5,11 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 
+/**
+ * JPA entity class that models a single user bank account.
+ *
+ * @author sadatmalik
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
