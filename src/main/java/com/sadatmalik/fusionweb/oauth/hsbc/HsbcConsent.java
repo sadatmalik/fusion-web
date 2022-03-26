@@ -6,6 +6,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Instances of this type will be generated via the Rest Api calls to the Open
+ * Banking Api and subsequent Json response containing the required property
+ * values.
+ *
+ * Represents an Api consent used within the OAuth flow sequence.
+ *
+ * @author sadatmalik
+ */
 @Getter
 @Setter
 @ToString

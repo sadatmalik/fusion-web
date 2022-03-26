@@ -10,6 +10,26 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 
+/**
+ * This service encapsulated the OAuth authentication flow with Hsbc's Open
+ * Banking Api implementation.
+ *
+ * The primary methods are:
+ *
+ * {@code getAccessToken()} retrieves a client (application) token.
+ *
+ * {@code getConsentId()} uses the client token to retrieve a consent.
+ *
+ * {@code getAuthorizationUrl()} uses the consent to retrieve an account
+ * authorisation url and subsequently an authorisation code.
+ *
+ * {@code getAccessToken()} uses the authorisation code to retrieve a
+ * user access token. This token will be used to make all subsequent Api
+ * requests related to accounts and transactions on behalf of this use - and
+ * only for the accounts that the user has pre-authorised.
+ *
+ * @author sadatmalik
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -24,6 +44,15 @@ public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoi
     @Autowired
     OauthConfig oauthConfig;
 
+    /**
+     * Initiates the two-step OAuth flow - requests and if successfully
+     * authenticated, retrieves an access token on behalf of the client application,
+     * i.e. Fusion.
+     *
+     * Translates the retrieved Json to an HsbcClientAccessToken.
+     *
+     * @return returns a properly formatted HsbcClientAccessToken.
+     */
     // curl -v -X POST --cert qwac.der --cert-type DER --key server.key
     // -H "Content-Type: application/x-www-form-urlencoded"
     // -H "Accept: application/json"
@@ -59,6 +88,14 @@ public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoi
         return response.getBody();
     }
 
+    /**
+     * Uses the client access token to create a Rest Api request for OAuth consent.
+     * If successful, retrieves a Json consent and converts to a properly formatted
+     * HsbcConsent instance.
+     *
+     * @param token the client access token.
+     * @return returns the consent instance.
+     */
     // curl -v -X POST --cert qwac.der --cert-type DER --key server.key
     // -H "Content-Type: application/json"
     // -H "Accept: application/json"
@@ -110,6 +147,13 @@ public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoi
         return response.getBody();
     }
 
+    /**
+     * Uses the consent to create a properly formatted Open Banking authorisation url,
+     * including a signed JWT parameter within the constructed url.
+     *
+     * @param consent the Api consent.
+     * @return the Api authorisation Url.
+     */
     // curl -v -X GET
     // -H "Cache-Control: no-cache"
     // "https://sandbox.hsbc.com/psd2/obie/v3.1/authorize
@@ -146,6 +190,20 @@ public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoi
         return headers;
     }
 
+    /**
+     * By this stage an authorisation code will have been included in the far end's
+     * redirection response back to Fusion's application redirect url endpoint after
+     * successful negotiation of the all previous Oauth flow steps.
+     *
+     * This authorisation code is used to request a user access token. Upon success,
+     * the retrieved Json token is converted to a properly formatted HsbcUserAccessToken.
+     * All subsequent user requests to the Open Banking Api must include the token,
+     * which may be refreshed upon expiry.
+     *
+     * @param authCode the authorisation code from the far end's redirect.
+     * @return the user access token - the final return from successful negotiation
+     * of the complete Oauth flow sequence.
+     */
     //curl -v -X POST --cert qwac.der --cert-type DER --key server.key
     // -H "Content-Type: application/x-www-form-urlencoded"
     // -H "x-fapi-financial-id: test"
@@ -178,6 +236,15 @@ public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoi
         return response.getBody();
     }
 
+    /**
+     * Handles the refreshing of an expired user access token. Notice that there is no
+     * longer a need to go through the entire Oauth flow sequence.
+     *
+     * Not intended to be called directly from client classes.
+     *
+     * @param refreshToken the expired user access token.
+     * @return returns a valid user access token.
+     */
     //curl -v -X POST --cert qwac.der --cert-type DER --key server.key
     // -H "Content-Type: application/x-www-form-urlencoded"
     // -H "x-fapi-financial-id: test"
@@ -188,7 +255,7 @@ public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoi
     //     &client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
     //     &client_assertion=eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkZThjYTc3LWQ2ODEtNDc4Mi04MTIyLWUwMzkyNTg5MDIxYiJ9.eyJpc3MiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJhdWQiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwic3ViIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwiaWF0IjoxNDk5MTgzNjAxLCJleHAiOjE3NzkzNDg1MjF9.uu282OmEHUa0t6z6T68MfXzEGGgq8PiWuyJxuNQ1be6iWdD5sVbw3W--_O6TFAH-ae7BYXsE0kncYgA6gF9AmkXuA77w_Wbn2YyjPCB9gDCkrlJUS6rvb3UJYcIBZ7W-WZlRAsRE0l6EV74c5xnyL9c7cpGMfQ-HfPsYOG4JCsrvtpAHdo7jHWTVgKoe67jWGQkNOYt1Ba7rCf4y-fqQ3d6hZoptAAcJd26yigvV4768GHQGrBvgAc7OzutOGzYARAgStpjQMp0kMiOGIzq-TUsDlvtMrx2fH8gfy2uG2HvzsROkbNedL-iO5PmswNrDvCYEWZmVjMcaVg--ZF0sjg'
     //     "https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2"
-    public HsbcUserAccessToken refreshAccessToken(HsbcUserAccessToken refreshToken) {
+    HsbcUserAccessToken refreshAccessToken(HsbcUserAccessToken refreshToken) {
         HttpHeaders headers = getStandardPostHeaders();
 
         String grant_type = "refresh_token";
@@ -213,6 +280,14 @@ public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoi
         return response.getBody();
     }
 
+    /**
+     * Clients classes will call this method to both verify if a token is valid, and
+     * in case it has expired, it will be internally refreshed by the call to {@code
+     * refreshAccessToken()}.
+     *
+     * @see HsbcAuthenticationService#refreshAccessToken(HsbcUserAccessToken)
+     * @param token the user access token
+     */
     public void validateTokenExpiry(HsbcUserAccessToken token) {
         // @todo handle the refresh in UserDetails on a timer?
         if (token.isExpiring()) {

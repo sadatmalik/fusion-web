@@ -6,6 +6,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Instances of this type will be generated via the Rest Api calls to the Open
+ * Banking Api and subsequent Json response containing the required property
+ * values.
+ *
+ * The type represents a client access token - which is the access token at the
+ * application level. It needs be requested only once per application instance.
+ *
+ * @author sadatmalik
+ */
 @Getter
 @Setter
 @ToString
