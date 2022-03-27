@@ -8,6 +8,18 @@ import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Instances of this type will be generated via the Rest Api calls to the Open
+ * Banking Api and subsequent Json response containing the required property
+ * values.
+ *
+ * The type represents a user access token - which is the access token at the
+ * individual authentication level. Its creation marks the end statge of the OAuth
+ * flow sequence, and it needs be sent with every subsequent Rest Api call on behalf
+ * of the authentication.
+ *
+ * @author sadatmalik
+ */
 @Getter
 @Setter
 @ToString

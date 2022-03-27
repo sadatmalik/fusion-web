@@ -5,6 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * JPA entity class that models a bank account balance.
+ *
+ * @author sadatmalik
+ */
 @Getter
 @Setter
 @AllArgsConstructor

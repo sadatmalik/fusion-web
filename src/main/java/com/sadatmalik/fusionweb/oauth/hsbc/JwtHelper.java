@@ -17,7 +17,15 @@ import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 
-
+/**
+ * A JWT helper class. Helps with the creation and signing of JWT specific to the
+ * Hsbc Api OAuth flow sequence.
+ *
+ * Uses the {@code com.nimbusds.jose} api libraries to construct and sign a valid
+ * JWT token.
+ *
+ * @author sadatmalik
+ */
 @Slf4j
 @EnableConfigurationProperties(JwtProperties.class)
 @RequiredArgsConstructor
@@ -27,6 +35,14 @@ public final class JwtHelper {
     private final JwtProperties properties;
     private final OauthConfig oauthConfig;
 
+    /**
+     * Uses a valid HsbcConsent to construct and sign a Nimbus JWSObject. The token
+     * is signed using a private key read from file location specified in the
+     * external jwt.key property.
+     *
+     * @param consent the OAuth consent.
+     * @return returns a valid, signed JWT token.
+     */
     // JWT -- header: {"alg":"PS256","typ":"JWT","kid":"7fab807d-4988-4012-8f10-a77655787450"}
     // JWT -- payload: {"iss":"https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2",
     //                  "aud":"211e36de-64b2-479e-ae28-8a5b41a1a940",

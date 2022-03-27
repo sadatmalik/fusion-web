@@ -9,6 +9,16 @@ import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.*;
 
+/**
+ * The application will only use Dto objects for transfer of data to HTML
+ * form views. Only a certain number of fields - controlled by the Dto
+ * classes is exposed for editing via the web interface.
+ *
+ * This class represents a data transfer object (DTO) for the monthly expense
+ * data type.
+ *
+ * @author sadatmalik
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

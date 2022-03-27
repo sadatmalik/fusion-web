@@ -3,6 +3,12 @@ package com.sadatmalik.fusionweb.model;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Enumerates the permitted expense types that can be associated with a
+ * single user expense.
+ *
+ * @author sadatmalik
+ */
 public enum ExpenseType {
     BILL(1),
     GROCERIES(2),
@@ -25,6 +31,12 @@ public enum ExpenseType {
         this.typeId = id;
     }
 
+    /**
+     * Utility method that enables the quick mapping of database stored numerical
+     * ids to the corresponding ExpenseType.
+     *
+     * @param id database numeric identifier for the expense type.
+     */
     public static ExpenseType from(int id) {
         return expenseTypeById.get(id);
     }

@@ -6,6 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Representational of the data part of a Hsbc consent Json response. Used to
+ * translate and construct a valid HsbcConsent.
+ *
+ * @author sadatmalik
+ */
 @Getter
 @Setter
 @ToString
