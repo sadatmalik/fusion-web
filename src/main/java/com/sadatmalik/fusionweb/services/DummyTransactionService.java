@@ -9,10 +9,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * A generic dummy service that mocks some transaction data for test and demo purposes.
+ *
+ * @author sadatmalik
+ */
 // a dummy service to mock some transactions
 @Service
 public class DummyTransactionService implements TransactionService {
 
+    /**
+     * Overrides and implements the getTransactions method. Returns a list of
+     * transactions for the given account.
+     *
+     * @param account the account.
+     * @return a list of transactions for the given account.
+     */
     public List<Transaction> getTransactions(Account account) {
         List txns = new ArrayList();
 
