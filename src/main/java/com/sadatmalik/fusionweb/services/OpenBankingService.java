@@ -5,6 +5,11 @@ import com.sadatmalik.fusionweb.model.Transaction;
 
 import java.util.List;
 
+/**
+ * Common methods that all open banking service classes must implement.
+ *
+ * @author sadatmalik
+ */
 public interface OpenBankingService {
 
     List<Account> getUserAccounts();

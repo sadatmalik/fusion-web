@@ -20,6 +20,17 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * A service that encapsulates all methods that a client of the service may call
+ * for Crud and other income and expense related common behaviours and requests.
+ *
+ * Uses instances of MonthlyExpenseRepository, WeeklyExpenseRepository,
+ * MonthlyIncomeRepository, and IncomeRepository for database interactions.
+ *
+ * Also uses an instance of AccountService for saves and updates.
+ *
+ * @author sadatmalik
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Service

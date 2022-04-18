@@ -9,6 +9,9 @@ import com.sadatmalik.fusionweb.services.OpenBankingService;
  * The interface also serves as the central repository for all Api related Urls,
  * which it maintains as String constants.
  *
+ * The interface extends the OpenBankingService interface.
+ *
+ * @see OpenBankingService
  * @author sadatmalik
  */
 public interface HsbcOpenBankingService extends OpenBankingService {
