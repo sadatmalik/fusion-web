@@ -40,22 +40,25 @@ public final class JwtHelper {
      * is signed using a private key read from file location specified in the
      * external jwt.key property.
      *
+     * Codfies thew following JWT specification:
+     *
+     *     JWT -- header: {"alg":"PS256","typ":"JWT","kid":"7fab807d-4988-4012-8f10-a77655787450"}
+     *     JWT -- payload: {"iss":"https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2",
+     *                      "aud":"211e36de-64b2-479e-ae28-8a5b41a1a940",
+     *                      "response_type":"code id_token",
+     *                      "client_id":"211e36de-64b2-479e-ae28-8a5b41a1a940",
+     *                      "redirect_uri":"{{insert_your_app_url} }",
+     *                      "scope":"openid accounts",
+     *                      "claims":
+     *                        {"userinfo":
+     *                          {"openbanking_intent_id":
+     *                            {"value":"{{insert_consent_id_retrieved_from_call#2}}",
+     *                            "essential":true} }}}
+     *     JWT -- signature: private key
+     *
      * @param consent the OAuth consent.
      * @return returns a valid, signed JWT token.
      */
-    // JWT -- header: {"alg":"PS256","typ":"JWT","kid":"7fab807d-4988-4012-8f10-a77655787450"}
-    // JWT -- payload: {"iss":"https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2",
-    //                  "aud":"211e36de-64b2-479e-ae28-8a5b41a1a940",
-    //                  "response_type":"code id_token",
-    //                  "client_id":"211e36de-64b2-479e-ae28-8a5b41a1a940",
-    //                  "redirect_uri":"{{insert_your_app_url} }",
-    //                  "scope":"openid accounts",
-    //                  "claims":
-    //                    {"userinfo":
-    //                      {"openbanking_intent_id":
-    //                        {"value":"{{insert_consent_id_retrieved_from_call#2}}",
-    //                        "essential":true} }}}
-    // JWT -- signature: private key
     public JWSObject createJwt(HsbcConsent consent) {
 
         PrivateKey privateKey = null;
