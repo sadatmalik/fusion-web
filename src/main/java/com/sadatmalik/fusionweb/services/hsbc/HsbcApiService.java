@@ -22,10 +22,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * This service handles all the communication with the Hsbc OB API. Uses the Hsbc
+ * authentication service to ensure rest calls are authenticated. Uses an injected
+ * RestTemplate, which has been secured in the RestTemplateCustomizer against the
+ * far end Api requirements, to furnish Http request/response exchanges.
+ *
+ * The service implements the HsbcOpenBankingService and TransactionService
+ * interfaces.
+ *
+ * @see org.springframework.boot.web.client.RestTemplateCustomizer
+ *
+ * @author sadatmalik
+ */
 @Slf4j
 @Service
 public class HsbcApiService implements HsbcOpenBankingService, TransactionService {
-
     private final HsbcAuthenticationService hsbcAuth;
     private final RestTemplate restTemplate;
     private final BankRepository bankRepository;
@@ -33,6 +45,14 @@ public class HsbcApiService implements HsbcOpenBankingService, TransactionServic
 
     private final Bank hsbc;
 
+    /**
+     * Non-default constructor.
+     *
+     * @param hsbcAuth injected Hsbc Authentication service object.
+     * @param restTemplate injected customized RestTemplate.
+     * @param accountServicesRegistry injected account registry object.
+     * @param bankRepository injected bank repository.
+     */
     @Autowired
     public HsbcApiService(HsbcAuthenticationService hsbcAuth,
                           RestTemplate restTemplate, AccountServicesRegistry accountServicesRegistry,
@@ -48,7 +68,20 @@ public class HsbcApiService implements HsbcOpenBankingService, TransactionServic
         );
     }
 
-    // Public methods - getAccounts()
+    /**
+     * Checks that the user authentication token is non-expired (implicitly refreshing
+     * if it has expired), then calls the getUserAccounts(..) method which makes a Rest
+     * call to the far end to retrieve the permissioned accounts for the current
+     * authentication.
+     *
+     * Maps the received account information to the Fusion Account model.
+     *
+     * Registers itself (this) as the transaction service for each returned account.
+     * This means that future queries for transaction related information for the given
+     * Fusion account will be handled by this service.
+     *
+     * @return List of Account objects.
+     */
     public List<Account> getUserAccounts() {
         final List<Account> accounts = new ArrayList<>();
 
@@ -75,7 +108,15 @@ public class HsbcApiService implements HsbcOpenBankingService, TransactionServic
         return accounts;
     }
 
-    // Public methods - getTransactions()
+    /**
+     * Retrieves the transactions for the given Fusion account.
+     *
+     * Implicitly checks and refreshes the user access token before making the Rest
+     * call. Converts the received transactions to the Fusion transaction model.
+     *
+     * @param account the user account.
+     * @return list of transactions for the given user account.
+     */
     public List<Transaction> getTransactions(Account account) {
         final List<Transaction> transactions = new ArrayList<>();
 
@@ -99,16 +140,20 @@ public class HsbcApiService implements HsbcOpenBankingService, TransactionServic
         return transactions;
     }
 
+    // Private methods
 
-
-
-    // Private methods - handling of the OAuth flows is not exposed
-
-    // curl -v -X GET --cert qwac.der --cert-type DER --key server.key
-    // -H "x-fapi-financial-id: test"
-    // -H "Authorization: Bearer 4501825f-096a-4959-bde7-dff93a5fe6ba"
-    // -H "Cache-Control: no-cache"
-    // "https://sandbox.hsbc.com/psd2/obie/v3.1/accounts"
+    /**
+     * Codifies the following Curl:
+     *
+     *     curl -v -X GET --cert qwac.der --cert-type DER --key server.key
+     *     -H "x-fapi-financial-id: test"
+     *     -H "Authorization: Bearer 4501825f-096a-4959-bde7-dff93a5fe6ba"
+     *     -H "Cache-Control: no-cache"
+     *     "https://sandbox.hsbc.com/psd2/obie/v3.1/accounts"
+     *
+     * @param accessToken the user access token.
+     * @return list of account transactions for the given user access token.
+     */
     private List<HsbcAccount> getUserAccounts(HsbcUserAccessToken accessToken) {
         HttpHeaders headers = getGetHeaders(accessToken);
         HttpEntity<String> request = new HttpEntity<>(headers);
@@ -139,7 +184,12 @@ public class HsbcApiService implements HsbcOpenBankingService, TransactionServic
         return headers;
     }
 
-    // "GET /accounts/{AccountId}"
+    /**
+     * Calls the following endpoint: "GET /accounts/{AccountId}"
+     *
+     * @param account hsbc account containing the accountId to query.
+     * @param accessToken the user access token for this query.
+     */
     private void getAccountDetails(HsbcAccount account, HsbcUserAccessToken accessToken) {
         HttpHeaders headers = getGetHeaders(accessToken);
         HttpEntity<String> request = new HttpEntity<>(headers);
@@ -150,7 +200,13 @@ public class HsbcApiService implements HsbcOpenBankingService, TransactionServic
         log.debug("User Accounts for AccountID ---------" + response.getBody());
     }
 
-    // "GET /accounts/{AccountId}/balances"
+    /**
+     * Calls the following endpoint: "GET /accounts/{AccountId}/balances"
+     *
+     * @param account hsbc account containing the accountId to query.
+     * @param accessToken the user access token for this query.
+     * @return the account balance for the given account.
+     */
     private Balance getAccountBalance(HsbcAccount account, HsbcUserAccessToken accessToken) {
         HttpHeaders headers = getGetHeaders(accessToken);
         HttpEntity<String> request = new HttpEntity<>(headers);
@@ -173,7 +229,13 @@ public class HsbcApiService implements HsbcOpenBankingService, TransactionServic
         }
     }
 
-    // "GET /accounts/{AccountId}/transactions"
+    /**
+     * Calls the following endpoint: "GET /accounts/{AccountId}/transactions"
+     *
+     * @param accountId hsbc accountId to query.
+     * @param accessToken the user access token for this query.
+     * @return an object representing the returned Json transactions.
+     */
     private HsbcTransactionObject getTransactions(String accountId, HsbcUserAccessToken accessToken) {
         HttpHeaders headers = getGetHeaders(accessToken);
         HttpEntity<String> request = new HttpEntity<>(headers);
