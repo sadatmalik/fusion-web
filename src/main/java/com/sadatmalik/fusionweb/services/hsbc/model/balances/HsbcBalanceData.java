@@ -7,6 +7,12 @@ import lombok.ToString;
 
 import java.util.List;
 
+/**
+ * Object representation used in the mapping of the OB API Json response for
+ * Hsbc balance data.
+ *
+ * @author sadatmalik
+ */
 @Getter
 @Setter
 @ToString
