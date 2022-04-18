@@ -5,8 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Instances of this type will be generated via the Rest Api calls to the Open
@@ -20,13 +19,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author sadatmalik
  */
+
+@Slf4j
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 public final class HsbcUserAccessToken {
-
-    private static final Logger logger = LoggerFactory.getLogger(HsbcUserAccessToken.class);
     private long createdAt = System.currentTimeMillis(); // @todo have a look at Instant class
 
     private static HsbcUserAccessToken currentToken;
@@ -57,10 +56,10 @@ public final class HsbcUserAccessToken {
         long elapsedTime = currentTime - createdAt;
         long threshold = getRefreshThresholdInSeconds() * 1000;
 
-        logger.debug("Token elapsed=" + elapsedTime + ", refresh threshold=" + threshold);
+        log.debug("Token elapsed=" + elapsedTime + ", refresh threshold=" + threshold);
 
         if ( elapsedTime > threshold ) {
-            logger.debug("Time to refresh token");
+            log.debug("Time to refresh token");
             return true;
         }
         return false;

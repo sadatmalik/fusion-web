@@ -51,18 +51,21 @@ public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoi
      *
      * Translates the retrieved Json to an HsbcClientAccessToken.
      *
+     * Codifies the following Curl:
+     *
+     *     curl -v -X POST --cert qwac.der --cert-type DER --key server.key
+     *     -H "Content-Type: application/x-www-form-urlencoded"
+     *     -H "Accept: application/json"
+     *     -H "x-fapi-financial-id: test"
+     *     -H "Cache-Control: no-cache"
+     *     -d 'grant_type=client_credentials
+     *     &scope=accounts
+     *     &client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
+     *     &client_assertion=eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkZThjYTc3LWQ2ODEtNDc4Mi04MTIyLWUwMzkyNTg5MDIxYiJ9.eyJpc3MiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJhdWQiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwic3ViIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwiaWF0IjoxNDk5MTgzNjAxLCJleHAiOjE3NzkzNDg1MjF9.uu282OmEHUa0t6z6T68MfXzEGGgq8PiWuyJxuNQ1be6iWdD5sVbw3W--_O6TFAH-ae7BYXsE0kncYgA6gF9AmkXuA77w_Wbn2YyjPCB9gDCkrlJUS6rvb3UJYcIBZ7W-WZlRAsRE0l6EV74c5xnyL9c7cpGMfQ-HfPsYOG4JCsrvtpAHdo7jHWTVgKoe67jWGQkNOYt1Ba7rCf4y-fqQ3d6hZoptAAcJd26yigvV4768GHQGrBvgAc7OzutOGzYARAgStpjQMp0kMiOGIzq-TUsDlvtMrx2fH8gfy2uG2HvzsROkbNedL-iO5PmswNrDvCYEWZmVjMcaVg--ZF0sjg'
+     *     "https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2"
+     *
      * @return returns a properly formatted HsbcClientAccessToken.
      */
-    // curl -v -X POST --cert qwac.der --cert-type DER --key server.key
-    // -H "Content-Type: application/x-www-form-urlencoded"
-    // -H "Accept: application/json"
-    // -H "x-fapi-financial-id: test"
-    // -H "Cache-Control: no-cache"
-    // -d 'grant_type=client_credentials
-    // &scope=accounts
-    // &client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
-    // &client_assertion=eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkZThjYTc3LWQ2ODEtNDc4Mi04MTIyLWUwMzkyNTg5MDIxYiJ9.eyJpc3MiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJhdWQiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwic3ViIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwiaWF0IjoxNDk5MTgzNjAxLCJleHAiOjE3NzkzNDg1MjF9.uu282OmEHUa0t6z6T68MfXzEGGgq8PiWuyJxuNQ1be6iWdD5sVbw3W--_O6TFAH-ae7BYXsE0kncYgA6gF9AmkXuA77w_Wbn2YyjPCB9gDCkrlJUS6rvb3UJYcIBZ7W-WZlRAsRE0l6EV74c5xnyL9c7cpGMfQ-HfPsYOG4JCsrvtpAHdo7jHWTVgKoe67jWGQkNOYt1Ba7rCf4y-fqQ3d6hZoptAAcJd26yigvV4768GHQGrBvgAc7OzutOGzYARAgStpjQMp0kMiOGIzq-TUsDlvtMrx2fH8gfy2uG2HvzsROkbNedL-iO5PmswNrDvCYEWZmVjMcaVg--ZF0sjg'
-    // "https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2"
     public HsbcClientAccessToken getAccessToken() {
 
         String grant_type = "client_credentials";
@@ -93,36 +96,39 @@ public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoi
      * If successful, retrieves a Json consent and converts to a properly formatted
      * HsbcConsent instance.
      *
+     * Codifies the following Curl:
+     *
+     *     curl -v -X POST --cert qwac.der --cert-type DER --key server.key
+     *     -H "Content-Type: application/json"
+     *     -H "Accept: application/json"
+     *     -H "Authorization: Bearer ea053fa4-28ad-49b4-928c-589ad73d4a03"  [consent access token]
+     *     -H "x-fapi-financial-id: test"
+     *     -H "Cache-Control: no-cache"
+     *     -d '{"Data":
+     *           {"Permissions":
+     *             ["ReadAccountsDetail",
+     *               "ReadBalances",
+     *               "ReadBeneficiariesDetail",
+     *               "ReadDirectDebits",
+     *               "ReadProducts",
+     *               "ReadStandingOrdersDetail",
+     *               "ReadTransactionsCredits",
+     *               "ReadTransactionsDebits",
+     *               "ReadTransactionsDetail",
+     *               "ReadScheduledPaymentsBasic",
+     *               "ReadScheduledPaymentsDetail",
+     *               "ReadParty",
+     *               "ReadStatementsDetail",
+     *               "ReadStatementsBasic"],
+     *             "ExpirationDateTime":"2025-06-11T00:00:00+00:00",
+     *             "TransactionFromDateTime":"1995-07-15T00:00:00+00:00",
+     *             "TransactionToDateTime":"2037-12-31T23:59:59+00:00"},
+     *           "Risk":{} }'
+     *     "https://sandbox.hsbc.com/psd2/obie/v3.1/account-access-consents"
+     *
      * @param token the client access token.
      * @return returns the consent instance.
      */
-    // curl -v -X POST --cert qwac.der --cert-type DER --key server.key
-    // -H "Content-Type: application/json"
-    // -H "Accept: application/json"
-    // -H "Authorization: Bearer ea053fa4-28ad-49b4-928c-589ad73d4a03"  [consent access token]
-    // -H "x-fapi-financial-id: test"
-    // -H "Cache-Control: no-cache"
-    // -d '{"Data":
-    //       {"Permissions":
-    //         ["ReadAccountsDetail",
-    //           "ReadBalances",
-    //           "ReadBeneficiariesDetail",
-    //           "ReadDirectDebits",
-    //           "ReadProducts",
-    //           "ReadStandingOrdersDetail",
-    //           "ReadTransactionsCredits",
-    //           "ReadTransactionsDebits",
-    //           "ReadTransactionsDetail",
-    //           "ReadScheduledPaymentsBasic",
-    //           "ReadScheduledPaymentsDetail",
-    //           "ReadParty",
-    //           "ReadStatementsDetail",
-    //           "ReadStatementsBasic"],
-    //         "ExpirationDateTime":"2025-06-11T00:00:00+00:00",
-    //         "TransactionFromDateTime":"1995-07-15T00:00:00+00:00",
-    //         "TransactionToDateTime":"2037-12-31T23:59:59+00:00"},
-    //       "Risk":{} }'
-    // "https://sandbox.hsbc.com/psd2/obie/v3.1/account-access-consents"
     public HsbcConsent getConsentID(HsbcClientAccessToken token) {
 
         String accessToken = token.getAccessToken();
@@ -151,20 +157,23 @@ public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoi
      * Uses the consent to create a properly formatted Open Banking authorisation url,
      * including a signed JWT parameter within the constructed url.
      *
+     * Codifies the following Curl:
+     *
+     *     curl -v -X GET
+     *     -H "Cache-Control: no-cache"
+     *     "https://sandbox.hsbc.com/psd2/obie/v3.1/authorize
+     *     ?response_type=code%20id_token
+     *     &client_id=211e36de-64b2-479e-ae28-8a5b41a1a940
+     *     &redirect_uri=http://google.com  [application redirect url]
+     *     &scope=openid%20accounts
+     *     &nonce=n-0S6_WzA2Mj
+     *     &state=test
+     *     &request=eyJhbGciOiJQUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjdmYWI4MDdkLTQ5ODgtNDAxMi04ZjEwLWE3NzY1NTc4NzQ1MCJ9.eyJpc3MiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwiYXVkIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwicmVzcG9uc2VfdHlwZSI6ImNvZGUgaWRfdG9rZW4iLCJjbGllbnRfaWQiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJyZWRpcmVjdF91cmkiOiJodHRwOi8vZ29vZ2xlLmNvbSIsInNjb3BlIjoib3BlbmlkIGFjY291bnRzIiwiY2xhaW1zIjp7InVzZXJpbmZvIjp7Im9wZW5iYW5raW5nX2ludGVudF9pZCI6eyJ2YWx1ZSI6ImRlNjc4NmRlLTlhMTctNGE3OS04MTViLWZhYjg5MGJlZWU5MyIsImVzc2VudGlhbCI6dHJ1ZX19fX0.xm7Pc86lZjynBF6GXQ0CvLD1DYEOuMr21Hf3727tnHgb4v_iTyTOMdfZ0OPky0RrfPJ_QM4x1mfHuUS-4xWn5CUjA6REtMA7tHNGrHo8oQRJPRuIx3xuLodLBylMM9D6x_emh1LJXDB0GiKgJWS4QOsa56x8VDfTRqr_fuOI2T0ZVoWIOHP4pW9euem9kNf4Dh-7El-WflD7jdPVGD0ZKltBxMIjAc-vjfS4el2-MYBadxv_4E1SRtKyXX4VmihvPvyzMHzhydaOyl2nFro5inHC_Y7byY-xGih7d2-Fwboij_CI6jwvnN99HyAJRDv8qqlxFXXKqPIqchZQ309QeQ"
+     *     [request = JWT]
+     *
      * @param consent the Api consent.
      * @return the Api authorisation Url.
      */
-    // curl -v -X GET
-    // -H "Cache-Control: no-cache"
-    // "https://sandbox.hsbc.com/psd2/obie/v3.1/authorize
-    // ?response_type=code%20id_token
-    // &client_id=211e36de-64b2-479e-ae28-8a5b41a1a940
-    // &redirect_uri=http://google.com  [application redirect url]
-    // &scope=openid%20accounts
-    // &nonce=n-0S6_WzA2Mj
-    // &state=test
-    // &request=eyJhbGciOiJQUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjdmYWI4MDdkLTQ5ODgtNDAxMi04ZjEwLWE3NzY1NTc4NzQ1MCJ9.eyJpc3MiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwiYXVkIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwicmVzcG9uc2VfdHlwZSI6ImNvZGUgaWRfdG9rZW4iLCJjbGllbnRfaWQiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJyZWRpcmVjdF91cmkiOiJodHRwOi8vZ29vZ2xlLmNvbSIsInNjb3BlIjoib3BlbmlkIGFjY291bnRzIiwiY2xhaW1zIjp7InVzZXJpbmZvIjp7Im9wZW5iYW5raW5nX2ludGVudF9pZCI6eyJ2YWx1ZSI6ImRlNjc4NmRlLTlhMTctNGE3OS04MTViLWZhYjg5MGJlZWU5MyIsImVzc2VudGlhbCI6dHJ1ZX19fX0.xm7Pc86lZjynBF6GXQ0CvLD1DYEOuMr21Hf3727tnHgb4v_iTyTOMdfZ0OPky0RrfPJ_QM4x1mfHuUS-4xWn5CUjA6REtMA7tHNGrHo8oQRJPRuIx3xuLodLBylMM9D6x_emh1LJXDB0GiKgJWS4QOsa56x8VDfTRqr_fuOI2T0ZVoWIOHP4pW9euem9kNf4Dh-7El-WflD7jdPVGD0ZKltBxMIjAc-vjfS4el2-MYBadxv_4E1SRtKyXX4VmihvPvyzMHzhydaOyl2nFro5inHC_Y7byY-xGih7d2-Fwboij_CI6jwvnN99HyAJRDv8qqlxFXXKqPIqchZQ309QeQ"
-    // [request = JWT]
     public String getAuthorizationURL(HsbcConsent consent) {
 
         String authorize_url = AUTHORIZE_URL + "?response_type=code%20id_token";
@@ -178,9 +187,15 @@ public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoi
         return authorize_url;
     }
 
-    // -H "Content-Type: application/x-www-form-urlencoded"
-    // -H "x-fapi-financial-id: test"
-    // -H "Cache-Control: no-cache"
+    /**
+     * Utility method the codifies the following headers:
+     *
+     *     -H "Content-Type: application/x-www-form-urlencoded"
+     *     -H "x-fapi-financial-id: test"
+     *     -H "Cache-Control: no-cache"
+     *
+     * @return HttpHeaders representation of the above.
+     */
     private HttpHeaders getStandardPostHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -200,20 +215,23 @@ public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoi
      * All subsequent user requests to the Open Banking Api must include the token,
      * which may be refreshed upon expiry.
      *
+     * Codifies the following Curl:
+     *
+     *     curl -v -X POST --cert qwac.der --cert-type DER --key server.key
+     *     -H "Content-Type: application/x-www-form-urlencoded"
+     *     -H "x-fapi-financial-id: test"
+     *     -H "Cache-Control: no-cache"
+     *     -d 'grant_type=authorization_code
+     *         &code=93349a61-5e4b-4af0-bc09-867b3e73d21a
+     *         &redirect_uri=http://google.com
+     *         &client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
+     *         &client_assertion=eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkZThjYTc3LWQ2ODEtNDc4Mi04MTIyLWUwMzkyNTg5MDIxYiJ9.eyJpc3MiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJhdWQiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwic3ViIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwiaWF0IjoxNDk5MTgzNjAxLCJleHAiOjE3NzkzNDg1MjF9.uu282OmEHUa0t6z6T68MfXzEGGgq8PiWuyJxuNQ1be6iWdD5sVbw3W--_O6TFAH-ae7BYXsE0kncYgA6gF9AmkXuA77w_Wbn2YyjPCB9gDCkrlJUS6rvb3UJYcIBZ7W-WZlRAsRE0l6EV74c5xnyL9c7cpGMfQ-HfPsYOG4JCsrvtpAHdo7jHWTVgKoe67jWGQkNOYt1Ba7rCf4y-fqQ3d6hZoptAAcJd26yigvV4768GHQGrBvgAc7OzutOGzYARAgStpjQMp0kMiOGIzq-TUsDlvtMrx2fH8gfy2uG2HvzsROkbNedL-iO5PmswNrDvCYEWZmVjMcaVg--ZF0sjg'
+     *         "https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2"
+     *
      * @param authCode the authorisation code from the far end's redirect.
      * @return the user access token - the final return from successful negotiation
      * of the complete Oauth flow sequence.
      */
-    //curl -v -X POST --cert qwac.der --cert-type DER --key server.key
-    // -H "Content-Type: application/x-www-form-urlencoded"
-    // -H "x-fapi-financial-id: test"
-    // -H "Cache-Control: no-cache"
-    // -d 'grant_type=authorization_code
-    //     &code=93349a61-5e4b-4af0-bc09-867b3e73d21a
-    //     &redirect_uri=http://google.com
-    //     &client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
-    //     &client_assertion=eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkZThjYTc3LWQ2ODEtNDc4Mi04MTIyLWUwMzkyNTg5MDIxYiJ9.eyJpc3MiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJhdWQiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwic3ViIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwiaWF0IjoxNDk5MTgzNjAxLCJleHAiOjE3NzkzNDg1MjF9.uu282OmEHUa0t6z6T68MfXzEGGgq8PiWuyJxuNQ1be6iWdD5sVbw3W--_O6TFAH-ae7BYXsE0kncYgA6gF9AmkXuA77w_Wbn2YyjPCB9gDCkrlJUS6rvb3UJYcIBZ7W-WZlRAsRE0l6EV74c5xnyL9c7cpGMfQ-HfPsYOG4JCsrvtpAHdo7jHWTVgKoe67jWGQkNOYt1Ba7rCf4y-fqQ3d6hZoptAAcJd26yigvV4768GHQGrBvgAc7OzutOGzYARAgStpjQMp0kMiOGIzq-TUsDlvtMrx2fH8gfy2uG2HvzsROkbNedL-iO5PmswNrDvCYEWZmVjMcaVg--ZF0sjg'
-    //     "https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2"
     public HsbcUserAccessToken getAccessToken(String authCode) {
         HttpHeaders headers = getStandardPostHeaders();
 
@@ -242,19 +260,22 @@ public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoi
      *
      * Not intended to be called directly from client classes.
      *
+     * Codifies the following Curl:
+     *
+     *     curl -v -X POST --cert qwac.der --cert-type DER --key server.key
+     *     -H "Content-Type: application/x-www-form-urlencoded"
+     *     -H "x-fapi-financial-id: test"
+     *     -H "Cache-Control: no-cache"
+     *     -d 'grant_type=refresh_token
+     *         &refresh_token=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+     *         &redirect_uri=http://google.com
+     *         &client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
+     *         &client_assertion=eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkZThjYTc3LWQ2ODEtNDc4Mi04MTIyLWUwMzkyNTg5MDIxYiJ9.eyJpc3MiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJhdWQiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwic3ViIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwiaWF0IjoxNDk5MTgzNjAxLCJleHAiOjE3NzkzNDg1MjF9.uu282OmEHUa0t6z6T68MfXzEGGgq8PiWuyJxuNQ1be6iWdD5sVbw3W--_O6TFAH-ae7BYXsE0kncYgA6gF9AmkXuA77w_Wbn2YyjPCB9gDCkrlJUS6rvb3UJYcIBZ7W-WZlRAsRE0l6EV74c5xnyL9c7cpGMfQ-HfPsYOG4JCsrvtpAHdo7jHWTVgKoe67jWGQkNOYt1Ba7rCf4y-fqQ3d6hZoptAAcJd26yigvV4768GHQGrBvgAc7OzutOGzYARAgStpjQMp0kMiOGIzq-TUsDlvtMrx2fH8gfy2uG2HvzsROkbNedL-iO5PmswNrDvCYEWZmVjMcaVg--ZF0sjg'
+     *         "https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2"
+     *
      * @param refreshToken the expired user access token.
      * @return returns a valid user access token.
      */
-    //curl -v -X POST --cert qwac.der --cert-type DER --key server.key
-    // -H "Content-Type: application/x-www-form-urlencoded"
-    // -H "x-fapi-financial-id: test"
-    // -H "Cache-Control: no-cache"
-    // -d 'grant_type=refresh_token
-    //     &refresh_token=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-    //     &redirect_uri=http://google.com
-    //     &client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
-    //     &client_assertion=eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkZThjYTc3LWQ2ODEtNDc4Mi04MTIyLWUwMzkyNTg5MDIxYiJ9.eyJpc3MiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJhdWQiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwic3ViIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwiaWF0IjoxNDk5MTgzNjAxLCJleHAiOjE3NzkzNDg1MjF9.uu282OmEHUa0t6z6T68MfXzEGGgq8PiWuyJxuNQ1be6iWdD5sVbw3W--_O6TFAH-ae7BYXsE0kncYgA6gF9AmkXuA77w_Wbn2YyjPCB9gDCkrlJUS6rvb3UJYcIBZ7W-WZlRAsRE0l6EV74c5xnyL9c7cpGMfQ-HfPsYOG4JCsrvtpAHdo7jHWTVgKoe67jWGQkNOYt1Ba7rCf4y-fqQ3d6hZoptAAcJd26yigvV4768GHQGrBvgAc7OzutOGzYARAgStpjQMp0kMiOGIzq-TUsDlvtMrx2fH8gfy2uG2HvzsROkbNedL-iO5PmswNrDvCYEWZmVjMcaVg--ZF0sjg'
-    //     "https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2"
     HsbcUserAccessToken refreshAccessToken(HsbcUserAccessToken refreshToken) {
         HttpHeaders headers = getStandardPostHeaders();
 

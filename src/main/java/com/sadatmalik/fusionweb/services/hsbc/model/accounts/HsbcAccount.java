@@ -10,6 +10,12 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Object representation used in the mapping of the OB API Json response for
+ * Hsbc account data.
+ *
+ * @author sadatmalik
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
