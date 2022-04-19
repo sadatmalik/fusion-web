@@ -62,6 +62,7 @@ class QuickStatsControllerTest extends ControllerTestBase {
                 .andExpect(model().attributeExists("chartData"))
                 .andExpect(model().attributeExists("paymentChartData"))
                 .andExpect(model().attributeExists("debtChartData"))
+                .andExpect(model().attributeExists("receiptsChartData"))
                 .andExpect(model().attribute("date",
                         LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM, dd yyyy"))));
 
