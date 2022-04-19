@@ -52,7 +52,7 @@ public class QuickStatsController {
         // receipts
         List<MonthlyIncome> receiptsList = incomeExpenseService.getMonthlyIncomeFor(user);
         List<List<Object>> receiptsChartData = getReceiptsChartData(receiptsList);
-        model.addAttribute("receiptsChartData", paymentChartData);
+        model.addAttribute("receiptsChartData", receiptsChartData);
 
         model.addAttribute("date",
                 LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM, dd yyyy")));

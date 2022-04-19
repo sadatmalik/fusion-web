@@ -99,12 +99,7 @@
                 chart.draw(data, options);
             }
             function drawReceipts() {
-                var data = google.visualization.arrayToDataTable([
-                    ['Genre', 'Income'],
-                    ['SALARIES', 2500],
-                    ['RENT', 1850],
-                    ['ART SALES', 460]
-                ]);
+                var data = google.visualization.arrayToDataTable([[${receiptsChartData}]]);
 
                 var options = {
                     width: 600,
