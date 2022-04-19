@@ -149,20 +149,8 @@ public class Bootstrap implements CommandLineRunner {
             user.setIncomeList(List.of(income));
             incomeRepository.save(income);
 
-            // set up some income data
-            log.debug("Setting up Bootstrap monthly income");
-
-            MonthlyIncome monthly = MonthlyIncome.builder()
-                    .account(account)
-                    .user(user)
-                    .amount(new BigDecimal(1850))
-                    .source("Rent")
-                    .dayOfMonthReceived(7)
-                    .build();
-
-            account.setMonthlyIncomeList(List.of(monthly));
-            user.setMonthlyIncomeList(List.of(monthly));
-            monthlyIncomeRepository.save(monthly);
+            // set up some monthly income data
+            createMonthlyIncome(user, account);
 
             // set up some debt data
             log.debug("Setting up Bootstrap debt");
@@ -217,7 +205,28 @@ public class Bootstrap implements CommandLineRunner {
             user.setGoals(List.of(goal));
             goalRepository.save(goal);
         }
+    }
 
+    private void createMonthlyIncome(User user, Account account) {
+        log.debug("Setting up Bootstrap monthly income");
+
+        List<MonthlyIncome> monthlyIncome = List.of(
+                MonthlyIncome.builder().account(account).user(user)
+                        .amount(new BigDecimal(1850)).source("Rent").dayOfMonthReceived(7)
+                        .build(),
+
+                MonthlyIncome.builder().account(account).user(user)
+                        .amount(new BigDecimal(4020)).source("Salaries").dayOfMonthReceived(25)
+                        .build(),
+
+                MonthlyIncome.builder().account(account).user(user)
+                        .amount(new BigDecimal(400)).source("Art Sales").dayOfMonthReceived(28)
+                        .build()
+        );
+
+        account.setMonthlyIncomeList(monthlyIncome);
+        user.setMonthlyIncomeList(monthlyIncome);
+        monthlyIncomeRepository.saveAll(monthlyIncome);
     }
 
     private void createDummyExpenses(User user, Account account) {
