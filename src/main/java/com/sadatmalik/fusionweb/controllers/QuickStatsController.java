@@ -1,9 +1,6 @@
 package com.sadatmalik.fusionweb.controllers;
 
-import com.sadatmalik.fusionweb.model.Account;
-import com.sadatmalik.fusionweb.model.Debt;
-import com.sadatmalik.fusionweb.model.MonthlyExpense;
-import com.sadatmalik.fusionweb.model.User;
+import com.sadatmalik.fusionweb.model.*;
 import com.sadatmalik.fusionweb.model.websecurity.UserPrincipal;
 import com.sadatmalik.fusionweb.services.AccountService;
 import com.sadatmalik.fusionweb.services.DebtService;
@@ -52,6 +49,11 @@ public class QuickStatsController {
         List<List<Object>> debtChartData = getDebtChartData(debtList);
         model.addAttribute("debtChartData", debtChartData);
 
+        // receipts
+        List<MonthlyIncome> receiptsList = incomeExpenseService.getMonthlyIncomeFor(user);
+        List<List<Object>> receiptsChartData = getReceiptsChartData(receiptsList);
+        model.addAttribute("receiptsChartData", paymentChartData);
+
         model.addAttribute("date",
                 LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM, dd yyyy")));
 
@@ -74,6 +76,15 @@ public class QuickStatsController {
                     debtChartData.add(List.of(debt.getLender(), debt.getTotalBorrowed()))
                 );
         return debtChartData;
+    }
+
+    private List<List<Object>> getReceiptsChartData(List<MonthlyIncome> receiptsList) {
+        List<List<Object>> receiptsChartData = new ArrayList<>(List.of(List.of("TYPE", "Income:")));
+        receiptsList.stream()
+                .forEach(income ->
+                        receiptsChartData.add(List.of(income.getSource(), income.getAmount()))
+                );
+        return receiptsChartData;
     }
 
     private List<List<Object>> getChartData() {
