@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  fusion-web:
+    image: fusion/fusionweb:0.0.1-SNAPSHOT
+    ports:
+      - "8081:8081"
+    volumes:
+      - type: bind
+        source: /Users/sadatmalik/Desktop/java-projects/Fusion/certs/qwac.pfx
+        target: /Users/sadatmalik/Desktop/java-projects/Fusion/certs/qwac.pfx
+      - type: bind
+        source: /Users/sadatmalik/Desktop/java-projects/Fusion/certs/server_pkcs8_key.der
+        target: /Users/sadatmalik/Desktop/java-projects/Fusion/certs/server_pkcs8_key.der
