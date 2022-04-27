@@ -14,3 +14,4 @@ services:
         target: /Users/sadatmalik/Desktop/java-projects/Fusion/certs/server_pkcs8_key.der
     environment:
       - spring.profiles.active=dev
+      - spring.config.import=configserver:http://configserver:8071

@@ -32,4 +32,6 @@ The following profiles are supported: dev, test, qa, qa2, prd. See Profiles for 
 ## Database Installation
 
 
+## Microservices
 
+- [Fusion Config](https://github.com/sadatmalik/fusion-config) - cloud configuration service
