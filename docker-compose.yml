@@ -12,3 +12,5 @@ services:
       - type: bind
         source: /Users/sadatmalik/Desktop/java-projects/Fusion/certs/server_pkcs8_key.der
         target: /Users/sadatmalik/Desktop/java-projects/Fusion/certs/server_pkcs8_key.der
+    environment:
+      - spring.profiles.active=dev

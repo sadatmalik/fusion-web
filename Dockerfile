@@ -41,4 +41,4 @@ ENTRYPOINT ["java","-cp","app:app/lib/*","com.sadatmalik.fusionweb.FusionWebProt
 # mvn clean package dockerfile:build
 
 # Run the docker container:
-# docker run -p 8081:8081 --mount type=bind,source=/Users/sadatmalik/Desktop/java-projects/Fusion/certs/qwac.pfx,target=/Users/sadatmalik/Desktop/java-projects/Fusion/certs/qwac.pfx --mount type=bind,source=/Users/sadatmalik/Desktop/java-projects/Fusion/certs/server_pkcs8_key.der,target=/Users/sadatmalik/Desktop/java-projects/Fusion/certs/server_pkcs8_key.der fusion/fusionweb:0.0.1-SNAPSHOT
+# docker run -p 8081:8081 --env spring.profiles.active=dev --mount type=bind,source=/Users/sadatmalik/Desktop/java-projects/Fusion/certs/qwac.pfx,target=/Users/sadatmalik/Desktop/java-projects/Fusion/certs/qwac.pfx --mount type=bind,source=/Users/sadatmalik/Desktop/java-projects/Fusion/certs/server_pkcs8_key.der,target=/Users/sadatmalik/Desktop/java-projects/Fusion/certs/server_pkcs8_key.der fusion/fusionweb:0.0.1-SNAPSHOT
