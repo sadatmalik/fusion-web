@@ -1,6 +1,13 @@
 version: '3.7'
 
 services:
+  fusion-config:
+    image: fusion/fusion-config:0.0.1-SNAPSHOT
+    ports:
+      - "8071:8071"
+    environment:
+      - spring.profiles.active=git
+
   fusion-web:
     image: fusion/fusionweb:0.0.1-SNAPSHOT
     ports:
@@ -14,3 +21,5 @@ services:
         target: /Users/sadatmalik/Desktop/java-projects/Fusion/certs/server_pkcs8_key.der
     environment:
       - spring.profiles.active=dev
+      - spring.config.import=configserver:http://fusion-config:8071
+
