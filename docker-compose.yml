@@ -9,6 +9,16 @@ services:
       - spring.profiles.active=git
       - encrypt.key=${ENCRYPT_KEY}
 
+  fusion-discovery:
+    image: fusion/fusion-discovery:0.0.1-SNAPSHOT
+    ports:
+      - "8070:8070"
+    depends_on:
+      - fusion-config
+    environment:
+      - spring.config.import=configserver:http://fusion-config:8071
+      - encrypt.key=${ENCRYPT_KEY}
+
   fusion-web:
     image: fusion/fusionweb:0.0.1-SNAPSHOT
     ports:
