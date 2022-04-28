@@ -2,35 +2,43 @@
 
 Fusion is a microservice based personal finance management web application.
 
-## Build & Run
+## Installation
 
-Use the following command to build a docker image.
+### Env
+
+Set the following environment variables:
+
+- ENCRYPT_KEY - symmetric key for encrypted configuration server properties 
+
+### Database
+
+### Docker
+
+Build the docker image and run with docker compose:
 
 ```bash
-mvn clean package dockerfile:build
+> mvn clean package dockerfile:build
+> docker-compose up
 ```
 
-Run the Docker image using the following docker command:
+Or run the image natively with docker:
 
 ```bash
-docker run -d \
+> docker run -d \
 -p 8081:8081 \
---env spring.profiles.active=dev \
+--env spring.profiles.active=qa \
+--env spring.config.import=configserver:http://host.docker.internal:8071 \
+--env encrypt.key=${ENCRYPT_KEY} \
+--env spring.datasource.url="jdbc:mysql://host.docker.internal:3308/fusion_db?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC" \
 --mount type=bind,source=/Users/sadatmalik/Desktop/java-projects/Fusion/certs/qwac.pfx,target=/Users/sadatmalik/Desktop/java-projects/Fusion/certs/qwac.pfx \ 
 --mount type=bind,source=/Users/sadatmalik/Desktop/java-projects/Fusion/certs/server_pkcs8_key.der,target=/Users/sadatmalik/Desktop/java-projects/Fusion/certs/server_pkcs8_key.der \
 fusion/fusionweb:0.0.1-SNAPSHOT
 ```
 
-Or you may start the services using docker compose:
+docker run -p 8081:8081 --env spring.profiles.active=qa --env spring.config.import=configserver:http://host.docker.internal:8071 --env encrypt.key=${ENCRYPT_KEY} --env spring.datasource.url="jdbc:mysql://host.docker.internal:3308/fusion_db?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC" --mount type=bind,source=/Users/sadatmalik/Desktop/java-projects/Fusion/certs/qwac.pfx,target=/Users/sadatmalik/Desktop/java-projects/Fusion/certs/qwac.pfx --mount type=bind,source=/Users/sadatmalik/Desktop/java-projects/Fusion/certs/server_pkcs8_key.der,target=/Users/sadatmalik/Desktop/java-projects/Fusion/certs/server_pkcs8_key.der fusion/fusionweb:0.0.1-SNAPSHOT
 
-```bash
-docker-compose up
-```
-
-The following profiles are supported: dev, test, qa, qa2, prd. See Profiles for further details.
-
-## Database Installation
-
+Supported profiles: 
+- dev | test | qa | qa2 | prd
 
 ## Microservices
 

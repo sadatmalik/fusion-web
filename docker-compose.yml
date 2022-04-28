@@ -7,6 +7,7 @@ services:
       - "8071:8071"
     environment:
       - spring.profiles.active=git
+      - encrypt.key=${ENCRYPT_KEY}
 
   fusion-web:
     image: fusion/fusionweb:0.0.1-SNAPSHOT
@@ -20,6 +21,8 @@ services:
         source: /Users/sadatmalik/Desktop/java-projects/Fusion/certs/server_pkcs8_key.der
         target: /Users/sadatmalik/Desktop/java-projects/Fusion/certs/server_pkcs8_key.der
     environment:
-      - spring.profiles.active=dev
+      - spring.profiles.active=qa
       - spring.config.import=configserver:http://fusion-config:8071
+      - spring.datasource.url=jdbc:mysql://host.docker.internal:3308/fusion_db?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+      - encrypt.key=${ENCRYPT_KEY}
 

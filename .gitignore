@@ -11,6 +11,8 @@
 /fusion_prd_aws.pem
 /fusion_prd_aws_ldn.pem
 
+/.env
+
 ######################
 # Node
 ######################
@@ -59,6 +61,7 @@ local.properties
 # Intellij
 ######################
 .idea/
+/.idea/
 *.iml
 *.iws
 *.ipr
@@ -145,6 +148,5 @@ Desktop.ini
 # ESLint
 ######################
 .eslintcache
-/.idea/
-/src/main/resources/certs/
-/src/main/resources/static/certs/
+
+
