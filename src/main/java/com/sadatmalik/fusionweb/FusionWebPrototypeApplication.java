@@ -7,6 +7,8 @@ import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 /**
  * Main Spring bootstrap application. Launches Fusion Web.
+ *
+ * @author sadatmalik
  */
 @SpringBootApplication
 public class FusionWebPrototypeApplication {
