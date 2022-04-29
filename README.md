@@ -1,6 +1,6 @@
 # Fusion Web
 
-Fusion is a microservice based personal finance management web application.
+Fusion is a microservices based web application for personal finance management and analytics.
 
 ## Installation
 
@@ -35,15 +35,13 @@ Or run the image natively with docker:
 fusion/fusionweb:0.0.1-SNAPSHOT
 ```
 
-docker run -p 8081:8081 --env spring.profiles.active=qa --env spring.config.import=configserver:http://host.docker.internal:8071 --env encrypt.key=${ENCRYPT_KEY} --env spring.datasource.url="jdbc:mysql://host.docker.internal:3308/fusion_db?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC" --mount type=bind,source=/Users/sadatmalik/Desktop/java-projects/Fusion/certs/qwac.pfx,target=/Users/sadatmalik/Desktop/java-projects/Fusion/certs/qwac.pfx --mount type=bind,source=/Users/sadatmalik/Desktop/java-projects/Fusion/certs/server_pkcs8_key.der,target=/Users/sadatmalik/Desktop/java-projects/Fusion/certs/server_pkcs8_key.der fusion/fusionweb:0.0.1-SNAPSHOT
-
 Supported profiles: 
 - dev | test | qa | qa2 | prd
 
 ## Microservices
 
 - [Fusion Config](https://github.com/sadatmalik/fusion-config) - cloud configuration service
-
+- [Fusion Discovery](https://github.com/sadatmalik/fusion-discovery) - cloud discovery service
 ## Service Health
 
 The following endpoints are supported:
