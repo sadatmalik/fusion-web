@@ -61,11 +61,14 @@ public class HsbcApiService implements HsbcOpenBankingService, TransactionServic
         this.restTemplate = restTemplate;
         this.accountServicesRegistry = accountServicesRegistry;
         this.bankRepository = bankRepository;
-        this.hsbc = bankRepository.save(Bank.builder()
+//        this.hsbc = bankRepository.save(Bank.builder()
+//                .name("HSBC")
+//                .imageLocation("/images/hsbc.png")
+//                .build()
+        this.hsbc = Bank.builder()
                 .name("HSBC")
                 .imageLocation("/images/hsbc.png")
-                .build()
-        );
+                .build();
     }
 
     /**
