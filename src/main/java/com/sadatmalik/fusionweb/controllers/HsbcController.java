@@ -3,7 +3,7 @@ package com.sadatmalik.fusionweb.controllers;
 import com.sadatmalik.fusionweb.model.Account;
 import com.sadatmalik.fusionweb.model.User;
 import com.sadatmalik.fusionweb.services.AccountService;
-import com.sadatmalik.fusionweb.services.client.FusionBankingDiscoveryClient;
+import com.sadatmalik.fusionweb.services.client.FusionBankingRestTemplateClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -39,7 +39,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class HsbcController {
 
-    private final FusionBankingDiscoveryClient bankingDiscoveryClient;
+    //private final FusionBankingDiscoveryClient bankingDiscoveryClient;
+    private final FusionBankingRestTemplateClient bankingRestTemplateClient;
     private final AccountService accountService;
 
     /**
@@ -62,7 +63,7 @@ public class HsbcController {
      */
     @GetMapping("/hsbc")
     public String hsbcAuthorizationUrl() {
-        String authorizationURL = bankingDiscoveryClient.getAuthorizationUrl();
+        String authorizationURL = bankingRestTemplateClient.getAuthorizationUrl();
         return "redirect:" + authorizationURL;
     }
 
@@ -91,7 +92,7 @@ public class HsbcController {
                                Authentication authentication) {
         if (authCode != null) {
             log.debug("Received authCode: " + authCode);
-            bankingDiscoveryClient.getAccessToken(authCode);
+            bankingRestTemplateClient.getAccessToken(authCode);
             loadUserAccounts(authentication);
             return "redirect:/dashboard";
         }
@@ -102,7 +103,7 @@ public class HsbcController {
     }
 
     private void loadUserAccounts(Authentication authentication) {
-        Account[] accounts = bankingDiscoveryClient.getUserAccounts();
+        Account[] accounts = bankingRestTemplateClient.getUserAccounts();
 
         User user = Utils.getUser(authentication);
         for (Account account : accounts) {
