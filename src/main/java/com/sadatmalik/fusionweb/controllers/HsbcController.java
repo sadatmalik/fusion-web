@@ -3,6 +3,8 @@ package com.sadatmalik.fusionweb.controllers;
 import com.sadatmalik.fusionweb.model.Account;
 import com.sadatmalik.fusionweb.model.User;
 import com.sadatmalik.fusionweb.services.AccountService;
+import com.sadatmalik.fusionweb.services.client.FusionBankingDiscoveryClient;
+import com.sadatmalik.fusionweb.services.client.FusionBankingFeignClient;
 import com.sadatmalik.fusionweb.services.client.FusionBankingRestTemplateClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +41,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class HsbcController {
 
-    //private final FusionBankingDiscoveryClient bankingDiscoveryClient;
+    // @todo make the selection driven from a configurable property?
+    // 3 mechanisms of interacting with the fusion-banking service load balancer:
+    private final FusionBankingDiscoveryClient bankingDiscoveryClient;
     private final FusionBankingRestTemplateClient bankingRestTemplateClient;
+    private final FusionBankingFeignClient bankingFeignClient;
     private final AccountService accountService;
 
     /**
@@ -63,7 +68,7 @@ public class HsbcController {
      */
     @GetMapping("/hsbc")
     public String hsbcAuthorizationUrl() {
-        String authorizationURL = bankingRestTemplateClient.getAuthorizationUrl();
+        String authorizationURL = bankingFeignClient.getAuthorizationUrl();
         return "redirect:" + authorizationURL;
     }
 
@@ -92,7 +97,7 @@ public class HsbcController {
                                Authentication authentication) {
         if (authCode != null) {
             log.debug("Received authCode: " + authCode);
-            bankingRestTemplateClient.getAccessToken(authCode);
+            bankingFeignClient.getAccessToken(authCode);
             loadUserAccounts(authentication);
             return "redirect:/dashboard";
         }
@@ -103,7 +108,7 @@ public class HsbcController {
     }
 
     private void loadUserAccounts(Authentication authentication) {
-        Account[] accounts = bankingRestTemplateClient.getUserAccounts();
+        Account[] accounts = bankingFeignClient.getUserAccounts();
 
         User user = Utils.getUser(authentication);
         for (Account account : accounts) {
