@@ -105,6 +105,21 @@ services:
         aliases:
           - "kibana"
 
+  fusion-zipkin:
+    image: openzipkin/zipkin
+    container_name: fusion-zipkin
+    depends_on:
+      - fusion-es
+    environment:
+      - "STORAGE_TYPE=elasticsearch"
+      - "ES_HOSTS=elasticsearch:9300"
+    ports:
+      - "9411:9411"
+    networks:
+      backend:
+        aliases:
+          - "zipkin"
+
 volumes:
   elastic-search-data1:
     driver: local
