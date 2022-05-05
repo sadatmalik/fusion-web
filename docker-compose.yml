@@ -8,6 +8,8 @@ services:
     environment:
       - spring.profiles.active=git
       - encrypt.key=${ENCRYPT_KEY}
+    networks:
+      - backend
 
   fusion-discovery:
     image: fusion/fusion-discovery:0.0.1-SNAPSHOT
@@ -16,8 +18,11 @@ services:
     depends_on:
       - fusion-config
     environment:
+      - spring.profiles.active=dev
       - spring.config.import=configserver:http://fusion-config:8071
       - encrypt.key=${ENCRYPT_KEY}
+    networks:
+      - backend
 
   fusion-gateway:
     image: fusion/fusion-gateway:0.0.1-SNAPSHOT
@@ -87,7 +92,7 @@ services:
     volumes:
       - ./docker/config:/etc/logstash/conf.d
     ports:
-      - "5001:5000"
+      - "5001:5001"
     networks:
       backend:
         aliases:
