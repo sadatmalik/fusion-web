@@ -19,6 +19,15 @@ services:
       - spring.config.import=configserver:http://fusion-config:8071
       - encrypt.key=${ENCRYPT_KEY}
 
+  fusion-gateway:
+    image: fusion/fusion-gateway:0.0.1-SNAPSHOT
+    ports:
+      - "8072:8072"
+    environment:
+      - spring.config.import=configserver:http://fusion-config:8071
+      - encrypt.key=${ENCRYPT_KEY}
+      - eureka.client.serviceUrl.defaultZone=http://netflix:eureka@fusion-discovery:8070/eureka
+
   fusion-web:
     image: fusion/fusionweb:0.0.1-SNAPSHOT
     ports:
