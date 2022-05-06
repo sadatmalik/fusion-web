@@ -1,5 +1,7 @@
 package com.sadatmalik.fusionweb.services;
 
+import brave.ScopedSpan;
+import brave.Tracer;
 import com.sadatmalik.fusionweb.model.Debt;
 import com.sadatmalik.fusionweb.model.User;
 import com.sadatmalik.fusionweb.repositories.DebtRepository;
@@ -22,15 +24,33 @@ import java.util.List;
 @Service
 public class DebtService {
 
+    private final Tracer tracer;
+    private static final String PEER_SERVICE_NAME = "fusion-mysql";
+
     private final DebtRepository debtRepository;
 
     /**
-     * Queries the database and returns all stored debt for the given user.
+     * Queries the database and returns all stored debt for the given user and traces thd
+     * DB call.
      *
      * @param user the user.
      * @return a list of debt objects for the given user.
      */
     public List<Debt> getDebtFor(User user) {
-        return debtRepository.findAllByUser(user);
+        ScopedSpan newSpan = tracer.startScopedSpan("get-debt-for-user-db-call");
+        List<Debt> debts;
+        try {
+            debts = debtRepository.findAllByUser(user);
+            if (debts.isEmpty()) {
+                log.warn("Unable to find any debts for user: " + user);
+            } else {
+                log.debug("Got debts for user: " + user + ": " + debts);
+            }
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("get.debts.by.user");
+            newSpan.finish();
+        }
+        return debts;
     }
 }

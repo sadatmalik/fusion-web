@@ -26,9 +26,10 @@ import java.util.List;
 @Service
 public class AccountService {
 
-    private final AccountRepository accountRepository;
     private final Tracer tracer;
     private static final String PEER_SERVICE_NAME = "fusion-mysql";
+
+    private final AccountRepository accountRepository;
 
     /**
      * Get a list of all accounts for the given user. Traces the DB call time.
