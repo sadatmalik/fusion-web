@@ -1,5 +1,7 @@
 package com.sadatmalik.fusionweb.services;
 
+import brave.ScopedSpan;
+import brave.Tracer;
 import com.sadatmalik.fusionweb.exceptions.NoSuchIncomeException;
 import com.sadatmalik.fusionweb.exceptions.NoSuchMonthlyExpenseException;
 import com.sadatmalik.fusionweb.exceptions.NoSuchMonthlyIncomeException;
@@ -36,6 +38,9 @@ import java.util.List;
 @Service
 public class IncomeExpenseService {
 
+    private final Tracer tracer;
+    private static final String PEER_SERVICE_NAME = "fusion-mysql";
+
     private final MonthlyExpenseRepository monthlyExpenseRepository;
     private final WeeklyExpenseRepository weeklyExpenseRepository;
     private final MonthlyIncomeRepository monthlyIncomeRepository;
@@ -44,11 +49,40 @@ public class IncomeExpenseService {
     private final AccountService accountService;
 
     public MonthlyExpense getMonthlyExpenseFor(Long id) {
-        return monthlyExpenseRepository.findById(id).orElse(null);
+        ScopedSpan newSpan = tracer.startScopedSpan("get-monthly-expense-by-id-db-call");
+        MonthlyExpense monthlyExpense;
+        try {
+            monthlyExpense = monthlyExpenseRepository.findById(id)
+                    .orElse(null);
+            if (monthlyExpense == null) {
+                log.warn("Unable to find any monthly expense for expense id " + id);
+            } else {
+                log.debug("Got monthly expense with expense id " + id + ": " + monthlyExpense);
+            }
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("get.monthly.expense.by.id");
+            newSpan.finish();
+        }
+        return monthlyExpense;
     }
 
     public List<MonthlyExpense> getMonthlyExpensesFor(User user) {
-        return monthlyExpenseRepository.findByUser(user);
+        ScopedSpan newSpan = tracer.startScopedSpan("get-monthly-expenses-by-user-db-call");
+        List<MonthlyExpense> monthlyExpenses;
+        try {
+            monthlyExpenses = monthlyExpenseRepository.findByUser(user);
+            if (monthlyExpenses.isEmpty()) {
+                log.warn("Unable to find any monthly expenses for user: " + user);
+            } else {
+                log.debug("Got monthly expenses for user: " + user + ": " + monthlyExpenses);
+            }
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("get.monthly.expense.by.user");
+            newSpan.finish();
+        }
+        return monthlyExpenses;
     }
 
     public WeeklyExpense getWeeklyExpenseFor(Long id) {
