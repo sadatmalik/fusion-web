@@ -86,11 +86,41 @@ public class IncomeExpenseService {
     }
 
     public WeeklyExpense getWeeklyExpenseFor(Long id) {
-        return weeklyExpenseRepository.findById(id).orElse(null);
+        ScopedSpan newSpan = tracer.startScopedSpan("get-weekly-expense-by-id-db-call");
+        WeeklyExpense weeklyExpense;
+        try {
+            weeklyExpense = weeklyExpenseRepository.findById(id)
+                    .orElse(null);
+
+            if (weeklyExpense == null) {
+                log.warn("Unable to find any weekly expense for expense id " + id);
+            } else {
+                log.debug("Got weekly expense with expense id " + id + ": " + weeklyExpense);
+            }
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("get.weekly.expense.by.id");
+            newSpan.finish();
+        }
+        return weeklyExpense;
     }
 
     public List<WeeklyExpense> getWeeklyExpensesFor(User user) {
-        return weeklyExpenseRepository.findByUser(user);
+        ScopedSpan newSpan = tracer.startScopedSpan("get-wekly-expenses-by-user-db-call");
+        List<WeeklyExpense> weeklyExpenses;
+        try {
+            weeklyExpenses = weeklyExpenseRepository.findByUser(user);
+            if (weeklyExpenses.isEmpty()) {
+                log.warn("Unable to find any weekly expenses for user: " + user);
+            } else {
+                log.debug("Got weekly expenses for user: " + user + ": " + weeklyExpenses);
+            }
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("get.weekly.expense.by.user");
+            newSpan.finish();
+        }
+        return weeklyExpenses;
     }
 
     public MonthlyIncome getMonthlyIncomeFor(Long id) {
