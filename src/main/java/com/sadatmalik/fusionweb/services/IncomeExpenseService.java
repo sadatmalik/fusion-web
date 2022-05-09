@@ -48,6 +48,101 @@ public class IncomeExpenseService {
 
     private final AccountService accountService;
 
+    public MonthlyExpense saveMonthlyExpense(MonthlyExpenseDto monthlyExpenseDto, User user) {
+        ScopedSpan newSpan = tracer.startScopedSpan("save-monthly-expense-db-call");
+        MonthlyExpense saved;
+        try {
+            // @todo use MapStruct
+            MonthlyExpense monthlyExpense = MonthlyExpense.builder()
+                    .name(monthlyExpenseDto.getName())
+                    .amount(new BigDecimal(monthlyExpenseDto.getAmount()))
+                    .dayOfMonthPaid(monthlyExpenseDto.getDayOfMonthPaid())
+                    .type(monthlyExpenseDto.getType())
+                    .account(accountService.getAccountById(
+                            monthlyExpenseDto.getAccountId())
+                    )
+                    .user(user)
+                    .build();
+            saved = monthlyExpenseRepository.save(monthlyExpense);
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("create.monthly.expense");
+            newSpan.finish();
+        }
+        return saved;
+    }
+
+    public WeeklyExpense saveWeeklyExpense(WeeklyExpenseDto weeklyExpenseDto, User user) {
+        ScopedSpan newSpan = tracer.startScopedSpan("save-weekly-expense-db-call");
+        WeeklyExpense saved;
+        try {
+            // @todo use MapStruct
+            WeeklyExpense weeklyExpense = WeeklyExpense.builder()
+                    .name(weeklyExpenseDto.getName())
+                    .amount(new BigDecimal(weeklyExpenseDto.getAmount()))
+                    .timesPerWeek(weeklyExpenseDto.getTimesPerWeek())
+                    .type(weeklyExpenseDto.getType())
+                    .account(accountService.getAccountById(
+                            weeklyExpenseDto.getAccountId())
+                    )
+                    .user(user)
+                    .build();
+            saved = weeklyExpenseRepository.save(weeklyExpense);
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("create.weekly.expense");
+            newSpan.finish();
+        }
+        return saved;
+    }
+
+    public MonthlyIncome saveMonthlyIncome(MonthlyIncomeDto monthlyIncomeDto, User user) {
+        ScopedSpan newSpan = tracer.startScopedSpan("save-monthly-income-db-call");
+        MonthlyIncome saved;
+        try {
+            // @todo use MapStruct
+            MonthlyIncome monthlyIncome = MonthlyIncome.builder()
+                    .amount(new BigDecimal(monthlyIncomeDto.getAmount()))
+                    .source(monthlyIncomeDto.getSource())
+                    .dayOfMonthReceived(monthlyIncomeDto.getDayOfMonthReceived())
+                    .account(accountService.getAccountById(
+                            monthlyIncomeDto.getAccountId())
+                    )
+                    .user(user)
+                    .build();
+            saved = monthlyIncomeRepository.save(monthlyIncome);
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("create.monthly.income");
+            newSpan.finish();
+        }
+        return saved;
+    }
+
+    public Income saveWeeklyIncome(WeeklyIncomeDto weeklyIncomeDto, User user) {
+        ScopedSpan newSpan = tracer.startScopedSpan("save-weekly-income-db-call");
+        Income saved;
+        try {
+            // @todo use MapStruct
+            Income weeklyIncome = Income.builder()
+                    .amount(new BigDecimal(weeklyIncomeDto.getAmount()))
+                    .source(weeklyIncomeDto.getSource())
+                    .weeklyInterval(weeklyIncomeDto.getWeeklyInterval())
+                    .account(accountService.getAccountById(
+                            weeklyIncomeDto.getAccountId())
+                    )
+                    .user(user)
+                    .build();
+            saved = incomeRepository.save(weeklyIncome);
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("create.weekly.income");
+            newSpan.finish();
+
+        }
+        return saved;
+    }
+
     public MonthlyExpense getMonthlyExpenseFor(Long id) {
         ScopedSpan newSpan = tracer.startScopedSpan("get-monthly-expense-by-id-db-call");
         MonthlyExpense monthlyExpense;
@@ -61,7 +156,7 @@ public class IncomeExpenseService {
             }
         } finally {
             newSpan.tag("peer.service", PEER_SERVICE_NAME);
-            newSpan.annotate("get.monthly.expense.by.id");
+            newSpan.annotate("read.monthly.expense.by.id");
             newSpan.finish();
         }
         return monthlyExpense;
@@ -79,7 +174,7 @@ public class IncomeExpenseService {
             }
         } finally {
             newSpan.tag("peer.service", PEER_SERVICE_NAME);
-            newSpan.annotate("get.monthly.expense.by.user");
+            newSpan.annotate("read.monthly.expense.by.user");
             newSpan.finish();
         }
         return monthlyExpenses;
@@ -99,7 +194,7 @@ public class IncomeExpenseService {
             }
         } finally {
             newSpan.tag("peer.service", PEER_SERVICE_NAME);
-            newSpan.annotate("get.weekly.expense.by.id");
+            newSpan.annotate("read.weekly.expense.by.id");
             newSpan.finish();
         }
         return weeklyExpense;
@@ -117,7 +212,7 @@ public class IncomeExpenseService {
             }
         } finally {
             newSpan.tag("peer.service", PEER_SERVICE_NAME);
-            newSpan.annotate("get.weekly.expense.by.user");
+            newSpan.annotate("read.weekly.expense.by.user");
             newSpan.finish();
         }
         return weeklyExpenses;
@@ -136,7 +231,7 @@ public class IncomeExpenseService {
             }
         } finally {
             newSpan.tag("peer.service", PEER_SERVICE_NAME);
-            newSpan.annotate("get.monthly.income.by.id");
+            newSpan.annotate("read.monthly.income.by.id");
             newSpan.finish();
         }
         return monthlyIncome;
@@ -154,7 +249,7 @@ public class IncomeExpenseService {
             }
         } finally {
             newSpan.tag("peer.service", PEER_SERVICE_NAME);
-            newSpan.annotate("get.monthly.income.by.user");
+            newSpan.annotate("read.monthly.income.by.user");
             newSpan.finish();
         }
         return monthlyIncome;
@@ -173,7 +268,7 @@ public class IncomeExpenseService {
             }
         } finally {
             newSpan.tag("peer.service", PEER_SERVICE_NAME);
-            newSpan.annotate("get.weekly.income.by.id");
+            newSpan.annotate("read.weekly.income.by.id");
             newSpan.finish();
         }
         return weeklyIncome;
@@ -191,203 +286,212 @@ public class IncomeExpenseService {
             }
         } finally {
             newSpan.tag("peer.service", PEER_SERVICE_NAME);
-            newSpan.annotate("get.weekly.income.by.user");
+            newSpan.annotate("read.weekly.income.by.user");
             newSpan.finish();
         }
         return weeklyIncome;
     }
 
-    public MonthlyExpense saveMonthlyExpense(MonthlyExpenseDto monthlyExpenseDto, User user) {
-        // @todo use MapStruct
-        MonthlyExpense monthlyExpense = MonthlyExpense.builder()
-                .name(monthlyExpenseDto.getName())
-                .amount(new BigDecimal(monthlyExpenseDto.getAmount()))
-                .dayOfMonthPaid(monthlyExpenseDto.getDayOfMonthPaid())
-                .type(monthlyExpenseDto.getType())
-                .account(accountService.getAccountById(
-                        monthlyExpenseDto.getAccountId())
-                )
-                .user(user)
-                .build();
-
-        return monthlyExpenseRepository.save(monthlyExpense);
-    }
-
-    public WeeklyExpense saveWeeklyExpense(WeeklyExpenseDto weeklyExpenseDto, User user) {
-        // @todo use MapStruct
-        WeeklyExpense weeklyExpense = WeeklyExpense.builder()
-                .name(weeklyExpenseDto.getName())
-                .amount(new BigDecimal(weeklyExpenseDto.getAmount()))
-                .timesPerWeek(weeklyExpenseDto.getTimesPerWeek())
-                .type(weeklyExpenseDto.getType())
-                .account(accountService.getAccountById(
-                        weeklyExpenseDto.getAccountId())
-                )
-                .user(user)
-                .build();
-
-        return weeklyExpenseRepository.save(weeklyExpense);
-    }
-
-    public MonthlyIncome saveMonthlyIncome(MonthlyIncomeDto monthlyIncomeDto, User user) {
-        // @todo use MapStruct
-        MonthlyIncome monthlyIncome = MonthlyIncome.builder()
-                .amount(new BigDecimal(monthlyIncomeDto.getAmount()))
-                .source(monthlyIncomeDto.getSource())
-                .dayOfMonthReceived(monthlyIncomeDto.getDayOfMonthReceived())
-                .account(accountService.getAccountById(
-                        monthlyIncomeDto.getAccountId())
-                )
-                .user(user)
-                .build();
-
-        return monthlyIncomeRepository.save(monthlyIncome);
-    }
-
-    public Income saveWeeklyIncome(WeeklyIncomeDto weeklyIncomeDto, User user) {
-        // @todo use MapStruct
-        Income weeklyIncome = Income.builder()
-                .amount(new BigDecimal(weeklyIncomeDto.getAmount()))
-                .source(weeklyIncomeDto.getSource())
-                .weeklyInterval(weeklyIncomeDto.getWeeklyInterval())
-                .account(accountService.getAccountById(
-                        weeklyIncomeDto.getAccountId())
-                )
-                .user(user)
-                .build();
-
-        return incomeRepository.save(weeklyIncome);
-    }
-
     public MonthlyExpense updateMonthlyExpense(MonthlyExpenseDto monthlyExpenseDto)
             throws NoSuchMonthlyExpenseException{
-        // get current
-        MonthlyExpense monthlyExpense =
-                monthlyExpenseRepository.findById(monthlyExpenseDto.getId()).orElse(null);
-        if (monthlyExpense != null) {
-            monthlyExpense.setName(monthlyExpenseDto.getName());
-            monthlyExpense.setAmount(new BigDecimal(monthlyExpenseDto.getAmount()));
-            monthlyExpense.setDayOfMonthPaid(monthlyExpenseDto.getDayOfMonthPaid());
-            monthlyExpense.setType(monthlyExpenseDto.getType());
-            monthlyExpense.setAccount(accountService.getAccountById(
-                    monthlyExpenseDto.getAccountId()
-            ));
-            return monthlyExpenseRepository.save(monthlyExpense);
-
-        } else {
-            log.error("Trying to update non-existing monthly expense - update attempted for monthly expense ID "
-                    + monthlyExpenseDto.getId());
-            throw new NoSuchMonthlyExpenseException("Trying to update non-existing monthly expense - " +
-                    "update attempted for monthly expense ID " + monthlyExpenseDto.getId());
+        ScopedSpan newSpan = tracer.startScopedSpan("update-monthly-expense-db-call");
+        MonthlyExpense updated;
+        try {
+            // get current
+            MonthlyExpense monthlyExpense =
+                    monthlyExpenseRepository.findById(monthlyExpenseDto.getId())
+                            .orElse(null);
+            if (monthlyExpense != null) {
+                monthlyExpense.setName(monthlyExpenseDto.getName());
+                monthlyExpense.setAmount(new BigDecimal(monthlyExpenseDto.getAmount()));
+                monthlyExpense.setDayOfMonthPaid(monthlyExpenseDto.getDayOfMonthPaid());
+                monthlyExpense.setType(monthlyExpenseDto.getType());
+                monthlyExpense.setAccount(accountService.getAccountById(
+                        monthlyExpenseDto.getAccountId()
+                ));
+                updated =  monthlyExpenseRepository.save(monthlyExpense);
+            } else {
+                log.error("Trying to update non-existing monthly expense - " +
+                        "update attempted for monthly expense ID " + monthlyExpenseDto.getId());
+                throw new NoSuchMonthlyExpenseException("Trying to update non-existing monthly expense - " +
+                        "update attempted for monthly expense ID " + monthlyExpenseDto.getId());
+            }
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("update.monthly.expense");
+            newSpan.finish();
         }
+        return updated;
     }
 
     public WeeklyExpense updateWeeklyExpense(WeeklyExpenseDto weeklyExpenseDto)
             throws NoSuchWeeklyExpenseException {
-        // get current
-        WeeklyExpense weeklyExpense =
-                weeklyExpenseRepository.findById(weeklyExpenseDto.getId()).orElse(null);
-        if (weeklyExpense != null) {
-            weeklyExpense.setName(weeklyExpenseDto.getName());
-            weeklyExpense.setAmount(new BigDecimal(weeklyExpenseDto.getAmount()));
-            weeklyExpense.setTimesPerWeek(weeklyExpenseDto.getTimesPerWeek());
-            weeklyExpense.setWeeklyInterval(weeklyExpenseDto.getWeeklyInterval());
-            weeklyExpense.setType(weeklyExpenseDto.getType());
-            weeklyExpense.setAccount(accountService.getAccountById(
-                    weeklyExpenseDto.getAccountId()
-            ));
-            return weeklyExpenseRepository.save(weeklyExpense);
+        ScopedSpan newSpan = tracer.startScopedSpan("update-weekly-expense-db-call");
+        WeeklyExpense updated;
+        try {
+            // get current
+            WeeklyExpense weeklyExpense =
+                    weeklyExpenseRepository.findById(weeklyExpenseDto.getId()).orElse(null);
+            if (weeklyExpense != null) {
+                weeklyExpense.setName(weeklyExpenseDto.getName());
+                weeklyExpense.setAmount(new BigDecimal(weeklyExpenseDto.getAmount()));
+                weeklyExpense.setTimesPerWeek(weeklyExpenseDto.getTimesPerWeek());
+                weeklyExpense.setWeeklyInterval(weeklyExpenseDto.getWeeklyInterval());
+                weeklyExpense.setType(weeklyExpenseDto.getType());
+                weeklyExpense.setAccount(accountService.getAccountById(
+                        weeklyExpenseDto.getAccountId()
+                ));
+                updated = weeklyExpenseRepository.save(weeklyExpense);
 
-        } else {
-            log.error("Trying to update non-existing weekly expense - update attempted for weekly expense ID "
-                    + weeklyExpenseDto.getId());
-            throw new NoSuchWeeklyExpenseException("Trying to update non-existing weekly expense - " +
-                    "update attempted for weekly expense ID " + weeklyExpenseDto.getId());
+            } else {
+                log.error("Trying to update non-existing weekly expense - " +
+                        "update attempted for weekly expense ID " + weeklyExpenseDto.getId());
+                throw new NoSuchWeeklyExpenseException("Trying to update non-existing weekly expense - " +
+                        "update attempted for weekly expense ID " + weeklyExpenseDto.getId());
+            }
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("update.weekly.expense");
+            newSpan.finish();
         }
+        return updated;
     }
 
     public MonthlyIncome updateMonthlyIncome(MonthlyIncomeDto monthlyIncomeDto)
             throws NoSuchMonthlyIncomeException {
-        // get current
-        MonthlyIncome monthlyIncome =
-                monthlyIncomeRepository.findById(monthlyIncomeDto.getId()).orElse(null);
-        if (monthlyIncome != null) {
-            monthlyIncome.setAmount(new BigDecimal(monthlyIncomeDto.getAmount()));
-            monthlyIncome.setSource(monthlyIncomeDto.getSource());
-            monthlyIncome.setDayOfMonthReceived(monthlyIncomeDto.getDayOfMonthReceived());
-            monthlyIncome.setAccount(accountService.getAccountById(
-                    monthlyIncomeDto.getAccountId()
-            ));
-            return monthlyIncomeRepository.save(monthlyIncome);
+        ScopedSpan newSpan = tracer.startScopedSpan("update-monthly-income-db-call");
+        MonthlyIncome updated;
+        try {
+            // get current
+            MonthlyIncome monthlyIncome =
+                    monthlyIncomeRepository.findById(monthlyIncomeDto.getId()).orElse(null);
+            if (monthlyIncome != null) {
+                monthlyIncome.setAmount(new BigDecimal(monthlyIncomeDto.getAmount()));
+                monthlyIncome.setSource(monthlyIncomeDto.getSource());
+                monthlyIncome.setDayOfMonthReceived(monthlyIncomeDto.getDayOfMonthReceived());
+                monthlyIncome.setAccount(accountService.getAccountById(
+                        monthlyIncomeDto.getAccountId()
+                ));
+                updated = monthlyIncomeRepository.save(monthlyIncome);
 
-        } else {
-            log.error("Trying to update non-existing monthly income - update attempted for monthly income ID "
-                    + monthlyIncomeDto.getId());
-            throw new NoSuchMonthlyIncomeException("Trying to update non-existing monthly income" +
-                    " - update attempted for monthly income ID " + monthlyIncomeDto.getId());
+            } else {
+                log.error("Trying to update non-existing monthly income - update attempted for monthly income ID "
+                        + monthlyIncomeDto.getId());
+                throw new NoSuchMonthlyIncomeException("Trying to update non-existing monthly income" +
+                        " - update attempted for monthly income ID " + monthlyIncomeDto.getId());
+            }
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("update.monthly.income");
+            newSpan.finish();
         }
+        return updated;
     }
 
     public Income updateWeeklyIncome(WeeklyIncomeDto weeklyIncomeDto)
             throws NoSuchIncomeException {
-        // get current
-        Income weeklyIncome =
-                incomeRepository.findById(weeklyIncomeDto.getId()).orElse(null);
-        if (weeklyIncome != null) {
-            weeklyIncome.setAmount(new BigDecimal(weeklyIncomeDto.getAmount()));
-            weeklyIncome.setSource(weeklyIncomeDto.getSource());
-            weeklyIncome.setWeeklyInterval(weeklyIncomeDto.getWeeklyInterval());
-            weeklyIncome.setAccount(accountService.getAccountById(
-                    weeklyIncomeDto.getAccountId()
-            ));
-            return incomeRepository.save(weeklyIncome);
-
-        } else {
-            log.error("Trying to update non-existing weekly income - update attempted for income ID "
-                    + weeklyIncomeDto.getId());
-            throw new NoSuchIncomeException("Trying to update non-existing weekly income" +
-                    " - update attempted for weekly income ID " + weeklyIncomeDto.getId());
+        ScopedSpan newSpan = tracer.startScopedSpan("update-weekly-income-db-call");
+        Income updated;
+        try {
+            // get current
+            Income weeklyIncome =
+                    incomeRepository.findById(weeklyIncomeDto.getId()).orElse(null);
+            if (weeklyIncome != null) {
+                weeklyIncome.setAmount(new BigDecimal(weeklyIncomeDto.getAmount()));
+                weeklyIncome.setSource(weeklyIncomeDto.getSource());
+                weeklyIncome.setWeeklyInterval(weeklyIncomeDto.getWeeklyInterval());
+                weeklyIncome.setAccount(accountService.getAccountById(
+                        weeklyIncomeDto.getAccountId()
+                ));
+                updated =  incomeRepository.save(weeklyIncome);
+            } else {
+                log.error("Trying to update non-existing weekly income - " +
+                        "update attempted for income ID " + weeklyIncomeDto.getId());
+                throw new NoSuchIncomeException("Trying to update non-existing weekly income" +
+                        " - update attempted for weekly income ID " + weeklyIncomeDto.getId());
+            }
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("update.weekly.income");
+            newSpan.finish();
         }
+        return updated;
     }
 
     public void deleteMonthlyExpenseFor(Long expenseId) {
-        MonthlyExpense toDelete = monthlyExpenseRepository.findById(expenseId).orElse(null);
-        if (toDelete != null) {
-            monthlyExpenseRepository.deleteById(expenseId);
-        } else {
-            log.debug("Trying to delete non-existing monthly expense - no such monthly expense with ID - " + expenseId);
+        ScopedSpan newSpan = tracer.startScopedSpan("delete-monthly-expense-by-id-db-call");
+        try {
+            MonthlyExpense toDelete = monthlyExpenseRepository.findById(expenseId)
+                    .orElse(null);
+            if (toDelete != null) {
+                monthlyExpenseRepository.deleteById(expenseId);
+                log.debug("Deleted - " + toDelete);
+            } else {
+                log.warn("Trying to delete non-existing monthly expense - " +
+                        "no such monthly expense with ID - " + expenseId);
+            }
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("delete.monthly.expense.by.id");
+            newSpan.finish();
         }
-        log.debug("Deleted - " + toDelete);
     }
 
     public void deleteWeeklyExpenseFor(Long expenseId) {
-        WeeklyExpense toDelete = weeklyExpenseRepository.findById(expenseId).orElse(null);
-        if (toDelete != null) {
-            weeklyExpenseRepository.deleteById(expenseId);
-        } else {
-            log.debug("Trying to delete non-existing weekly expense - no such weekly expense with ID - " + expenseId);
+        ScopedSpan newSpan = tracer.startScopedSpan("delete-weekly-expense-by-id-db-call");
+        try {
+            WeeklyExpense toDelete = weeklyExpenseRepository.findById(expenseId)
+                    .orElse(null);
+            if (toDelete != null) {
+                weeklyExpenseRepository.deleteById(expenseId);
+                log.debug("Deleted - " + toDelete);
+            } else {
+                log.warn("Trying to delete non-existing weekly expense - " +
+                        "no such weekly expense with ID - " + expenseId);
+            }
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("delete.weekly.expense.by.id");
+            newSpan.finish();
         }
-        log.debug("Deleted - " + toDelete);
     }
 
     public void deleteMonthlyIncomeFor(Long incomeId) {
-        MonthlyIncome deletable = monthlyIncomeRepository.findById(incomeId).orElse(null);
-        if (deletable != null) {
-            monthlyIncomeRepository.deleteById(incomeId);
-        } else {
-            log.debug("Trying to delete non-existing monthly income - no such monthly income with ID - " + incomeId);
+        ScopedSpan newSpan = tracer.startScopedSpan("delete-monthly-income-by-id-db-call");
+        try {
+            MonthlyIncome deletable = monthlyIncomeRepository.findById(incomeId)
+                    .orElse(null);
+            if (deletable != null) {
+                monthlyIncomeRepository.deleteById(incomeId);
+                log.debug("Deleted - " + deletable);
+            } else {
+                log.warn("Trying to delete non-existing monthly income - " +
+                        "no such monthly income with ID - " + incomeId);
+            }
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("delete.monthly.income.by.id");
+            newSpan.finish();
         }
-        log.debug("Deleted - " + deletable);
     }
 
     public void deleteWeeklyIncomeFor(Long incomeId) {
-        Income deletable = incomeRepository.findById(incomeId).orElse(null);
-        if (deletable != null) {
-            incomeRepository.deleteById(incomeId);
-        } else {
-            log.debug("Trying to delete non-existing weekly income - no such weekly income with ID - " + incomeId);
+        ScopedSpan newSpan = tracer.startScopedSpan("delete-weekly-income-by-id-db-call");
+        try {
+            Income deletable = incomeRepository.findById(incomeId)
+                    .orElse(null);
+            if (deletable != null) {
+                incomeRepository.deleteById(incomeId);
+                log.debug("Deleted - " + deletable);
+            } else {
+                log.warn("Trying to delete non-existing weekly income - " +
+                        "no such weekly income with ID - " + incomeId);
+            }
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("delete.weekly.income.by.id");
+            newSpan.finish();
         }
-        log.debug("Deleted - " + deletable);
     }
 
 }
