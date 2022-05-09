@@ -124,11 +124,40 @@ public class IncomeExpenseService {
     }
 
     public MonthlyIncome getMonthlyIncomeFor(Long id) {
-        return monthlyIncomeRepository.findById(id).orElse(null);
+        ScopedSpan newSpan = tracer.startScopedSpan("get-monthly-income-by-id-db-call");
+        MonthlyIncome monthlyIncome;
+        try {
+            monthlyIncome = monthlyIncomeRepository.findById(id)
+                    .orElse(null);
+            if (monthlyIncome == null) {
+                log.warn("Unable to find any monthly income for income id " + id);
+            } else {
+                log.debug("Got monthly income with income id " + id + ": " + monthlyIncome);
+            }
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("get.monthly.income.by.id");
+            newSpan.finish();
+        }
+        return monthlyIncome;
     }
 
     public List<MonthlyIncome> getMonthlyIncomeFor(User user) {
-        return monthlyIncomeRepository.findByUser(user);
+        ScopedSpan newSpan = tracer.startScopedSpan("get-monthly-income-by-user-db-call");
+        List<MonthlyIncome> monthlyIncome;
+        try {
+            monthlyIncome = monthlyIncomeRepository.findByUser(user);
+            if (monthlyIncome.isEmpty()) {
+                log.warn("Unable to find any monthly income for user: " + user);
+            } else {
+                log.debug("Got monthly income for user: " + user + ": " + monthlyIncome);
+            }
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("get.monthly.income.by.user");
+            newSpan.finish();
+        }
+        return monthlyIncome;
     }
 
     public Income getWeeklyIncomeFor(Long id) {
