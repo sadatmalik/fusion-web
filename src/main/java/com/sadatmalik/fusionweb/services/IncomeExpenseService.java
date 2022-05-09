@@ -161,11 +161,40 @@ public class IncomeExpenseService {
     }
 
     public Income getWeeklyIncomeFor(Long id) {
-        return incomeRepository.findById(id).orElse(null);
+        ScopedSpan newSpan = tracer.startScopedSpan("get-weekly-income-by-id-db-call");
+        Income weeklyIncome;
+        try {
+            weeklyIncome = incomeRepository.findById(id)
+                    .orElse(null);
+            if (weeklyIncome == null) {
+                log.warn("Unable to find any weekly income for income id " + id);
+            } else {
+                log.debug("Got weekly income with income id " + id + ": " + weeklyIncome);
+            }
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("get.weekly.income.by.id");
+            newSpan.finish();
+        }
+        return weeklyIncome;
     }
 
     public List<Income> getWeeklyIncomeFor(User user) {
-        return incomeRepository.findByUser(user);
+        ScopedSpan newSpan = tracer.startScopedSpan("get-weekly-income-by-user-db-call");
+        List<Income> weeklyIncome;
+        try {
+            weeklyIncome = incomeRepository.findByUser(user);
+            if (weeklyIncome.isEmpty()) {
+                log.warn("Unable to find any weekly income for user: " + user);
+            } else {
+                log.debug("Got weekly income for user: " + user + ": " + weeklyIncome);
+            }
+        } finally {
+            newSpan.tag("peer.service", PEER_SERVICE_NAME);
+            newSpan.annotate("get.weekly.income.by.user");
+            newSpan.finish();
+        }
+        return weeklyIncome;
     }
 
     public MonthlyExpense saveMonthlyExpense(MonthlyExpenseDto monthlyExpenseDto, User user) {
