@@ -1,13 +1,18 @@
 package com.sadatmalik.fusionweb;
 
+import com.sadatmalik.fusionweb.tracking.UserContextInterceptor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Main Spring bootstrap application. Launches Fusion Web.
@@ -44,13 +49,26 @@ public class FusionWebPrototypeApplication {
 	 * service, rather than using the physical location of the service, the target URL
 	 * is built using the Discovery (eureka) service ID of the service you want to call.
 	 *
+	 * We add a UserContextInterceptor to the RestTemplate for the propagation of
+	 * correlation ID and other user context headers to downstream services.
+	 *
 	 * @see com.sadatmalik.fusionweb.services.client.FusionBankingRestTemplateClient
 	 * @return load balancer-backed rest template.
 	 */
 	@LoadBalanced
 	@Bean
 	public RestTemplate getRestTemplate() {
-		return new RestTemplate();
+		RestTemplate template = new RestTemplate();
+		List<ClientHttpRequestInterceptor> interceptors = template.getInterceptors();
+		if (interceptors == null) {
+			template.setInterceptors(
+					Collections.singletonList(
+							new UserContextInterceptor()));
+		} else {
+			interceptors.add(new UserContextInterceptor());
+			template.setInterceptors(interceptors);
+		}
+		return template;
 	}
 
 	/**

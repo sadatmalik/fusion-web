@@ -8,6 +8,8 @@ services:
     environment:
       - spring.profiles.active=git
       - encrypt.key=${ENCRYPT_KEY}
+    networks:
+      - backend
 
   fusion-discovery:
     image: fusion/fusion-discovery:0.0.1-SNAPSHOT
@@ -16,8 +18,20 @@ services:
     depends_on:
       - fusion-config
     environment:
+      - spring.profiles.active=dev
       - spring.config.import=configserver:http://fusion-config:8071
       - encrypt.key=${ENCRYPT_KEY}
+    networks:
+      - backend
+
+  fusion-gateway:
+    image: fusion/fusion-gateway:0.0.1-SNAPSHOT
+    ports:
+      - "8072:8072"
+    environment:
+      - spring.config.import=configserver:http://fusion-config:8071
+      - encrypt.key=${ENCRYPT_KEY}
+      - eureka.client.serviceUrl.defaultZone=http://netflix:eureka@fusion-discovery:8070/eureka
 
   fusion-web:
     image: fusion/fusionweb:0.0.1-SNAPSHOT
@@ -47,3 +61,74 @@ services:
       - encrypt.key=${ENCRYPT_KEY}
       - spring.datasource.url=jdbc:mysql://host.docker.internal:3308/fusion_db?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
       - eureka.client.serviceUrl.defaultZone=http://netflix:eureka@fusion-discovery:8070/eureka
+
+  fusion-es:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+    container_name: fusion-elasticsearch
+    ports:
+      - "9300:9300"
+      - "9200:9200"
+    environment:
+      - node.name=elasticsearch
+      - discovery.type=single-node
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - elastic-search-data1:/usr/share/elasticsearch/data
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      backend:
+        aliases:
+          - "elasticsearch"
+
+  fusion-logstash:
+    image: docker.elastic.co/logstash/logstash:7.7.0
+    container_name: fusion-logstash
+    command: logstash -f /etc/logstash/conf.d/logstash.conf
+    volumes:
+      - ./docker/config:/etc/logstash/conf.d
+    ports:
+      - "5001:5001"
+    networks:
+      backend:
+        aliases:
+          - "logstash"
+
+  fusion-kibana:
+    image: docker.elastic.co/kibana/kibana:7.7.0
+    container_name: fusion-kibana
+    environment:
+      ELASTICSEARCH_URL: "http://elasticsearch:9300"
+    ports:
+      - 5601:5601
+    networks:
+      backend:
+        aliases:
+          - "kibana"
+
+  fusion-zipkin:
+    image: openzipkin/zipkin
+    container_name: fusion-zipkin
+    depends_on:
+      - fusion-es
+    environment:
+      - "STORAGE_TYPE=elasticsearch"
+      - "ES_HOSTS=elasticsearch:9300"
+    ports:
+      - "9411:9411"
+    networks:
+      backend:
+        aliases:
+          - "zipkin"
+
+volumes:
+  elastic-search-data1:
+    driver: local
+
+networks:
+  backend:
+    driver: bridge
