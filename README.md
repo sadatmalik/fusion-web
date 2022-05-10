@@ -41,8 +41,15 @@ Supported profiles:
 ## Microservices
 
 - [Fusion Config](https://github.com/sadatmalik/fusion-config) - cloud configuration service
+- [Fusion Config Repo](https://github.com/sadatmalik/fusion-config-repo) - cloud configuration repository
 - [Fusion Discovery](https://github.com/sadatmalik/fusion-discovery) - cloud discovery service
+- [Fusion Web](https://github.com/sadatmalik/fusion-web) - current repository - cloud web service: spring mvc server - the web application
 - [Fusion Banking](https://github.com/sadatmalik/fusion-banking) - cloud banking service: provides a load balanced open-banking api client gateway implementation.
+- [Fusion Gateway](https://github.com/sadatmalik/fusion-gateway) - cloud gateway to facilitate single rest services access point
+- [Fusion ES](https://www.elastic.co/) - cloud deployed ELK stack elastic search service for log file consolidation and search
+- [Fusion Logstash](https://www.elastic.co/logstash/) - cloud deployed ELK logstash service for log file funnelling and propagation
+- [Fusion Kibana](https://www.elastic.co/kibana/) - cloud deployed ELK stack kibana service for consolidated log viewing and tracing
+- [Fusion Zipkin](https://zipkin.io/) - cloud deployed ELK stack zipkin service for distributed performance metrics
 
 ### Service Discovery and Load Balancing
 Fusion-web support 3 templates for service discovery and load balancing:
