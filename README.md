@@ -1,6 +1,6 @@
 # Fusion Web
 
-Fusion is a microservices based web application for personal finance management and analytics.
+Fusion is a microservices based web application offering a suite of financial tools and integrations for the management and analytics of personal wealth.
 
 ## Installation
 
