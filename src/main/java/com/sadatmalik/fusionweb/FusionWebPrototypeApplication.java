@@ -6,6 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
@@ -29,13 +31,22 @@ import java.util.List;
  * to calling a REST service. Here we first define a Java interface and then add Spring Cloud
  * annotations to map what Eureka-based service the Spring Cloud Load Balancer will invoke.
  *
- * @see
+ * @see com.sadatmalik.fusionweb.services.client.FusionBankingFeignClient
+ *
+ * The @EnableBinding annotation tells Spring Cloud Stream that we want to bind the service to a
+ * message broker. The use of Sink.class in @EnableBinding tells Spring Cloud Stream that this
+ * service will communicate with the message broker via a set of channels defined in the Sink
+ * class.
+ *
+ * In Spring Cloud Stream, channels sit above a message queue. Spring Cloud Stream has a default
+ * set of channels that can be configured to speak to a message broker.
  *
  * @author sadatmalik
  */
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients
+@EnableBinding(Sink.class)
 public class FusionWebPrototypeApplication {
 
 	public static void main(String[] args) {
