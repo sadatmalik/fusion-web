@@ -1,12 +1,15 @@
 package com.sadatmalik.fusionweb;
 
+import com.sadatmalik.fusionweb.messaging.events.UserTokenChangeEvent;
 import com.sadatmalik.fusionweb.tracking.UserContextInterceptor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -43,6 +46,7 @@ import java.util.List;
  *
  * @author sadatmalik
  */
+@Slf4j
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients
@@ -80,6 +84,20 @@ public class FusionWebPrototypeApplication {
 			template.setInterceptors(interceptors);
 		}
 		return template;
+	}
+
+	/**
+	 * Executes this method each time a message is received from the input channel.
+	 *
+	 * Spring Cloud Stream automatically deserializes the incoming message to a Java POJO
+	 * called UserTokenChangeEvent.
+	 *
+	 * @param tokenChangeEvent
+	 */
+	@StreamListener(Sink.INPUT)
+	public void loggerSink(UserTokenChangeEvent tokenChangeEvent) {
+		log.debug("Received {} event for the user access token {}",
+				tokenChangeEvent.getAction(), tokenChangeEvent.getAccessToken());
 	}
 
 	/**
